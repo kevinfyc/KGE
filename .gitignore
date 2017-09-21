@@ -1,0 +1,20 @@
+[Dd]ebug
+[Rr]elease
+build.ios
+build.mac
+build.win32
+build.android
+
+*.pyc
+
+#mac - xcode
+.DS_Store
+project.xcworkspace
+xcuserdata
+
+#win32 - vs
+*.opensdf
+*.sdf
+*.suo
+*.user
+*.log
