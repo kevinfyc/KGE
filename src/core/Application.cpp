@@ -7,13 +7,34 @@
 //
 
 #include "application.h"
-#include <assert.h>
+#include "graphics/graphics.h"
 
+#include <assert.h>
 
 namespace kge
 {
+	IApplication* IApplication::_instance;
+	/*static*/ IApplication* IApplication::GetInstance()
+	{
+		return _instance;
+	}
+
+	IApplication::IApplication():_width(1280)
+		,_height(720)
+	{
+		_instance = this;
+	}
+
+	IApplication::~IApplication()
+	{
+		_instance = nullptr;
+	}
+
 	bool IApplication::Init()
 	{
+		if (!Graphics::Init(_width, _height))
+			return false;
+
 		return true;
 	}
 
@@ -33,7 +54,7 @@ namespace kge
 
     int IApplication::Run()
     {
-		assert(!Init());
+		assert(Init());
 
 		Tick();
 

@@ -9,11 +9,16 @@
 #ifndef __KGE_APPLICATION_H__
 #define __KGE_APPLICATION_H__
 
+#include "pre_define.h"
+
 namespace kge
 {
     class IApplication
     {
     public:
+		IApplication();
+		virtual ~IApplication();
+
 		bool Init();
 		void Fini();
 
@@ -26,8 +31,19 @@ namespace kge
 
 		inline void Quit() { _exit = true; };
 
+		static IApplication* GetInstance();
+
+		inline void SetName(const std::string& name) { _name = name; }
+		inline bool GetName(std::string& name) { name = _name; return true; }
+
 	private:
+		static IApplication* _instance;
+		std::string _name;
+
 		bool _exit = false;
+
+		uint32 _width;
+		uint32 _height;
     };
 }
 

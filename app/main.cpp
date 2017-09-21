@@ -3,6 +3,11 @@
 
 class App : public kge::IApplication
 {
+public:
+	App()
+	{
+		SetName("App");
+	}
 
 };
 

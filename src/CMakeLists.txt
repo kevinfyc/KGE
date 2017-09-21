@@ -12,7 +12,8 @@ if (WIN32)
 	list(APPEND INCLUDE_DIRS_ONLY ${THIRD_PARTY_DIR}/glew)
 endif()
 
-set(SOURCES core math)
+set(SOURCES core math graphics)
+
 foreach(SOURCE ${SOURCES})
 	add_subdirectory(${SOURCE})
 	source_group ("${SOURCE}" FILES ${${SOURCE}_H_FILES} ${${SOURCE}_CPP_FILES})
@@ -23,4 +24,6 @@ foreach(SOURCE ${SOURCES})
 endforeach()
 
 add_definitions(-DCODE_INLINE)
+add_definitions(-DKGE_GLES)
+
 setup_library()
