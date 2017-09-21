@@ -19,9 +19,22 @@ namespace kge
 		s_display = RefMake<Display>();
 		s_display->Init(width, height);
 
-		s_display->ProcessEvent();
 
 		return true;
+	}
+
+	/*static*/void Graphics::Tick()
+	{
+		s_display->ProcessEvent();
+	}
+
+	/*static*/void Graphics::Fini()
+	{
+		s_display->Fini();
+	}
+
+	/*static*/void Graphics::Draw()
+	{
 	}
 
 }

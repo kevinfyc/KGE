@@ -21,7 +21,6 @@ namespace kge
 		GLenum err = glewInit();
 		if (GLEW_OK != err)
 		{
-			auto a = glewGetErrorString(err);
 			KGE_LOG_ERROR("Cannot initialize OpenGL");
 			return false;
 		}
@@ -37,7 +36,7 @@ namespace kge
 
 		GLint maxTexSize;
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
-		KGE_LOG_ERROR("GL_ES max texture size is %d", maxTexSize);
+		KGE_LOG_DEBUG("GL_ES max texture size is %d", maxTexSize);
 
 		return true;
 	}

@@ -147,6 +147,12 @@ namespace kge
 
 	void DisplayWin::Fini()
 	{
+#if KGE_GLES
+		wglMakeCurrent(nullptr, nullptr);
+		wglDeleteContext(_shared_context);
+		wglDeleteContext(_context);
+		ReleaseDC(_hwnd, _hdc);
+#endif
 	}
 
 	void DisplayWin::ProcessEvent()

@@ -40,7 +40,7 @@ namespace kge
 
 	void IApplication::Fini()
 	{
-	
+		Graphics::Fini();
 	}
     
 	void IApplication::Tick()
@@ -65,12 +65,12 @@ namespace kge
     
 	void IApplication::OnUpdate()
 	{
-
+		Graphics::Tick();
 	}
 
 	void IApplication::OnDraw()
 	{
-
+		Graphics::Draw();
 	}
 
 } // end namespace ora

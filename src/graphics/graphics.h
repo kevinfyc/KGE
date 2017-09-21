@@ -20,6 +20,10 @@ namespace kge
     {
     public:
 		static bool Init(uint32 width, uint32 height);
+		static void Tick();
+		static void Fini();
+
+		static void Draw();
 
 		inline static Display* GetDisplay() { return s_display.get(); }
 
