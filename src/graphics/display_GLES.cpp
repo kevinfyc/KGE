@@ -47,5 +47,12 @@ namespace kge
 		DisplayWin::Fini();
 #endif
 	}
+
+	void DisplayGLES::SwapBuffers()
+	{
+#if WIN32
+		::SwapBuffers(_hdc);
+#endif
+	}
 }
 

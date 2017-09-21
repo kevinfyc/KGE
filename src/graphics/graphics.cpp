@@ -35,6 +35,7 @@ namespace kge
 
 	/*static*/void Graphics::Draw()
 	{
+		s_display->SwapBuffers();
 	}
 
 }

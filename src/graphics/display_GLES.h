@@ -21,6 +21,8 @@ namespace kge
 		virtual bool Init(uint32 width, uint32 height) override;
 		virtual void Fini() override;
 
+		void SwapBuffers();
+
 	private:
 
 		int _uniform_buffer_offset_alignment;
