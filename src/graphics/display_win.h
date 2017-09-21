@@ -30,6 +30,11 @@ namespace kge
 
 	protected:
 		HWND _hwnd;
+#if KGE_GLES
+		HDC _hdc;
+		HGLRC _context;
+		HGLRC _shared_context;
+#endif
 	};
 }
 

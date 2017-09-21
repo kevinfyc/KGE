@@ -17,11 +17,13 @@ message(STATUS "cmake kge bin dir: " ${PROJECT_BINARY_DIR})
 ##################################################
 set(THIRD_PARTY_LIBS FreeType)
 
+if(NOT IOS AND NOT ANDROID)
+    list(APPEND THIRD_PARTY_LIBS glew)
+endif()
+
 foreach (TARGET ${THIRD_PARTY_LIBS})
     add_subdirectory (src/third_party/${TARGET})
 endforeach ()
-
-LINK_LIBRARIES(${PROJECT_SOURCE_DIR}/lib/glew/win32/glew32.lib)
 
 ##################################################
 #engine source

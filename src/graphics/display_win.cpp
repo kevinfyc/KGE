@@ -107,6 +107,41 @@ namespace kge
 
 		_hwnd = hwnd;
 
+#if KGE_GLES
+		_hdc = GetDC(hwnd);
+
+		PIXELFORMATDESCRIPTOR pfd = {
+			sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd
+			1,                     // version number
+			PFD_DRAW_TO_WINDOW |   // support window
+			PFD_SUPPORT_OPENGL |   // support OpenGL
+			PFD_DOUBLEBUFFER,      // double buffered
+			PFD_TYPE_RGBA,         // RGBA type
+			24,                    // 24-bit color depth
+			0, 0, 0, 0, 0, 0,      // color bits ignored
+			0,                     // no alpha buffer
+			0,                     // shift bit ignored
+			0,                     // no accumulation buffer
+			0, 0, 0, 0,            // accum bits ignored
+			32,                    // 32-bit z-buffer
+			0,                     // no stencil buffer
+			0,                     // no auxiliary buffer
+			PFD_MAIN_PLANE,        // main layer
+			0,                     // reserved
+			0, 0, 0                // layer masks ignored
+		};
+
+		int format_index = ChoosePixelFormat(_hdc, &pfd);
+		SetPixelFormat(_hdc, format_index, &pfd);
+
+		_context = wglCreateContext(_hdc);
+
+		_shared_context = wglCreateContext(_hdc);
+		wglShareLists(_context, _shared_context);
+
+		wglMakeCurrent(_hdc, _context);
+#endif
+
 		return true;
 	}
 
