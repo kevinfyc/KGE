@@ -3,7 +3,7 @@
 
 #include "vector3.hpp"
 
-namespace ora
+namespace kge
 {
     /**
      *	This class implements a vector of four floats.
@@ -83,7 +83,7 @@ namespace ora
 
     INLINE bool almostEqual( const Vector4& v1, const Vector4& v2, float epsilon );
 
-} // end namespace ora
+} // end namespace kge
 
 #ifdef CODE_INLINE
 #include "vector4.ipp"

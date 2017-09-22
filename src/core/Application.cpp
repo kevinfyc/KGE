@@ -73,4 +73,4 @@ namespace kge
 		Graphics::Draw();
 	}
 
-} // end namespace ora
+} // end namespace kge

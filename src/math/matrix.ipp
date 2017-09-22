@@ -1,4 +1,4 @@
-namespace ora
+namespace kge
 {
     /**
      *	This constructor creates a zero matrix. That is, a matrix whose elements are
@@ -995,6 +995,6 @@ namespace ora
 
 #endif // EXT_MATH
 
-} // end namespace ora
+} // end namespace kge
 
 // matrix.ipp

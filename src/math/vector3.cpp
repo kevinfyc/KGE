@@ -8,7 +8,7 @@
 
 #include <sstream>
 
-namespace ora
+namespace kge
 {
     /*static*/ const Vector3 Vector3::s_zero(0.0f, 0.0f, 0.0f);
     /*static*/ const Vector3 Vector3::s_one(1.0f, 1.0f, 1.0f);
@@ -52,6 +52,6 @@ namespace ora
 	    return i;
 	}
 
-} // end namespace ora
+} // end namespace kge
 
 // vector3.cpp

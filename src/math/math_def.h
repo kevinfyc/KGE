@@ -11,7 +11,7 @@
 #include "quat.hpp"
 #include "matrix.hpp"
 
-namespace ora
+namespace kge
 {
     
     const Vector3 Vector3Zero(0, 0, 0);
@@ -30,7 +30,7 @@ namespace ora
         SIDE_FORCE_DWORD = 0x7fffffff
     };
 
-}// end namespace ora
+}// end namespace kge
 
 
 #endif //_MATH_DEF_H

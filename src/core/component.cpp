@@ -9,13 +9,15 @@
 #include "component.h"
 #include "game_object.h"
 
+#include "transform.h"
+
 namespace kge
 {
 	DEFINE_COM_BASE(Component);
 
 	/*static*/void Component::RegisterComponents()
 	{
-
+		Transform::RegisterComponent();
 	}
 
 	/*static*/void Component::Destroy(Ref<Component> com)
@@ -65,4 +67,4 @@ namespace kge
 		return false;
 	}
 
-} // end namespace ora
+} // end namespace kge

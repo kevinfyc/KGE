@@ -45,7 +45,7 @@
 #define PI_QUAR PI_HALF * 0.5f
 #endif // PI_QUAR
 
-namespace ora
+namespace kge
 {
 
     typedef signed char     int8;

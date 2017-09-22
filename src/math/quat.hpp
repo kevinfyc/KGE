@@ -3,7 +3,7 @@
 
 #include "matrix.hpp"
 
-namespace ora
+namespace kge
 {
     /**
      *	This class is used to represent a quaternion. Quaternions are useful when
@@ -36,6 +36,7 @@ namespace ora
 
         void			normalise();
         void			invert();
+		static Quaternion inverse(const Quaternion& q) { return Quaternion(-q.x, -q.y, -q.z, q.w); };
         void			minimise();
 
         void			slerp( const Quaternion& qStart, const Quaternion &qEnd,
@@ -67,7 +68,7 @@ namespace ora
     Quaternion  operator *( const Quaternion& q1, const Quaternion& q2 );
     bool		operator ==( const Quaternion& q1, const Quaternion& q2 );
 
-} // end namespace ora
+} // end namespace kge
 
 #ifdef CODE_INLINE
 #include "quat.ipp"

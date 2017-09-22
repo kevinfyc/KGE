@@ -3,7 +3,7 @@
 
 #include "math_def.h"
 
-namespace ora
+namespace kge
 {
     class Line;
 

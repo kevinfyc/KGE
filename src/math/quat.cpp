@@ -11,7 +11,7 @@
 #include "quat.ipp"
 #endif
 
-namespace ora
+namespace kge
 {
 
     /*static*/ const Quaternion Quaternion::s_identity(0.0f, 0.0f, 0.0f, 1.0f);
@@ -190,6 +190,6 @@ namespace ora
         w *= oodivisor;
     }
 
-}// end namespace ora
+}// end namespace kge
 
 /*quat.cpp*/

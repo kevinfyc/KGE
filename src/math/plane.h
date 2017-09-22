@@ -3,7 +3,7 @@
 
 #include "math_def.h"
 
-namespace ora
+namespace kge
 {
     class Line;
     class Triangle;
@@ -42,7 +42,7 @@ namespace ora
 
     };
 
-}//end namespace ora
+}//end namespace kge
 
 
 #endif //_PLANE_H

@@ -1,5 +1,5 @@
 
-namespace ora
+namespace kge
 {
 
     /**
@@ -360,6 +360,6 @@ namespace ora
                almostEqual(v1.y, v2.y, epsilon);
     }
 
-} // end namespace ora
+} // end namespace kge
 
 // vector2.ipp

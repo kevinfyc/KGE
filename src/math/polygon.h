@@ -5,7 +5,7 @@
 
 #include "math_def.h"
 
-namespace ora
+namespace kge
 {
     class Triangle;
     class Plane;
@@ -43,7 +43,7 @@ namespace ora
         float minDistToPanel(const Plane & panel);
     };
 
-}//end namespace ora
+}//end namespace kge
 
 
 #endif //_POLYGON_H

@@ -1,7 +1,7 @@
 
 #include "vector2.hpp"
 
-namespace ora
+namespace kge
 {
     /**
      *	This constructor sets this vector to the zero vector.
@@ -124,9 +124,9 @@ namespace ora
     INLINE
     void Vector3::clamp( const Vector3 & lower, const Vector3 & upper )
     {
-        x = ::ora::clamp( lower.x, x, upper.x );
-        y = ::ora::clamp( lower.y, y, upper.y );
-        z = ::ora::clamp( lower.z, z, upper.z );
+        x = ::kge::clamp( lower.x, x, upper.x );
+        y = ::kge::clamp( lower.y, y, upper.y );
+        z = ::kge::clamp( lower.z, z, upper.z );
     }
 
 
@@ -530,6 +530,6 @@ namespace ora
         return atan2f( x, z );
     }
 
-} // end namespace ora
+} // end namespace kge
 
 // vector3.ipp

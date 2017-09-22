@@ -2,7 +2,7 @@
 #include "aabb.h"
 #include "triangle.h"
 
-namespace ora
+namespace kge
 {
 
     AABB::AABB()
@@ -241,4 +241,4 @@ namespace ora
     }
 
 
-}//end namespace ora
+}//end namespace kge

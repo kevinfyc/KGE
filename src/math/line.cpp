@@ -1,6 +1,6 @@
 ﻿#include "line.h"
 
-namespace ora
+namespace kge
 {
     Line::Line()
     {}

@@ -4,7 +4,7 @@
 #include "vector3.hpp"
 #include "vector4.hpp"
 
-namespace ora
+namespace kge
 {
     class Quaternion;
 
@@ -129,7 +129,7 @@ namespace ora
     typedef Matrix Matrix34;
     typedef Matrix Matrix44;
 
-} // end namespace ora
+} // end namespace kge
 
 #ifdef CODE_INLINE
 #include "matrix.ipp"

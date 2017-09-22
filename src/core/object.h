@@ -67,7 +67,7 @@ public:																										\
 		{ \
             return new derived(); \
         } \
-		static std::ector<std::string> _class_names;
+		static std::vector<std::string> _class_names;
 
 #define DECLARE_COM_CLASS_ABSTRACT(derived, cuper) \
     public: \
@@ -85,7 +85,7 @@ public:																										\
 		static std::vector<std::string> _class_names;
 
 #define DEFINE_COM_CLASS(derived) \
-    std::vector<std::tring> derived::_class_names;
+    std::vector<std::string> derived::_class_names;
 
 
 namespace kge

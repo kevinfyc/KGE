@@ -3,7 +3,7 @@
 #include "triangle.h"
 #include "plane.h"
 
-namespace ora
+namespace kge
 {
     Polygon::Polygon(const Triangle & tri)
     {

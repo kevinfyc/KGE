@@ -1,4 +1,4 @@
-namespace ora
+namespace kge
 {
     /**
      *	This constructor sets this vector to the zero vector.
@@ -542,6 +542,6 @@ namespace ora
             almostEqual( v1.w, v2.w, epsilon );
     }
 
-} // end namespace ora
+} // end namespace kge
 
 // vector4.ipp

@@ -4,7 +4,7 @@
 
 #include "_math.hpp"
 
-namespace ora
+namespace kge
 {
     class Vector2;
 
@@ -117,7 +117,7 @@ namespace ora
 
     // Vector3 pitchYawToVector3( float pitchInRadians, float yawInRadians );
 
-} // end namespace ora
+} // end namespace kge
 
 #ifdef CODE_INLINE
 #include "vector3.ipp"

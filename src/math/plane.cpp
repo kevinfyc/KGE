@@ -3,7 +3,7 @@
 #include "line.h"
 #include "triangle.h"
 
-namespace ora
+namespace kge
 {
 
     Plane::Plane()

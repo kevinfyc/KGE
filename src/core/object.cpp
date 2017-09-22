@@ -22,4 +22,4 @@ namespace kge
 
 	}
 
-} // end namespace ora
+} // end namespace kge

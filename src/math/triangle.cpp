@@ -4,7 +4,7 @@
 #include "plane.h"
 #include <stdexcept>
 
-namespace ora
+namespace kge
 {
 
     inline bool inside(const Vector2 & a, const Vector2 & b)

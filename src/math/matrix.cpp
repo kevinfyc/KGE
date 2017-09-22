@@ -6,7 +6,7 @@
     #include "matrix.ipp"
 #endif
 
-namespace ora
+namespace kge
 {
 
     const Matrix Matrix::identity(
@@ -747,6 +747,6 @@ namespace ora
 
 #endif // EXT_MATH
 
-}// end namespace ora
+}// end namespace kge
 
 // matrix.cpp

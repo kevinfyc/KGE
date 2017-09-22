@@ -7,7 +7,7 @@
 
 #include <iomanip>
 
-namespace ora
+namespace kge
 {
 	Vector4 Vector4::s_zero( 0.f, 0.f, 0.f, 0.f );
 
@@ -55,6 +55,6 @@ namespace ora
 	    return i;
 	}
 
-} // end namespace ora
+} // end namespace kge
 
 // vector4.cpp

@@ -3,7 +3,7 @@
 
 #include "_math.hpp"
 
-namespace ora
+namespace kge
 {
 
     class Vector2
@@ -69,7 +69,7 @@ namespace ora
 
     bool almostEqual( const Vector2& v1, const Vector2& v2, const float epsilon = 0.0004f );
 
-} // end namespace ora
+} // end namespace kge
 
 #ifdef CODE_INLINE
 #include "vector2.ipp"

@@ -74,4 +74,4 @@ namespace kge
 
 		com->SetName(GetName());
 	}
-} // end namespace ora
+} // end namespace kge
