@@ -52,4 +52,17 @@ namespace kge
 		}
 	}
 
+	bool Component::IsComponent(const std::string& type) const
+	{
+		auto& names = GetClassNames();
+
+		for (auto& name : names)
+		{
+			if (name == type)
+				return true;
+		}
+
+		return false;
+	}
+
 } // end namespace ora

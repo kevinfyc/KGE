@@ -18,6 +18,8 @@ namespace kge
 	class Component : public Object
 	{
 		DECLARE_COM_BASE(Component);
+	private:
+		friend GameObject;
 
 	public:
 		static void RegisterComponents();
@@ -29,6 +31,8 @@ namespace kge
 
 		Ref<GameObject> GetGameObject() const;
 
+		bool IsComponent(const std::string& type) const;
+
 	protected:
 		Component();
 
@@ -37,6 +41,9 @@ namespace kge
 
 	protected:
 		WeakRef<GameObject> _gameObject;
+
+	private:
+		bool _delete;
 	};
 }
 
