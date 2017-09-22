@@ -80,7 +80,7 @@ namespace kge
 		DWORD style = WS_OVERLAPPEDWINDOW;
 		DWORD style_ex = 0;
 
-		RECT wr = { 0, 0, _width, _height };
+		RECT wr = { 0, 0, (LONG)_width, (LONG)_height };
 		AdjustWindowRect(&wr, style, FALSE);
 
 		int x = (GetSystemMetrics(SM_CXSCREEN) - _width) / 2 + wr.left;

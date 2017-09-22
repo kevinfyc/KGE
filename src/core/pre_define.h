@@ -10,6 +10,8 @@
 #define __KGE_PRE_DEFINE_H__
 
 #include <string>
+#include <vector>
+#include <map>
 
 #include <memory>
 
