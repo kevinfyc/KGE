@@ -32,7 +32,7 @@ namespace kge
 		return _local_buffer;
 	}
 
-	void BufferGLES::Create(BufferType type, bool dynamic)
+	void BufferGLES::_Create(BufferType type, bool dynamic)
 	{
 		KGE_LOG_GL_ERROR();
 		switch (type)

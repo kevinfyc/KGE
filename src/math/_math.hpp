@@ -114,6 +114,19 @@ namespace kge
         return v;
     }
 
+	static float clamp01(float value)
+	{
+		return min2<float>(max2<float>(value, 0), 1);
+	}
+
+	static float lerp(float from, float to, float t, bool clamp_01=true)
+	{
+		if (clamp_01)
+			t = clamp01(t);
+
+		return from + (to - from) * t;
+	}
+
     template<typename T>
     void limit_in_range(T & v, const T & low, const T & high)
     {
