@@ -47,4 +47,4 @@ namespace kge
     };
 }
 
-#endif __KGE_APPLICATION_H__
+#endif // __KGE_APPLICATION_H__

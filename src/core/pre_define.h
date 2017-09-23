@@ -31,4 +31,4 @@ namespace kge
 	typedef unsigned int    uint32;
 }
 
-#endif __KGE_PRE_DEFINE_H__
+#endif // __KGE_PRE_DEFINE_H__

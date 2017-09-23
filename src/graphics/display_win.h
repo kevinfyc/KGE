@@ -38,4 +38,4 @@ namespace kge
 	};
 }
 
-#endif __KGE_DISPLAY_WIN_H__
+#endif // __KGE_DISPLAY_WIN_H__

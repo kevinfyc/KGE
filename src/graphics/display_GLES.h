@@ -31,4 +31,4 @@ namespace kge
     };
 }
 
-#endif __KGE_DISPLAY_GLES_H__
+#endif // __KGE_DISPLAY_GLES_H__

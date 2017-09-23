@@ -32,4 +32,4 @@ namespace kge
     };
 }
 
-#endif __KGE_GRAPHICS_H__
+#endif // __KGE_GRAPHICS_H__

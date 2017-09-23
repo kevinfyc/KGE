@@ -56,4 +56,11 @@ namespace kge
 
 #define KGE_STACK_TRACE KGE_LOG_TRACE("%s() LINE:%d FILE:%s ", __FUNCTION__, __LINE__, __FILE__)
 
+#define KGE_LOG_GL_ERROR()							\
+    {												\
+        int err = glGetError();						\
+		if(err != 0)								\
+            KGE_LOG_ERROR("glGetError: %d", err);	\
+    }
+
 #endif // __LOG_HPP__
