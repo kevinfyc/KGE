@@ -9,8 +9,11 @@
 #include "texture_GLES.h"
 
 #include "render_texture.h"
+#include "texture2D.h"
 
 #include "util/log.h"
+
+#include "math/_math.hpp"
 
 #include <assert.h>
 
@@ -86,12 +89,74 @@ namespace kge
 
 	void TextureGLES::CreateTexture2D()
 	{
+		auto texture = (Texture2D*) this;
+		auto texture_format = texture->GetFormat();
+		auto colors = texture->GetColors();
+		auto mipmap = texture->IsMipmap();
 
+		GLenum format = 0;
+		GLenum type = 0;
+		
+		switch (texture_format)
+		{
+		case kge::TextureFormat::Alpha8:
+			_format = GL_LUMINANCE;
+			format = GL_LUMINANCE;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		case kge::TextureFormat::RGB24:
+			_format = GL_RGB;
+			format = GL_RGB;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		case kge::TextureFormat::RGBA32:
+			_format = GL_RGBA;
+			format = GL_RGBA;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		default:
+			assert(!"texture format not implement");
+			break;
+		}
+
+
+		Create(format, type, colors.Bytes(), mipmap);
 	}
 
 	void TextureGLES::UpdateTexture2D(uint32 x, uint32 y, uint32 w, uint32 h, const ByteBuffer& colors)
 	{
 		KGE_LOG_GL_ERROR();
+
+		Texture2D* texture = dynamic_cast<Texture2D*>(this);
+		TextureFormat texture_format = texture->GetFormat();
+
+		GLenum format = 0;
+		GLenum type = 0;
+
+		switch (texture_format)
+		{
+		case kge::TextureFormat::Alpha8:
+			format = GL_LUMINANCE;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		case kge::TextureFormat::RGB24:
+			format = GL_RGB;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		case kge::TextureFormat::RGBA32:
+			format = GL_RGBA;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		default:
+			assert(!"texture format not implement");
+			break;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, _texture);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, format, type, colors.Bytes());
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 		KGE_LOG_GL_ERROR();
 	}
 
@@ -124,27 +189,20 @@ namespace kge
 		uint32 mip_count = 0;
 
 		RenderTexture * rt = dynamic_cast<RenderTexture*>(this);
-		//Texture2D* texture_2d = dynamic_cast<Texture2D*>(this);
+		Texture2D* texture_2d = dynamic_cast<Texture2D*>(this);
 
 		if (rt)
 		{
 			mip_count = 0;
 		}
-		//else if (texture_2d)
-		//{
-		//	int width = texture_2d->GetWidth();
-		//	int height = texture_2d->GetHeight();
-		//	bool mipmap = texture_2d->IsMipmap();
+		else if (texture_2d)
+		{
+			int width = texture_2d->GetWidth();
+			int height = texture_2d->GetHeight();
+			bool mipmap = texture_2d->IsMipmap();
 
-		//	if (mipmap)
-		//	{
-		//		mip_count = (int)floor(Mathf::Log2((float)Mathf::Max(width, height))) + 1;
-		//	}
-		//	else
-		//	{
-		//		mip_count = 1;
-		//	}
-		//}
+			mip_count = mipmap ? (uint32)floor(log2((float)max2<float>(width, height))) + 1 : 1;
+		}
 
 		return mip_count;
 	}
