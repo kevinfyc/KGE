@@ -35,6 +35,8 @@ namespace kge
 		if (!Graphics::Init(_width, _height))
 			return false;
 
+		Start();
+
 		return true;
 	}
 
@@ -66,6 +68,8 @@ namespace kge
 	void IApplication::OnUpdate()
 	{
 		Graphics::Tick();
+
+		Update();
 	}
 
 	void IApplication::OnDraw()

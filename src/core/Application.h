@@ -36,6 +36,11 @@ namespace kge
 		inline void SetName(const std::string& name) { _name = name; }
 		inline bool GetName(std::string& name) { name = _name; return true; }
 
+		inline void SetInitSize(uint32 width, uint32 height) { _width = width; _height = height; }
+
+		virtual void Start() {}
+		virtual void Update() {}
+
 	private:
 		static IApplication* _instance;
 		std::string _name;
