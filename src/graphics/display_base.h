@@ -19,6 +19,9 @@ namespace kge
 		virtual bool Init(uint32 width, uint32 height);
 		virtual void Fini();
 
+		uint32 GetWidth() const { return _width; }
+		uint32 GetHeight() const { return _height; }
+
 		virtual void BeginRecord(const std::string& file) { _recording = true; }
 		virtual void EndRecord() { _recording = false; }
 		bool IsRecording() const { return _recording; }

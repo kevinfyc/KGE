@@ -52,6 +52,7 @@ namespace kge
 
         operator float *()				{ return (float *)&x; }
         operator const float *() const	{ return (float *)&x; }
+		Vector3 operator *(const Vector3& p) const;
 
         static const Quaternion& identity() { return s_identity; }
         static const Quaternion& zero(){ return s_zero; }

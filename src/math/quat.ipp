@@ -156,6 +156,13 @@ namespace kge
         return q;
     }
 
+	INLINE
+	Vector3 Quaternion::operator *(const Vector3& p) const
+	{
+		Quaternion p_ = *this * Quaternion(p.x, p.y, p.z, 0) * inverse(*this);
+
+		return Vector3(p_.x, p_.y, p_.z);
+	}
 
     /**
      *	This method returns whether or not two quaternions are equal. Two

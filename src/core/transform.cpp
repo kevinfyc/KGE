@@ -13,7 +13,7 @@ namespace kge
 {
 	DEFINE_COM_CLASS(Transform);
 
-	Transform::Transform() :_delta(false)
+	Transform::Transform() :_delty(false)
 	{
 
 	}
@@ -35,7 +35,7 @@ namespace kge
 		if (_local_position != pos)
 		{
 			_local_position = pos;
-			DeltaTransform();
+			DeltyTransform();
 		}
 	}
 
@@ -44,7 +44,7 @@ namespace kge
 		if (_local_rotation != rotation)
 		{
 			_local_rotation = rotation;
-			DeltaTransform();
+			DeltyTransform();
 		}
 	}
 
@@ -53,13 +53,13 @@ namespace kge
 		if (_local_scale != scale)
 		{
 			_local_scale = scale;
-			DeltaTransform();
+			DeltyTransform();
 		}
 	}
 
 	void Transform::SetWorldPosition(const Vector3& pos)
 	{
-		if (!_delta && _local_position == pos)
+		if (!_delty && _local_position == pos)
 			return;
 
 		if (IsRoot())
@@ -76,7 +76,7 @@ namespace kge
 
 	void Transform::SetWorldRotation(const Quaternion& rotation)
 	{
-		if (!_delta && _local_rotation == rotation)
+		if (!_delty && _local_rotation == rotation)
 			return;
 
 		if (IsRoot())
@@ -92,7 +92,7 @@ namespace kge
 
 	void Transform::SetWorldScale(const Vector3& scale)
 	{
-		if (!_delta && _local_scale == scale)
+		if (!_delty && _local_scale == scale)
 			return;
 
 		if (IsRoot())
@@ -130,22 +130,22 @@ namespace kge
 		return _world_scale;
 	}
 
-	void Transform::DeltaTransform()
+	void Transform::DeltyTransform()
 	{
-		_delta = true;
+		_delty = true;
 
 		for (WeakRef<Transform> child : _children)
 		{
-			child.lock()->DeltaTransform();
+			child.lock()->DeltyTransform();
 		}
 	}
 
 	void Transform::ApplyDelta()
 	{
-		if (!_delta)
+		if (!_delty)
 			return;
 
-		_delta = false;
+		_delty = false;
 
 		if (IsRoot())
 		{
@@ -199,6 +199,21 @@ namespace kge
 	void Transform::Local2World(const Vector3& local, Vector3& world)
 	{
 		world = GetLocal2WorldMatrix().applyPoint(local);
+	}
+
+	Vector3 Transform::GetRight()
+	{
+		return GetWorldRotation() * Vector3(1, 0, 0);
+	}
+
+	Vector3 Transform::GetUp()
+	{
+		return GetWorldRotation() * Vector3(0, 1, 0);
+	}
+
+	Vector3 Transform::GetForward()
+	{
+		return GetWorldRotation() * Vector3(0, 0, 1);
 	}
 
 } // end namespace kge

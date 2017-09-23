@@ -25,8 +25,6 @@ namespace kge
 		friend class GameObject;
 
 	public:
-		~Transform();
-
 		WeakRef<Transform> GetParent()const { return _parent; }
 		void SetParent(const WeakRef<Transform>& parent) { _parent = parent; }
 		bool IsRoot()const { return _parent.expired(); }
@@ -34,7 +32,7 @@ namespace kge
 		uint32 GetChildCount() { return _children.size(); }
 		Ref<Transform> GetChild(uint32 index)const;
 
-		void DeltaTransform();
+		void DeltyTransform();
 		void SetLocalPosition(const Vector3& pos);
 		void SetLocalRotation(const Quaternion& rotation);
 		void SetLocalScale(const Vector3& scale);
@@ -57,6 +55,10 @@ namespace kge
 		const Matrix& GetWorld2LocalMatrix();
 		const Matrix& GetLocal2WorldMatrix();
 
+		Vector3 GetRight();
+		Vector3 GetUp();
+		Vector3 GetForward();
+
 	private:
 		Transform();
 
@@ -77,7 +79,7 @@ namespace kge
 		Matrix _local_to_world_matrix;
 		Matrix _world_to_local_matrix;
 
-		bool _delta;
+		bool _delty;
 	};
 }
 

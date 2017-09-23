@@ -10,9 +10,12 @@
 
 #include "display.h"
 
+#include "camera.h"
+
 namespace kge
 {
 	Ref<Display> Graphics::s_display;
+	int Graphics::draw_call = 0;
 
 	/*static*/bool Graphics::Init(uint32 width, uint32 height)
 	{
@@ -35,6 +38,11 @@ namespace kge
 
 	/*static*/void Graphics::Draw()
 	{
+		Graphics::draw_call = 0;
+
+		Camera::PrepareAll();
+		Camera::RenderAll();
+
 		s_display->SwapBuffers();
 	}
 

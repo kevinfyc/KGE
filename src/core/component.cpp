@@ -10,6 +10,7 @@
 #include "game_object.h"
 
 #include "transform.h"
+#include "graphics/camera.h"
 
 namespace kge
 {
@@ -18,6 +19,7 @@ namespace kge
 	/*static*/void Component::RegisterComponents()
 	{
 		Transform::RegisterComponent();
+		Camera::RegisterComponent();
 	}
 
 	/*static*/void Component::Destroy(Ref<Component> com)
@@ -38,6 +40,11 @@ namespace kge
 	Ref<GameObject> Component::GetGameObject() const
 	{
 		return _gameObject.lock();
+	}
+
+	Ref<Transform> Component::GetTransform() const
+	{
+		return _transform.lock();
 	}
 
 	void Component::Delete()

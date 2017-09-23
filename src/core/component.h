@@ -14,6 +14,7 @@
 namespace kge
 {
 	class GameObject;
+	class Transform;
 
 	class Component : public Object
 	{
@@ -30,6 +31,7 @@ namespace kge
 		void SetName(const std::string& name);
 
 		Ref<GameObject> GetGameObject() const;
+		Ref<Transform> GetTransform() const;
 
 		bool IsComponent(const std::string& type) const;
 
@@ -41,6 +43,7 @@ namespace kge
 
 	protected:
 		WeakRef<GameObject> _gameObject;
+		WeakRef<Transform> _transform;
 
 	private:
 		bool _delete;

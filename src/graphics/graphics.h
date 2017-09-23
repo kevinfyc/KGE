@@ -27,6 +27,9 @@ namespace kge
 
 		inline static Display* GetDisplay() { return s_display.get(); }
 
+	public:
+		static int draw_call;
+
 	private:
 		static Ref<Display> s_display;
     };
