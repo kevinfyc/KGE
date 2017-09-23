@@ -52,7 +52,7 @@ public:																										\
 		{ \
 			Register(#derived, derived::Create); \
 		} \
-		static const std::string& ClassName() { return #derived; } \
+		static std::string ClassName() { return #derived; } \
 		static const std::vector<std::string>& ClassNames() { \
 			if(_class_names.empty()) { \
 				_class_names = super::ClassNames(); \

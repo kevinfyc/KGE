@@ -10,8 +10,43 @@
 
 #include "component.h"
 
+#include "world.h"
+
 namespace kge
 {
+	Ref<GameObject> GameObject::Create(const std::string& name, bool add_to_world)
+	{
+		Ref<GameObject> obj = Ref<GameObject>(new GameObject(name));
+		if (add_to_world)
+		{
+			obj->_in_world = true;
+			World::AddGameObject(obj);
+		}
+
+		Ref<Transform> transform = Ref<Transform>((Transform*)Component::Create(Transform::ClassName()));
+		transform->_gameObject = obj;
+		obj->_transform = transform;
+		obj->AddComponent(transform);
+
+		return obj;
+	}
+
+	void GameObject::Destroy(Ref<GameObject> obj)
+	{
+		if (!obj)
+			return;
+
+		obj->GetTransform()->SetParent(WeakRef<Transform>());
+		obj->Delete();
+	}
+
+	GameObject::GameObject(const std::string& name) :_deleted(false)
+		, _in_world(false)
+		, _in_world_update(false)
+	{
+		SetName(name);
+	}
+
 	Ref<Component> GameObject::AddComponent(const std::string& name)
 	{
 		Ref<Component> t = Ref<Component>(Component::Create(name));
@@ -24,7 +59,7 @@ namespace kge
 	{
 		for (Ref<Component> com : _components)
 		{
-			if (!com->_delete && com->IsComponent(name))
+			if (!com->_deleted && com->IsComponent(name))
 				return com;
 		}
 
@@ -35,22 +70,26 @@ namespace kge
 	{
 		for (auto com : _components)
 		{
-			if (!com->_delete && com->IsComponent(name))
+			if (!com->_deleted && com->IsComponent(name))
 				coms.push_back(com);
 		}
 		
-		//auto transform = GetTransform();
-		//int child_count = transform->GetChildCount();
-		//for (int i = 0; i < child_count; i++)
-		//{
-		//	auto child = transform->GetChild(i);
-		//	auto child_coms = child->GetGameObject()->GetComponentsInChildren(name);
+		auto transform = GetTransform();
+		int child_count = transform->GetChildCount();
+		for (int i = 0; i < child_count; i++)
+		{
+			auto child = transform->GetChild(i);
+			std::vector<Ref<Component>> child_coms;
+			child->GetGameObject()->GetComponentsInChildren(name, child_coms);
 
-		//	if (!child_coms.Empty())
-		//	{
-		//		coms.AddRange(&child_coms[0], child_coms.Size());
-		//	}
-		//}
+			if (!child_coms.empty())
+			{
+				uint32 old_size = coms.size();
+				coms.resize(old_size + child_coms.size());
+				for (uint32 i = 0; i < child_coms.size(); ++i)
+					coms[old_size + i] = child_coms[i];
+			}
+		}
 
 		return coms.size() > 0;
 	}
@@ -59,7 +98,7 @@ namespace kge
 	{
 		for (const auto& i : _components)
 		{
-			if (i.get() == com && !i->_delete)
+			if (i.get() == com && !i->_deleted)
 			{
 				return i;
 			}
@@ -74,4 +113,79 @@ namespace kge
 
 		com->SetName(GetName());
 	}
+
+	void GameObject::Delete()
+	{
+		if (!_deleted)
+			_deleted = false;
+
+		Ref<Transform> transform = GetTransform();
+		uint32 child_count = transform->GetChildCount();
+		for (uint32 i = 0; i < child_count; ++i)
+			transform->GetChild(i)->GetGameObject()->Delete();
+
+	}
+
+	void GameObject::Start()
+	{
+		std::list<Ref<Component>> starts(_components);
+		do
+		{
+			for (auto& i : starts)
+			{
+				if (_deleted)
+					break;
+
+				if (i->IsEnable() && !i->IsStarted())
+				{
+					i->_started = true;
+					i->Start();
+				}
+			}
+			starts.clear();
+
+			starts = _components_neo;
+			_components.insert(_components.end(), _components_neo.begin(), _components_neo.end());
+			_components_neo.clear();
+		} while (!starts.empty());
+	}
+
+	void GameObject::Update()
+	{
+		for (const auto& i : _components)
+		{
+			if (_deleted)
+				break;
+
+			if (i->IsEnable())
+				i->Update();
+		}
+	}
+
+	void GameObject::LateUpdate()
+	{
+		for (const auto& i : _components)
+		{
+			if (_deleted)
+				break;
+
+			if (i->IsEnable())
+				i->LateUpdate();
+		}
+
+		//delete component
+		auto it = _components.begin();
+		while (it != _components.end())
+		{
+			if ((*it)->_deleted)
+			{
+				it = _components.erase(it);
+			}
+			else
+			{
+				it++;
+			}
+		}
+	}
+
 } // end namespace kge

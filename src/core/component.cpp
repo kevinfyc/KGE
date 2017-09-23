@@ -49,6 +49,15 @@ namespace kge
 
 	void Component::Delete()
 	{
+		if (!_deleted)
+		{
+			_deleted = true;
+			Enable(false);
+		}
+	}
+
+	void Component::Enable(bool enable)
+	{
 
 	}
 

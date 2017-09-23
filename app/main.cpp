@@ -1,7 +1,11 @@
 
 #include "core/main_def.h"
+#include "core/game_object.h"
+#include "graphics/camera.h"
 
-class App : public kge::IApplication
+using namespace kge;
+
+class App : public IApplication
 {
 public:
 	App();
@@ -17,7 +21,8 @@ App::App()
 
 void App::Start()
 {
-
+	auto camera = GameObject::Create("camera")->AddComponent<Camera>();
+	camera->SetClearColor(Color(1, 0, 0, 1));
 }
 
 KGE_MAIN(App);

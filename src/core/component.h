@@ -33,10 +33,20 @@ namespace kge
 		Ref<GameObject> GetGameObject() const;
 		Ref<Transform> GetTransform() const;
 
+		void Enable(bool enable);
+		bool IsEnable() const { return _enable; }
+		bool IsStarted() const { return _started; }
 		bool IsComponent(const std::string& type) const;
 
 	protected:
 		Component();
+
+		virtual void Awake() { }
+		virtual void Start() { }
+		virtual void Update() { }
+		virtual void LateUpdate() { }
+		virtual void OnEnable() { }
+		virtual void OnDisable() { }
 
 	private:
 		void Delete();
@@ -46,7 +56,9 @@ namespace kge
 		WeakRef<Transform> _transform;
 
 	private:
-		bool _delete;
+		bool _deleted;
+		bool _started;
+		bool _enable;
 	};
 }
 

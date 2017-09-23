@@ -9,6 +9,8 @@
 #include "application.h"
 #include "graphics/graphics.h"
 
+#include "util/log.h"
+
 #include <assert.h>
 
 namespace kge
@@ -28,12 +30,22 @@ namespace kge
 	IApplication::~IApplication()
 	{
 		_instance = nullptr;
+		World::Fini();
 	}
 
 	bool IApplication::Init()
 	{
 		if (!Graphics::Init(_width, _height))
+		{
+			KGE_LOG_ERROR("Graphics Init failed");
 			return false;
+		}
+
+		if (!World::Init())
+		{
+			KGE_LOG_ERROR("World Init failed");
+			return false;
+		}
 
 		Start();
 
@@ -70,6 +82,7 @@ namespace kge
 		Graphics::Tick();
 
 		Update();
+		World::Tick();
 	}
 
 	void IApplication::OnDraw()

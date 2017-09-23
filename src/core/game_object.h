@@ -11,6 +11,7 @@
 
 #include "pre_define.h"
 #include "object.h"
+#include "transform.h"
 
 namespace kge
 {
@@ -18,7 +19,14 @@ namespace kge
 
     class GameObject : public Object
     {
+		friend class Transform;
+		friend class World;
+
 	public:
+
+		static Ref<GameObject> Create(const std::string& name, bool add_to_world = true);
+		static void Destroy(Ref<GameObject> obj);
+
 		void SetName(const std::string& name) {}
 
 		Ref<Component> AddComponent(const std::string& name);
@@ -32,12 +40,27 @@ namespace kge
 		template<class T> Ref<T> GetComponentInParent() const;
 		Ref<Component> GetComponentRef(const Component* com) const;
 
+
+		Ref<Transform> GetTransform() const { return _transform.lock(); }
+
 	private:
+		GameObject(const std::string& name);
 		void AddComponent(const Ref<Component>& com);
+
+		void Delete();
+		void Start();
+		void Update();
+		void LateUpdate();
 
 	private:
 		bool _deleted;
 		std::list<Ref<Component>> _components;
+		std::list<Ref<Component>> _components_neo;
+
+		bool _in_world;
+		bool _in_world_update;
+
+		WeakRef<Transform> _transform;
     };
 
 	template<class T> Ref<T> GameObject::AddComponent()
@@ -48,6 +71,15 @@ namespace kge
 	template<class T> Ref<T> GameObject::GetComponent() const
 	{
 		for (auto i : _components)
+		{
+			auto t = RefCast<T>(i);
+			if (t && !i->_deleted)
+			{
+				return t;
+			}
+		}
+		
+		for (auto i : _components_neo)
 		{
 			auto t = RefCast<T>(i);
 			if (t && !i->_deleted)
@@ -70,6 +102,15 @@ namespace kge
 			}
 		}
 
+		for (auto i : _components_neo)
+		{
+			auto t = RefCast<T>(i);
+			if (t && !i->_deleted)
+			{
+				coms.push_back(t);
+			}
+		}
+
 		return coms.size() > 0;
 	}
 
@@ -83,19 +124,33 @@ namespace kge
 				coms.push_back(t);
 			}
 		}
+		
+		for (auto i : _components_neo)
+		{
+			auto t = RefCast<T>(i);
+			if (t && !i->_deleted)
+			{
+				coms.push_back(t);
+			}
+		}
 
-		//auto transform = GetTransform();
-		//int child_count = transform->GetChildCount();
-		//for (int i = 0; i < child_count; i++)
-		//{
-		//	auto child = transform->GetChild(i);
-		//	auto child_coms = child->GetGameObject()->GetComponentsInChildren<T>();
+		auto transform = GetTransform();
+		int child_count = transform->GetChildCount();
+		for (int i = 0; i < child_count; i++)
+		{
+			auto child = transform->GetChild(i);
 
-		//	if (!child_coms.Empty())
-		//	{
-		//		coms.AddRange(&child_coms[0], child_coms.Size());
-		//	}
-		//}
+			std::vector<Ref<Component>> child_coms;
+			child->GetGameObject()->GetComponentsInChildren<T>(child_coms);
+
+			if (!child_coms.empty())
+			{
+				uint32 old_size = coms.size();
+				coms.resize(old_size + child_coms.size());
+				for (uint32 i = 0; i < child_coms.size(); ++i)
+					coms[old_size + i] = child_coms[i];
+			}
+		}
 
 		return coms.size() > 0;
 	}
@@ -104,21 +159,21 @@ namespace kge
 	{
 		Ref<T> com;
 
-		//auto parent = GetTransform()->GetParent().lock();
+		auto parent = GetTransform()->GetParent().lock();
 
-		//while (parent)
-		//{
-		//	com = parent->GetGameObject()->GetComponent<T>();
+		while (parent)
+		{
+			com = parent->GetGameObject()->GetComponent<T>();
 
-		//	if (com)
-		//	{
-		//		break;
-		//	}
-		//	else
-		//	{
-		//		parent = parent->GetParent().lock();
-		//	}
-		//}
+			if (com)
+			{
+				break;
+			}
+			else
+			{
+				parent = parent->GetParent().lock();
+			}
+		}
 
 		return com;
 	}

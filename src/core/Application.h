@@ -10,6 +10,7 @@
 #define __KGE_APPLICATION_H__
 
 #include "pre_define.h"
+#include "world.h"
 
 namespace kge
 {
