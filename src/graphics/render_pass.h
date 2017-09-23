@@ -13,6 +13,8 @@
 #include "render_pass_GLES.h"
 #endif
 
+#include "frame_buffer.h"
+
 namespace kge
 {
 #if KGE_GLES
