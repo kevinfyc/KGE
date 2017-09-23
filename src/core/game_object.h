@@ -23,11 +23,11 @@ namespace kge
 		friend class World;
 
 	public:
-
+		virtual ~GameObject();
 		static Ref<GameObject> Create(const std::string& name, bool add_to_world = true);
 		static void Destroy(Ref<GameObject> obj);
 
-		void SetName(const std::string& name) {}
+		void SetName(const std::string& name);
 
 		Ref<Component> AddComponent(const std::string& name);
 		Ref<Component> GetComponent(const std::string& name) const;

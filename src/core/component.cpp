@@ -28,7 +28,9 @@ namespace kge
 			com->Delete();
 	}
 
-	Component::Component()
+	Component::Component():_deleted(false)
+		,_started(false)
+		,_enable(true)
 	{
 
 	}

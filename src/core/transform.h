@@ -25,6 +25,7 @@ namespace kge
 		friend class GameObject;
 
 	public:
+		~Transform();
 		WeakRef<Transform> GetParent()const { return _parent; }
 		void SetParent(const WeakRef<Transform>& parent) { _parent = parent; }
 		bool IsRoot()const { return _parent.expired(); }

@@ -14,6 +14,17 @@ namespace kge
 	DEFINE_COM_CLASS(Transform);
 
 	Transform::Transform() :_delty(false)
+		,_local_position(0, 0, 0)
+		,_local_rotation(0, 0, 0, 1)
+		,_local_scale(1, 1, 1)
+		,_world_position(_local_position)
+		,_world_rotation(_local_rotation)
+		,_world_scale(_local_scale)
+	{
+
+	}
+
+	Transform::~Transform()
 	{
 
 	}

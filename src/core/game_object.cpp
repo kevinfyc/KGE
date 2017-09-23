@@ -47,6 +47,25 @@ namespace kge
 		SetName(name);
 	}
 
+	GameObject::~GameObject()
+	{
+
+	}
+
+	void GameObject::SetName(const std::string& name)
+	{
+		if (GetName() != name)
+		{
+			Object::SetName(name);
+
+			for (const auto& com : _components)
+				com->SetName(name);
+
+			for (const auto& com : _components_neo)
+				com->SetName(name);
+		}
+	}
+
 	Ref<Component> GameObject::AddComponent(const std::string& name)
 	{
 		Ref<Component> t = Ref<Component>(Component::Create(name));
@@ -58,6 +77,12 @@ namespace kge
 	Ref<Component> GameObject::GetComponent(const std::string& name) const
 	{
 		for (Ref<Component> com : _components)
+		{
+			if (!com->_deleted && com->IsComponent(name))
+				return com;
+		}
+		
+		for (Ref<Component> com : _components_neo)
 		{
 			if (!com->_deleted && com->IsComponent(name))
 				return com;
@@ -74,6 +99,12 @@ namespace kge
 				coms.push_back(com);
 		}
 		
+		for (auto com : _components_neo)
+		{
+			if (!com->_deleted && com->IsComponent(name))
+				coms.push_back(com);
+		}
+
 		auto transform = GetTransform();
 		int child_count = transform->GetChildCount();
 		for (int i = 0; i < child_count; i++)
@@ -103,15 +134,29 @@ namespace kge
 				return i;
 			}
 		}
+		
+		for (const auto& i : _components_neo)
+		{
+			if (i.get() == com && !i->_deleted)
+			{
+				return i;
+			}
+		}
 
 		return Ref<Component>();
 	}
 
 	void GameObject::AddComponent(const Ref<Component>& com)
 	{
-		_components.push_back(com);
+		_components_neo.push_back(com);
 
+		com->_transform = _transform;
+		com->_gameObject = _transform.lock()->_gameObject;
 		com->SetName(GetName());
+		com->Awake();
+
+		if (_in_world)
+			World::AddGameObject(GetTransform()->GetGameObject());
 	}
 
 	void GameObject::Delete()
