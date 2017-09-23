@@ -1,30 +1,25 @@
 ﻿//
-//  vertex_bufer.h
+//  frame_buffer.h
 //  libkge
 //
 //  Created by kevin on 17-9-23.
 //
 //
 
-#ifndef __KGE_GRAPHICS_VERTEX_BUFFER_H__
-#define __KGE_GRAPHICS_VERTEX_BUFFER_H__
+#ifndef __KGE_GRAPHICS_FRAME_BUFFER_H__
+#define __KGE_GRAPHICS_FRAME_BUFFER_H__
 
-#if KGE_GLES
-#include "buffer_GLES.h"
-#endif
+#include "core/pre_define.h"
 
 namespace kge
 {
-#if KGE_GLES
-	class VertexBuffer : public BufferGLES
-#endif
-	{
-	public:
-		static Ref<VertexBuffer> Create(int size, bool dynamic = false);
+	class RenderTexture;
 
-	private:
-		VertexBuffer() {}
+	struct FrameBuffer
+	{
+		Ref<RenderTexture> color_texture;
+		Ref<RenderTexture> depth_texture;
 	};
 }
 
-#endif // __KGE_GRAPHICS_VERTEX_BUFFER_H__
+#endif // __KGE_GRAPHICS_FRAME_BUFFER_H__
