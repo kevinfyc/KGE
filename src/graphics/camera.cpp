@@ -11,6 +11,7 @@
 #include "display.h"
 #include "core/transform.h"
 #include "render_texture.h"
+#include "render_pass.h"
 
 namespace kge
 {
@@ -48,10 +49,16 @@ namespace kge
 	{
 		_cameras.push_back(this);
 
+		SetClearFlags(CameraClearFlags::Color);
+		SetClearColor(Color(0, 0, 0, 1));
+
 		SetOrthographic(false);
+
 		SetFieldOfView(60);
 		SetClipNear(0.3f);
 		SetClipFar(1000.0f);
+
+		SetRect(Rect(0, 0, 1, 1));
 	}
 
 	Camera::~Camera()
@@ -83,12 +90,23 @@ namespace kge
 
 	void Camera::Prepare()
 	{
-		
+		if (!_render_pass)
+			_render_pass = RenderPass::Create(Ref<RenderTexture>(), Ref<RenderTexture>(), GetClearFlags(), true, GetRect());
+
+		_render_pass->Bind();
+
+		// prepare something
+
+		_render_pass->UnBind();
 	}
 
 	void Camera::Render()
 	{
-		
+		_render_pass->Begin(GetClearColor());
+
+		// render somthing
+
+		_render_pass->End();
 	}
 
 	void Camera::UpdateMatrix()

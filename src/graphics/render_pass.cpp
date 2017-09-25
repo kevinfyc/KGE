@@ -14,11 +14,12 @@ namespace kge
 {
 	RenderPass* RenderPass::s_render_pass_binding;
 
-	Ref<RenderPass> RenderPass::Create(Ref<RenderTexture> color_texture, Ref<RenderTexture> depth_texture, bool need_depth, Rect rect)
+	Ref<RenderPass> RenderPass::Create(Ref<RenderTexture> color_texture, Ref<RenderTexture> depth_texture, CameraClearFlags clear_flag, bool need_depth, Rect rect)
 	{
 		Ref<RenderPass> pass = Ref<RenderPass>(new RenderPass());
 		pass->_frame_buffer.color_texture = color_texture;
 		pass->_frame_buffer.depth_texture = depth_texture;
+		pass->_clear_flag = clear_flag;
 		pass->_need_depth = need_depth;
 		pass->_rect = rect;
 

@@ -17,6 +17,8 @@
 
 #include "math/rect.h"
 
+#include "camera_clear_flag.h"
+
 namespace kge
 {
 #if KGE_GLES
@@ -26,7 +28,7 @@ namespace kge
 #endif
 	public:
 		static RenderPass* GetRenderPassBinding() { return s_render_pass_binding; }
-		static Ref<RenderPass> Create(Ref<RenderTexture> color_texture, Ref<RenderTexture> depth_texture, bool need_depth, Rect rect);
+		static Ref<RenderPass> Create(Ref<RenderTexture> color_texture, Ref<RenderTexture> depth_texture, CameraClearFlags clear_flag, bool need_depth, Rect rect);
 
 		virtual ~RenderPass();
 
@@ -51,6 +53,7 @@ namespace kge
 	private:
 		static RenderPass* s_render_pass_binding;
 		FrameBuffer _frame_buffer;
+		CameraClearFlags _clear_flag;
 		bool _need_depth;
 		Rect _rect;
 	};

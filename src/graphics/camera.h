@@ -13,11 +13,16 @@
 #include "color.h"
 
 #include "math/math_def.h"
+#include "math/rect.h"
 
 #include "frame_buffer.h"
 
+#include "camera_clear_flag.h"
+
 namespace kge
 {
+	class RenderPass;
+
 	class Camera : public Component
 	{
 		DECLARE_COM_CLASS(Camera, Component)
@@ -31,6 +36,9 @@ namespace kge
 		static bool IsValidCamera(Camera* camera);
 
 		virtual ~Camera();
+
+		CameraClearFlags GetClearFlags() const { return _clear_flags; }
+		void SetClearFlags(CameraClearFlags flags) { _clear_flags = flags; }
 
 		void SetClearColor(const Color& color) { _clear_color = color; }
 		const Color& GetClearColor()const { return _clear_color; }
@@ -47,6 +55,9 @@ namespace kge
 
 		float GetClipFar() const { return _clip_far; }
 		void SetClipFar(float value) { _clip_far = value; }
+
+		const Rect& GetRect() const { return _rect; }
+		void SetRect(const Rect& rect) { _rect = rect; }
 
 		const Matrix& GetViewMatrix();
 		const Matrix& GetProjectionMatrix();
@@ -67,11 +78,13 @@ namespace kge
 		static std::list<Camera*> _cameras;
 		static Camera* _current;
 		Color _clear_color;
+		CameraClearFlags _clear_flags;
 		bool _orthographic;
 
 		float _field_of_view;
 		float _clip_near;
 		float _clip_far;
+		Rect _rect;
 
 		Ref<FrameBuffer> _frame_buffer;
 
@@ -79,6 +92,8 @@ namespace kge
 		Matrix _view_matrix;
 		Matrix _projection_matrix;
 		Matrix _view_projection_matrix;
+
+		Ref<RenderPass> _render_pass;
 	};
 }
 
