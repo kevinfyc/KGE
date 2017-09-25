@@ -102,6 +102,8 @@ namespace kge
 		KGE_LOG_GL_ERROR();
 
 		RenderPass* pass = dynamic_cast<RenderPass*>(this);
+		CameraClearFlags clear_flag = pass->_clear_flag;
+
 		std::vector<GLenum> attachments;
 		bool has_stencil = false;
 
@@ -156,6 +158,42 @@ namespace kge
 			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+		}
+
+		switch (clear_flag)
+		{
+		case kge::CameraClearFlags::Invalidate:
+			glInvalidateFramebuffer(GL_FRAMEBUFFER, attachments.size(), &attachments[0]);
+			break;
+
+		case kge::CameraClearFlags::Color:
+		{
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glDepthMask(GL_TRUE);
+
+			GLbitfield clear_bit = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+			if (has_stencil)
+				clear_bit |= GL_STENCIL_BUFFER_BIT;
+
+			glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
+			glClear(clear_bit);
+			break;
+		}
+		case kge::CameraClearFlags::Depth:
+		{
+			glDepthMask(GL_TRUE);
+
+			GLbitfield clear_bit = GL_DEPTH_BUFFER_BIT;
+			if (has_stencil)
+				clear_bit |= GL_STENCIL_BUFFER_BIT;
+
+			glClear(clear_bit);
+			break;
+		}
+		case kge::CameraClearFlags::Nothing:
+			break;
+		default:
+			break;
 		}
 
 		KGE_LOG_GL_ERROR();
