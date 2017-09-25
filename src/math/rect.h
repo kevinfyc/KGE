@@ -1,5 +1,5 @@
-﻿#ifndef _LINE_H
-#define _LINE_H
+﻿#ifndef __KGE_MATH_RECT_H__
+#define __KGE_MATH_RECT_H__
 
 #include "math_def.h"
 
@@ -36,4 +36,4 @@ namespace kge
 }
 
 
-#endif //_LINE_H
+#endif //__KGE_MATH_RECT_H__

@@ -25,7 +25,7 @@ App::App()
 void App::Start()
 {
 	auto camera = GameObject::Create("camera")->AddComponent<Camera>();
-	camera->SetClearColor(Color(1, 0, 0, 1));
+	camera->SetClearColor(Color(.8f, .8f, .8f, 1));
 
 	_camera = camera;
 }

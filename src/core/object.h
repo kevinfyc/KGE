@@ -69,11 +69,11 @@ public:																										\
         } \
 		static std::vector<std::string> _class_names;
 
-#define DECLARE_COM_CLASS_ABSTRACT(derived, cuper) \
+#define DECLARE_COM_CLASS_ABSTRACT(derived, super) \
     public: \
 		static std::string ClassName() { return #derived; } \
 		static const std::vector<std::string>& ClassNames() { \
-			if(_class_names.Empty()) { \
+			if(_class_names.empty()) { \
 				_class_names = super::ClassNames(); \
 				_class_names.push_back(#derived); \
 			} \

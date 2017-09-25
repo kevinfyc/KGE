@@ -36,9 +36,35 @@ namespace kge
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
+		glClearDepthf(1.0f);
+		glClearStencil(0);
+		glFrontFace(GL_CCW);
+		glEnable(GL_DEPTH_TEST);
+
+		auto vender = (char *)glGetString(GL_VENDOR);
+		auto renderer = (char *)glGetString(GL_RENDERER);
+		auto version = (char *)glGetString(GL_VERSION);
+		_device_name = std::string(vender) + "/" + std::string(renderer) + "/" + std::string(version);
+		_extensions = (char *)glGetString(GL_EXTENSIONS);
+
+		GLint max_vertex_uniform_vectors;
+		glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &max_vertex_uniform_vectors);
+		GLint max_uniform_block_size;
+		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_uniform_block_size);
+		GLint uniform_buffer_offset_alignment;
+		glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &uniform_buffer_offset_alignment);
+
+		auto m_uniform_buffer_offset_alignment = (int)uniform_buffer_offset_alignment;
+
 		GLint maxTexSize;
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
-		KGE_LOG_DEBUG("GL_ES max texture size is %d", maxTexSize);
+
+		KGE_LOG_INFO("GL_ES device_name: %s", _device_name.c_str());
+		KGE_LOG_INFO("GL_ES extensions: %s", _extensions.c_str());
+		KGE_LOG_INFO("GL_ES max_vertex_uniform_vectors:%d", max_vertex_uniform_vectors);
+		KGE_LOG_INFO("GL_ES max_uniform_block_size:%d", max_uniform_block_size);
+		KGE_LOG_INFO("GL_ES uniform_buffer_offset_alignment:%d", uniform_buffer_offset_alignment);
+		KGE_LOG_INFO("GL_ES max texture size is %d", maxTexSize);
 
 		return true;
 	}

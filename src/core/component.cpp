@@ -11,6 +11,7 @@
 
 #include "transform.h"
 #include "graphics/camera.h"
+#include "graphics/mesh_renderer.h"
 
 namespace kge
 {
@@ -20,6 +21,7 @@ namespace kge
 	{
 		Transform::RegisterComponent();
 		Camera::RegisterComponent();
+		MeshRenderer::RegisterComponent();
 	}
 
 	/*static*/void Component::Destroy(Ref<Component> com)
