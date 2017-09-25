@@ -14,6 +14,8 @@
 
 #include "math/math_def.h"
 
+#include "frame_buffer.h"
+
 namespace kge
 {
 	class Camera : public Component
@@ -50,6 +52,10 @@ namespace kge
 		const Matrix& GetProjectionMatrix();
 		const Matrix& GetViewProjectionMatrix();
 
+		void SetFrameBuffer(const Ref<FrameBuffer>& frame_buffer) { _matrix_dirty = true; _frame_buffer = frame_buffer; };
+		uint32 GetTargetWidth() const;
+		uint32 GetTargetHeight() const;
+
 	private:
 		Camera();
 		void Prepare();
@@ -66,6 +72,8 @@ namespace kge
 		float _field_of_view;
 		float _clip_near;
 		float _clip_far;
+
+		Ref<FrameBuffer> _frame_buffer;
 
 		bool _matrix_dirty;
 		Matrix _view_matrix;

@@ -23,7 +23,11 @@ namespace kge
 
 		void SwapBuffers();
 
+		uint32 GetDefaultDepthRenderBuffer();
+
 	private:
+
+		GLuint _default_depth_render_buffer;
 
 		int _uniform_buffer_offset_alignment;
 		std::string _extensions;

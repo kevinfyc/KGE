@@ -20,8 +20,8 @@ namespace kge
 	{
 	public:
 		virtual ~RenderPassGLES();
-		void Begin(const Color& clear_color);
-		void End();
+		virtual void Begin(const Color& clear_color);
+		virtual void End();
 
 	protected:
 		RenderPassGLES();

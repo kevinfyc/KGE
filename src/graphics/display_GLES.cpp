@@ -18,6 +18,8 @@ namespace kge
 		DisplayWin::Init(width, height);
 #endif
 
+		_default_depth_render_buffer = 0;
+
 		GLenum err = glewInit();
 		if (GLEW_OK != err)
 		{
@@ -43,6 +45,9 @@ namespace kge
 
 	void DisplayGLES::Fini()
 	{
+		if (_default_depth_render_buffer == 0)
+			glDeleteRenderbuffers(1, &_default_depth_render_buffer);
+
 #if WIN32
 		DisplayWin::Fini();
 #endif
@@ -53,6 +58,19 @@ namespace kge
 #if WIN32
 		::SwapBuffers(_hdc);
 #endif
+	}
+
+	uint32 DisplayGLES::GetDefaultDepthRenderBuffer()
+	{
+		if (_default_depth_render_buffer == 0)
+		{
+			glGenRenderbuffers(1, &_default_depth_render_buffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, _default_depth_render_buffer);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, _width, _height);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		}
+
+		return _default_depth_render_buffer;
 	}
 }
 

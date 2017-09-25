@@ -15,15 +15,44 @@
 
 #include "frame_buffer.h"
 
+#include "math/rect.h"
+
 namespace kge
 {
 #if KGE_GLES
 	class RenderPass : public RenderPassGLES
-#endif
 	{
+		friend class RenderPassGLES;
+#endif
 	public:
-		// for temp
-		bool HasFrameBuffer() { return false; }
+		static RenderPass* GetRenderPassBinding() { return s_render_pass_binding; }
+		static Ref<RenderPass> Create(Ref<RenderTexture> color_texture, Ref<RenderTexture> depth_texture, bool need_depth, Rect rect);
+
+		virtual ~RenderPass();
+
+		virtual void Begin(const Color& clear_color) override;
+		virtual void End() override;
+
+		void Bind();
+		void UnBind();
+
+		FrameBuffer GetFrameBuffer() const { return _frame_buffer; }
+
+		uint32 GetFrameBufferWidth() const;
+		uint32 GetFrameBufferHeight() const;
+
+		Rect GetRect()const { return _rect; }
+
+		bool HasFrameBuffer() const;
+
+	private:
+		RenderPass();
+
+	private:
+		static RenderPass* s_render_pass_binding;
+		FrameBuffer _frame_buffer;
+		bool _need_depth;
+		Rect _rect;
 	};
 }
 

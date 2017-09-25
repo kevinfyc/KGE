@@ -10,6 +10,7 @@
 #include "graphics.h"
 #include "display.h"
 #include "core/transform.h"
+#include "render_texture.h"
 
 namespace kge
 {
@@ -137,6 +138,16 @@ namespace kge
 			UpdateMatrix();
 
 		return _view_projection_matrix;
+	}
+
+	uint32 Camera::GetTargetWidth() const
+	{
+		return _frame_buffer ? _frame_buffer->color_texture->GetWidth() : Graphics::GetDisplay()->GetWidth();
+	}
+
+	uint32 Camera::GetTargetHeight() const
+	{
+		return _frame_buffer ? _frame_buffer->color_texture->GetHeight() : Graphics::GetDisplay()->GetHeight();
 	}
 }
 
