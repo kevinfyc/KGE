@@ -16,11 +16,12 @@
 
 namespace kge
 {
-
-    bool ReadFile(std::string & content, const std::string & filename, bool isBinary);
+	bool ReadFile(std::string & content, const std::string & filename, bool isBinary);
+	ByteBuffer ReadFile(const std::string & filename, bool isBinary);
     Ref<ByteBuffer> ReadBinary(const std::string & filename);
 
-    bool WriteFile(const std::string & content, const std::string & filename, bool isBinary);
+	bool WriteFile(const std::string & content, const std::string & filename, bool isBinary);
+	bool WriteFile(const ByteBuffer & content, const std::string & filename, bool isBinary);
     bool WriteBinary(const std::string & filename, Ref<ByteBuffer> block);
 
 

@@ -15,6 +15,7 @@
 #include "io/file_tool.h"
 #include "io/file_tool_imp.h"
 #include "io/section_factory.h"
+#include "graphics/texture2D.h"
 
 namespace kge
 {
@@ -66,6 +67,8 @@ namespace kge
 		//auto x = SectionFactory::Load("test.xml", SectionType::Xml);
 		//auto j = SectionFactory::Load("test.json", SectionType::Json);
 		//auto d = SectionFactory::Load("test.cfg", SectionType::DS);
+
+		auto t = Texture2D::LoadFromFile("test.png");
 
 		if (!Graphics::Init(_width, _height))
 		{

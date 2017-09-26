@@ -1,8 +1,25 @@
 ﻿#include "file_tool.h"
 #include "util/log.h"
 
+#include <fstream>
+
 namespace kge
 {
+	ByteBuffer ReadFile(const std::string & filename, bool isBinary)
+	{
+		IFile::Mode mode = IFile::Mode(IFile::ModeRead | (isBinary ? IFile::ModeBinary : 0));
+		Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
+		if (!file)
+		{
+			KGE_LOG_ERROR("Failed to open file '%s'", filename.c_str());
+			return ByteBuffer();
+		}
+
+		ByteBuffer content(file->length());
+		file->read((char*)content.Bytes(), file->length());
+
+		return content;
+	}
 
     bool ReadFile(std::string & content, const std::string & filename, bool isBinary)
     {
@@ -49,6 +66,21 @@ namespace kge
         
         return true;
     }
+
+	bool WriteFile(const ByteBuffer & content, const std::string & filename, bool isBinary)
+	{
+		IFile::Mode mode = IFile::Mode(IFile::ModeWrite | (isBinary ? IFile::ModeBinary : 0));
+		Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
+		if (!file)
+		{
+			KGE_LOG_ERROR("Failed to create file '%s'", filename.c_str());
+			return false;
+		}
+
+		file->write((char*)content.Bytes(), file->length());
+
+		return true;
+	}
 
     bool WriteBinary(const std::string & filename, Ref<ByteBuffer> block)
     {

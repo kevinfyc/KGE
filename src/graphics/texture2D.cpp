@@ -10,6 +10,9 @@
 
 #include <assert.h>
 
+#include "io/file_tool.h"
+#include "image.h"
+
 namespace kge
 {
 	Texture2D::Texture2D()
@@ -31,11 +34,11 @@ namespace kge
 		ByteBuffer colors;
 		if (::memcmp(buffer.Bytes(), (void*)JPG_HEAD, 3) == 0)
 		{
-			//colors = Image::LoadJPEG(buffer, width, height, bpp);
+			colors = Image::LoadJPEG(buffer, width, height, bpp);
 		}
 		else if (::memcmp(buffer.Bytes(), (void*)PNG_HEAD, 4) == 0)
 		{
-			//colors = Image::LoadPNG(buffer, width, height, bpp);
+			colors = Image::LoadPNG(buffer, width, height, bpp);
 		}
 		else
 		{
@@ -73,12 +76,11 @@ namespace kge
 	{
 		Ref<Texture2D> texture;
 
-		//if (File::Exist(file))
-		//{
-		//	auto bytes = File::ReadAllBytes(file);
-
-		//	texture = LoadFromData(bytes, wrap_mode, filter_mode, mipmap);
-		//}
+		ByteBuffer bytes = ReadFile(file, true);
+		if (bytes.Size() > 0)
+		{
+			texture = LoadFromData(bytes, wrap_mode, filter_mode, mipmap);
+		}
 
 		return texture;
 	}
