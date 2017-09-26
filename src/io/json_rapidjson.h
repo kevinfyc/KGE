@@ -55,7 +55,9 @@ namespace kge
         virtual float       GetFloat() const;
         virtual double      GetDouble() const;
         virtual bool        GetBool() const;
-        
+
+		virtual std::string GetFirstAttribute(const std::string& attr_name) const override;
+
         virtual Ref<ISection> Read(const std::string &tag) const;
         virtual Ref<ISection> Write(const std::string &tag);
         virtual Ref<ISection> GetFirstChild() const;

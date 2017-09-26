@@ -64,9 +64,13 @@ namespace kge
 		//std::string content;
 		//bool ret = ReadFile(content, "test.txt", false);
 
-		//auto x = SectionFactory::Load("test.xml", SectionType::Xml);
+		auto x = SectionFactory::Load("test.xml", SectionType::Xml);
 		//auto j = SectionFactory::Load("test.json", SectionType::Json);
-		//auto d = SectionFactory::Load("test.cfg", SectionType::DS);
+		auto d = SectionFactory::Load("test.cfg", SectionType::DS);
+
+		auto shader = x->Read("Shader");
+		auto name = shader->GetFirstAttribute("name");
+		auto queue = shader->GetFirstAttribute("queue");
 
 		auto t = Texture2D::LoadFromFile("test.png");
 

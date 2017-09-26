@@ -10,6 +10,7 @@
 #include "rapidxml/rapidxml_print.hpp"
 
 #include "section_factory.h"
+#include "util/string_tool.h"
 
 namespace rapidxml
 {
@@ -117,6 +118,14 @@ namespace kge
         return atoi(pNode_->value()) != 0;
     }
     
+	std::string RapidXmlImpl::GetFirstAttribute(const std::string& attr_name) const
+	{
+		if (!pNode_)
+			return EmptyString;
+
+		return pNode_->first_attribute(attr_name.c_str())->value();
+	}
+
 	Ref<ISection> RapidXmlImpl::Read(const std::string &tag) const
     {
         XmlNodeType *p = FindFirstNodeRecursive(tag.c_str());

@@ -12,6 +12,7 @@
 #include "util/log.h"
 
 #include "section_factory.h"
+#include "util/string_tool.h"
 
 namespace kge
 {
@@ -58,6 +59,11 @@ namespace kge
     {
         return MakeNode(FindFirstNodeRecursive(tag.c_str()));
     }
+
+	std::string RapidJsonImpl::GetFirstAttribute(const std::string& attr_name) const
+	{
+		return EmptyString;
+	}
 
 	Ref<ISection> RapidJsonImpl::Write(const std::string & tag)
     {

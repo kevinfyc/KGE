@@ -66,6 +66,8 @@ VALUE_TYPE Read##METHOD_NAME(const std::string & tag,                           
 		virtual double      GetDouble() const = 0;
 		virtual bool        GetBool() const = 0;
 
+		virtual std::string GetFirstAttribute(const std::string& attr_name) const = 0;
+
 		virtual Ref<ISection> Read(const std::string &tag) const = 0;
 		virtual Ref<ISection> Write(const std::string &tag) = 0;
 

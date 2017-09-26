@@ -273,6 +273,11 @@ namespace kge
         return child->Read(tag.substr(pos + 1));
     }
 
+	std::string DataStream::GetFirstAttribute(const std::string& attr_name) const
+	{
+		return EmptyString;
+	}
+
     void DataStream::Print(std::ostream & stream, int depth)
     {
         stream << TabProxy(depth) << ValueStringFormat(tag_);

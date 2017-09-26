@@ -53,7 +53,9 @@ namespace kge
         virtual void SetFloat(float value);
         virtual void SetDouble(double value);
         virtual void SetBool(bool value);
-        
+
+		virtual std::string GetFirstAttribute(const std::string& attr_name) const override;
+
         virtual std::string GetString() const;
         virtual int         GetInt() const;
         virtual uint32      GetUint() const;
