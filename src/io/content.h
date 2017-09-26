@@ -21,7 +21,7 @@ namespace kge
 		~Content();
 
 		inline ByteBuffer* CBuffer() const { return _buffer; }
-		inline void* CData() const { return _buffer->Bytes(); }
+		inline uint8* CData() const { return _buffer->Bytes(); }
 		inline uint32 CSize() const { return _buffer->Size(); }
 
 		void Resize(uint32 size);

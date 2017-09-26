@@ -106,6 +106,7 @@ namespace kge
 
     DataStream::~DataStream(void)
     {
+
     }
 
     DataStream::DataStream(const std::string & tag)
@@ -232,7 +233,7 @@ namespace kge
 
     Ref<ISection> DataStream::NewChild(const std::string & tag)
     {
-		Ref<DataStream> p = Ref<DataStream>(new DataStream(tag));
+		Ref<DataStream> p = RefMake<DataStream>(tag);
         AddChild(p);
         return p;
     }
@@ -314,7 +315,7 @@ namespace kge
     bool DataStream::Load(const std::string & filename)
     {
         ClearChildren();
-        Content content;
+        std::string content;
 
         if (!ReadFile(content, filename, false)) return false;
 
@@ -322,21 +323,19 @@ namespace kge
     }
     
     bool DataStream::Save(const std::string & filename)
-    {
-        std::ostringstream ss;
-        Print(ss);
-		Ref<ByteBuffer> buffer = Ref<ByteBuffer>(new ByteBuffer((uint8*)ss.str().c_str(), ss.str().size()));
-		Ref<Content> content = Ref<Content>(new Content(buffer.get()));
-        
-        return WriteFile(content, filename, false);
+	{
+		std::ostringstream ss;
+		Print(ss);
+
+        return WriteFile(ss.str(), filename, false);
     }
 
-    bool DataStream::Scan(const Content & stream)
+    bool DataStream::Scan(const std::string & stream)
     {
-		if (!stream.CBuffer())
+		if (!stream.c_str())
 			return false;
 
-        QuickFileReader reader(stream.CBuffer()->Bytes(), stream.CSize());
+        QuickFileReader reader(stream.c_str(), stream.length());
         return Scan(reader);
     }
 
@@ -345,7 +344,7 @@ namespace kge
         std::string ctag;
         std::string cvalue;
         char ch;
-        Ref<DataStream> lastChild;
+		Ref<ISection> lastChild;
 
         while(reader.Good())
         {
@@ -363,8 +362,9 @@ namespace kge
                     return false;
                 }
 
-                lastChild->Scan(reader);
-                lastChild = nullptr;
+                dynamic_cast<DataStream*>(lastChild.get())->Scan(reader);
+				//delete lastChild;
+				lastChild = nullptr;
             }
             else if(ch == '#')
             {
@@ -419,7 +419,7 @@ namespace kge
 
                 TrimString(cvalue);
 
-                lastChild = Ref<DataStream>(dynamic_cast<DataStream*>(NewChild(ctag).get()));
+                lastChild = NewChild(ctag);
                 lastChild->SetString(cvalue);
             }
         }

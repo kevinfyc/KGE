@@ -47,7 +47,7 @@ VALUE_TYPE Read##METHOD_NAME(const std::string & tag,                           
 		virtual bool Valid() const = 0;
 		virtual SectionType GetType() const = 0;
 
-		virtual const char* Ctag() const = 0;
+		virtual const char* CTag() const = 0;
 		virtual std::string GetTag() const = 0;
 		virtual void SetTag(const std::string &tag) = 0;
 

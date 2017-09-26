@@ -9,6 +9,10 @@
 #include "section_factory.h"
 
 #include "util/log.h"
+#include "xml_rapidxml.h"
+#include "file_tool.h"
+#include "json_rapidjson.h"
+#include "data_stream.h"
 
 namespace kge
 {
@@ -110,49 +114,132 @@ namespace kge
 
 	/*static*/ Ref<ISection> SectionFactory::ParseXml(const std::string & content)
 	{
-		return nullptr;
+		RapidXmlImpl::XmlDocumentTypePtr doc(new RapidXmlImpl::XmlDocumentType());
+
+		RapidXmlImpl::ContentPtr c(new std::string(content));
+
+		const int flag = rapidxml::parse_trim_whitespace;
+		doc->parse<flag>(const_cast<char *>(c->c_str()));
+
+		Ref<ISection> root = Ref<ISection>(new RapidXmlImpl(&*doc, c, doc));
+
+		return root;
 	}
 
 	/*static*/ Ref<ISection> SectionFactory::ParseJson(const std::string &content)
 	{
-		return nullptr;
+		RapidJsonImpl::JsonDocumentTypePtr document(new RapidJsonImpl::JsonDocumentType);
+
+		RapidJsonImpl::JsonNodeTypePtr node(new RapidJsonImpl::JsonNodeType);
+		if (document->Parse<0>(content.c_str()).HasParseError())
+		{
+			KGE_LOG_ERROR("Json parse error %s.", content.c_str());
+			return nullptr;
+		}
+
+		node->value = dynamic_cast<rapidjson::Value &> (*document);
+		Ref<ISection> root = Ref<ISection>(new RapidJsonImpl(&*node, node, document));
+
+		return root;
 	}
 
 	/*static*/ Ref<ISection> SectionFactory::ParseDS(const std::string & content)
 	{
-		return nullptr;
+		Ref<DataStream> root = Ref<DataStream>(new DataStream("root"));
+		root->Scan(content);
+		return root;
 	}
 
 	/*static*/ Ref<ISection> SectionFactory::LoadXml(const std::string & filename)
 	{
-		return nullptr;
+		Ref<ISection> root = Instance()->FindWithDefault(filename);
+		if (root) return root;
+
+		RapidXmlImpl::ContentPtr content(new std::string());
+		if (!ReadFile(*content, filename, true))
+			return nullptr;
+
+		RapidXmlImpl::XmlDocumentTypePtr doc(new RapidXmlImpl::XmlDocumentType());
+
+		const int flag = rapidxml::parse_trim_whitespace;
+		doc->parse<flag>(const_cast<char *>(content->c_str()));
+
+		root = Ref<ISection>(dynamic_cast<ISection*>(new RapidXmlImpl(&*doc, content, doc)));
+
+		Instance()->Set(filename, root);
+		return root;
 	}
 
 	/*static*/ bool SectionFactory::SaveXml(const std::string & filename, Ref<ISection> root)
 	{
-		return nullptr;
+		Instance()->Set(filename, root);
+
+		RapidXmlImpl *pRoot = dynamic_cast<RapidXmlImpl*>(root.get());
+
+		std::ostringstream ss;
+		pRoot->Print(ss);
+
+		return WriteFile(ss.str(), filename, true);
 	}
 
 
 	/*static*/ Ref<ISection> SectionFactory::LoadJson(const std::string &filename)
 	{
-		return nullptr;
+		Ref<ISection> root = Instance()->FindWithDefault(filename);
+		if (root) return root;
+
+		std::string content;
+		if (!ReadFile(content, filename, true))
+			return nullptr;
+
+		RapidJsonImpl::JsonDocumentTypePtr document(new RapidJsonImpl::JsonDocumentType);
+
+		RapidJsonImpl::JsonNodeTypePtr node(new RapidJsonImpl::JsonNodeType);
+		if (document->Parse<0>(content.c_str()).HasParseError())
+		{
+			KGE_LOG_ERROR("Json parse error %s.", filename.c_str());
+			return nullptr;
+		}
+
+		node->value = dynamic_cast<rapidjson::Value &> (*document);
+		root = Ref<ISection>(new RapidJsonImpl(&*node, node, document));
+
+		Instance()->Set(filename, root);
+		return root;
 	}
 
 	/*static*/ bool SectionFactory::SaveJson(const std::string &filename, Ref<ISection> root)
 	{
-		return nullptr;
+		Instance()->Set(filename, root);
+
+		RapidJsonImpl *pRoot = dynamic_cast<RapidJsonImpl*>(root.get());
+
+		std::ostringstream ss;
+		pRoot->Print(ss);
+
+		return WriteFile(ss.str(), filename, true);
 	}
 
 
 	/*static*/ Ref<ISection> SectionFactory::LoadDS(const std::string & filename)
 	{
-		return nullptr;
+		Ref<ISection> root = Instance()->FindWithDefault(filename);
+		if (root) return root;
+
+		Ref<DataStream> realRoot = Ref<DataStream>(new DataStream("root"));
+		if (!realRoot->Load(filename))
+			return nullptr;
+
+		Instance()->Set(filename, realRoot);
+		return realRoot;
 	}
 
 	/*static*/ bool SectionFactory::SaveDS(const std::string & filename, Ref<ISection> root)
 	{
-		return nullptr;
+		Instance()->Set(filename, root);
+
+		DataStream *pRoot = dynamic_cast<DataStream*>(root.get());
+		return pRoot->Save(filename);
 	}
 }
 

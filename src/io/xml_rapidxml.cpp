@@ -129,7 +129,7 @@ namespace kge
         return MakeNode(p);
     }
 
-    const char* RapidXmlImpl::Ctag() const
+    const char* RapidXmlImpl::CTag() const
     {
         assert(pNode_ && "pNode_ is NULL!");
         return pNode_->name();

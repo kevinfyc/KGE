@@ -16,6 +16,7 @@
 
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
+#include "content.h"
 
 namespace kge
 {
@@ -28,8 +29,8 @@ namespace kge
         typedef rapidxml::xml_node<char>        XmlNodeType;
         typedef rapidxml::xml_attribute<char>   XmlAttributeType;
 
-        typedef std::shared_ptr<XmlDocumentType>    XmlDocumentTypePtr;
-        typedef std::shared_ptr<std::string>        ContentPtr;
+        typedef Ref<XmlDocumentType>			XmlDocumentTypePtr;
+        typedef Ref<std::string>				ContentPtr;
 
     public:
         explicit RapidXmlImpl(const std::string & tag, const std::string & value = "");
@@ -39,10 +40,10 @@ namespace kge
         virtual SectionType GetType() const{ return SectionType::Xml; }
 
         virtual bool Valid() const { return doc_ && pNode_; }
-        virtual const char* Ctag() const;
+        virtual const char* CTag() const;
         virtual const char * Cvalue() const;
         
-        virtual std::string GetTag() const { return Ctag(); }
+        virtual std::string GetTag() const { return CTag(); }
         virtual void SetTag(const std::string &tag);
 
     public:

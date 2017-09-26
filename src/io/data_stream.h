@@ -11,7 +11,6 @@
 
 #include "quick_file_reader.h"
 #include "section.h"
-#include "content.h"
 
 namespace kge
 {
@@ -32,7 +31,7 @@ namespace kge
         virtual SectionType GetType() const{ return SectionType::DS; }
         virtual bool Valid() const { return true; }
         
-        virtual const char* Ctag() const { return tag_.c_str(); }
+        virtual const char* CTag() const { return tag_.c_str(); }
         virtual std::string GetTag() const { return tag_; }
         virtual void SetTag(const std::string &tag){ tag_ = tag; }
         
@@ -71,7 +70,7 @@ namespace kge
         void Print(std::string & stream);
         void Print(std::ostream & stream, int depth);
 
-        bool Scan(const Content & stream);
+        bool Scan(const std::string & stream);
         bool Scan(QuickFileReader & reader);
         
         bool Load(const std::string & filename);

@@ -125,7 +125,7 @@ namespace kge
     }
     
     
-    const char * RapidJsonImpl::Ctag() const
+    const char * RapidJsonImpl::CTag() const
     {
         assert(_node && "_node is NULL!");
         return _node->name.GetString();

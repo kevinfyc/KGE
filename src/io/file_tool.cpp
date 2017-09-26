@@ -4,7 +4,7 @@
 namespace kge
 {
 
-    bool ReadFile(Content & content, const std::string & filename, bool isBinary)
+    bool ReadFile(std::string & content, const std::string & filename, bool isBinary)
     {
         IFile::Mode mode = IFile::Mode(IFile::ModeRead | (isBinary ? IFile::ModeBinary : 0));
         Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
@@ -14,10 +14,10 @@ namespace kge
             return false;
         }
 
-        content.Resize(file->length());
-        if (!content.Empty())
+        content.resize(file->length());
+        if (!content.empty())
         {
-            file->read(content.CData(), content.CSize());
+            file->read(&content[0], content.size());
         }
         
         return true;
@@ -25,14 +25,14 @@ namespace kge
 
 	Ref<ByteBuffer> ReadBinary(const std::string & filename)
     {
-		Content content;
+		std::string content;
         if (!ReadFile(content, filename, true))
 			return nullptr;
 
-        return Ref<ByteBuffer>(content.CBuffer());
+        return Ref<ByteBuffer>(new ByteBuffer((uint8*)content.c_str(), content.length()));
     }
 
-    bool WriteFile(const Ref<Content> & content, const std::string & filename, bool isBinary)
+    bool WriteFile(const std::string & content, const std::string & filename, bool isBinary)
     {
         IFile::Mode mode = IFile::Mode(IFile::ModeWrite | (isBinary ? IFile::ModeBinary : 0));
 		Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
@@ -42,9 +42,9 @@ namespace kge
             return false;
         }
 
-        if (!content->Empty())
-        {
-            file->write(content->CData(), content->CSize());
+        if (!content.empty())
+		{
+			file->write(content.c_str(), content.size());
         }
         
         return true;
@@ -54,7 +54,7 @@ namespace kge
     {
         assert(block);
 
-		Ref<Content> content = Ref<Content>(new Content(block.get()));
+		std::string content((char*)block->Bytes(), block->Size());
         return WriteFile(content, filename, true);
     }
 

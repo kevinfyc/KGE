@@ -20,7 +20,7 @@ namespace kge
     class QuickFileReader
     {
     public:
-        QuickFileReader(const uint8 *data, size_t len, size_t pos = 0);
+        QuickFileReader(const char *data, size_t len, size_t pos = 0);
 
         bool Empty() const
         {
@@ -50,7 +50,7 @@ namespace kge
         void Offset(int size);
         void Seek(int pos);
 
-        const uint8 * CData() const
+        const char * CData() const
         {
             return data_;
         }
@@ -96,7 +96,7 @@ namespace kge
         }
 
     private:
-        const uint8 *data_;
+        const char *data_;
         size_t len_;
         size_t pos_;
         mutable bool good_;

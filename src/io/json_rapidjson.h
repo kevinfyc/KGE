@@ -37,9 +37,9 @@ namespace kge
         virtual SectionType GetType() const{ return SectionType::Json; }
         virtual bool Valid() const { return !!_doc; };
         
-        virtual const char* Ctag() const;
+        virtual const char* CTag() const;
 
-        virtual std::string GetTag() const { return Ctag(); }
+        virtual std::string GetTag() const { return CTag(); }
         virtual void SetTag(const std::string &tag);
     public:
         virtual void SetString(const std::string & value);

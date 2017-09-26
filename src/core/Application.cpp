@@ -14,6 +14,7 @@
 #include <assert.h>
 #include "io/file_tool.h"
 #include "io/file_tool_imp.h"
+#include "io/section_factory.h"
 
 namespace kge
 {
@@ -37,6 +38,15 @@ namespace kge
 
 	bool IApplication::Init()
 	{
+
+		FILE * f = new FILE();
+		fopen_s(&f, "F:\\git\\KGE\\Assert\\test.xml", "r");
+		size_t cur = ftell(f);
+		fseek(f, 0, SEEK_END);
+		size_t l = ftell(f);
+		fseek(f, 0, SEEK_SET);
+
+		SectionFactory::InitInstance();
 		FileSystemMgr::InitInstance();
 
 		Ref<IFileSystem> fileSystem = Ref<IFileSystem>(new FileSystemImp());
@@ -50,8 +60,12 @@ namespace kge
 		//add defualt resource path
 		fileSystem->AddSearchPath("../../../Assert");
 
-		Content content;
+		std::string content;
 		bool ret = ReadFile(content, "test.txt", false);
+
+		auto x = SectionFactory::Load("test.xml", SectionType::Xml);
+		auto j = SectionFactory::Load("test.json", SectionType::Json);
+		auto d = SectionFactory::Load("test.cfg", SectionType::DS);
 
 		if (!Graphics::Init(_width, _height))
 		{

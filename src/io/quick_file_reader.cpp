@@ -12,7 +12,7 @@
 namespace kge
 {
 
-    QuickFileReader::QuickFileReader(const uint8 *data, size_t len, size_t pos)
+    QuickFileReader::QuickFileReader(const char *data, size_t len, size_t pos)
         : data_(data)
         , len_(len)
         , pos_(pos)
