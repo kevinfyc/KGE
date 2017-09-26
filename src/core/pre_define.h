@@ -16,6 +16,9 @@
 
 #include <memory>
 
+#include <iostream>
+#include <sstream>
+
 #define Ref std::shared_ptr
 #define RefMake std::make_shared
 #define RefCast std::dynamic_pointer_cast
