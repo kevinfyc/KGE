@@ -60,12 +60,12 @@ namespace kge
 		//add defualt resource path
 		fileSystem->AddSearchPath("../../../Assert");
 
-		std::string content;
-		bool ret = ReadFile(content, "test.txt", false);
+		//std::string content;
+		//bool ret = ReadFile(content, "test.txt", false);
 
-		auto x = SectionFactory::Load("test.xml", SectionType::Xml);
-		auto j = SectionFactory::Load("test.json", SectionType::Json);
-		auto d = SectionFactory::Load("test.cfg", SectionType::DS);
+		//auto x = SectionFactory::Load("test.xml", SectionType::Xml);
+		//auto j = SectionFactory::Load("test.json", SectionType::Json);
+		//auto d = SectionFactory::Load("test.cfg", SectionType::DS);
 
 		if (!Graphics::Init(_width, _height))
 		{
