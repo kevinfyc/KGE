@@ -9,6 +9,7 @@
 #include "world.h"
 
 #include "graphics/camera.h"
+#include "Object.h"
 
 namespace kge
 {

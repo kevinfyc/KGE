@@ -7,7 +7,7 @@ namespace kge
     bool ReadFile(Content & content, const std::string & filename, bool isBinary)
     {
         IFile::Mode mode = IFile::Mode(IFile::ModeRead | (isBinary ? IFile::ModeBinary : 0));
-        Ref<IFile> file = FileSystemMgr::Instance()->fileSystem()->openFile(filename, mode);
+        Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
         if (!file)
         {
             KGE_LOG_ERROR("Failed to open file '%s'", filename.c_str());
@@ -29,13 +29,13 @@ namespace kge
         if (!ReadFile(content, filename, true))
 			return nullptr;
 
-        return Ref<ByteBuffer>(content.CData());
+        return Ref<ByteBuffer>(content.CBuffer());
     }
 
     bool WriteFile(const Ref<Content> & content, const std::string & filename, bool isBinary)
     {
         IFile::Mode mode = IFile::Mode(IFile::ModeWrite | (isBinary ? IFile::ModeBinary : 0));
-		Ref<IFile> file = FileSystemMgr::Instance()->fileSystem()->openFile(filename, mode);
+		Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
         if (!file)
         {
 			KGE_LOG_ERROR("Failed to create file '%s'", filename.c_str());
@@ -219,7 +219,7 @@ namespace kge
         return destPath;
     }
     
-    void IFileSystem::addSearchPath(const std::string & path)
+    void IFileSystem::AddSearchPath(const std::string & path)
     {
         std::string relPath = _defaultPath + path;
         FormatFilePath(relPath);
@@ -235,7 +235,7 @@ namespace kge
         
         for(const std::string & path : paths)
         {
-            addSearchPath(path);
+            AddSearchPath(path);
         }
     }
     

@@ -9,6 +9,7 @@
 #else
 #include <iostream>
 #endif
+#include "string_tool.h"
 
 namespace kge
 {
@@ -30,32 +31,6 @@ namespace kge
 			if (lvl >= KGE_LOG_LVL_DEBUG) return Debug;
 			return Trace;
 		}
-	}
-
-	bool StringFromVAList(std::string & out, const char * format, va_list va)
-	{
-		int len = 128;
-		int ret = -1;
-
-		while (ret < 0)
-		{
-			len <<= 1;
-
-			out.resize(len);
-			ret = vsnprintf(&out[0], len, format, va);
-
-			//mac上，如果长度不够长，会返回需要的长度
-			if (ret > len)
-			{
-				len = (ret >> 1) + 1;
-				ret = -1;
-			}
-
-			_ASSERT(len < 65535 && "stringFromVAList");
-		}
-
-		out.erase(ret);
-		return true;
 	}
 
 	void kge_log(int lvl, const char* format, ...)

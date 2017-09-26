@@ -20,10 +20,11 @@ namespace kge
 		Content(ByteBuffer* buffer);
 		~Content();
 
-		inline ByteBuffer* CData() const { return _buffer; }
+		inline ByteBuffer* CBuffer() const { return _buffer; }
+		inline void* CData() const { return _buffer->Bytes(); }
 		inline uint32 CSize() const { return _buffer->Size(); }
 
-		inline void Resize(uint32 size);
+		void Resize(uint32 size);
 		inline bool Empty() { return _buffer->Size() == 0; }
 
 	private:

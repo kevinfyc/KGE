@@ -73,7 +73,7 @@ namespace kge
         std::string getRelativePath(const std::string & fullPath);
         
         //@{ 这里的path，是相对于ModulePath而言的
-        void addSearchPath(const std::string & path);
+        void AddSearchPath(const std::string & path);
         void setSearchPath(const StringVector & path);
         const StringVector & getSearchPath() const { return _paths; }
         //@}
@@ -114,13 +114,13 @@ namespace kge
 
 
 		//如果文件系统为null，会发生assert（getFileSystem不会）。推荐使用此方法。
-		inline IFileSystem* fileSystem()
+		inline IFileSystem* FileSystem()
 		{
 			assert(_fileSystem);
 			return _fileSystem;
 		}
 
-		void setFileSystem(IFileSystem*  fileSystem) { _fileSystem = fileSystem; }
+		void SetFileSystem(IFileSystem*  fileSystem) { _fileSystem = fileSystem; }
 		IFileSystem*  getFileSystem() { return _fileSystem; }
 
 	private:

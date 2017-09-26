@@ -333,10 +333,10 @@ namespace kge
 
     bool DataStream::Scan(const Content & stream)
     {
-		if (!stream.CData())
+		if (!stream.CBuffer())
 			return false;
 
-        QuickFileReader reader(stream.CData()->Bytes(), stream.CSize());
+        QuickFileReader reader(stream.CBuffer()->Bytes(), stream.CSize());
         return Scan(reader);
     }
 

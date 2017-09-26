@@ -12,6 +12,8 @@
 #include "util/log.h"
 
 #include <assert.h>
+#include "io/file_tool.h"
+#include "io/file_tool_imp.h"
 
 namespace kge
 {
@@ -35,6 +37,22 @@ namespace kge
 
 	bool IApplication::Init()
 	{
+		FileSystemMgr::InitInstance();
+
+		Ref<IFileSystem> fileSystem = Ref<IFileSystem>(new FileSystemImp());
+		if (!fileSystem->init())
+		{
+			KGE_LOG_ERROR("failed to init filesystem!");
+			return false;
+		}
+		FileSystemMgr::Instance()->SetFileSystem(fileSystem.get());
+
+		//add defualt resource path
+		fileSystem->AddSearchPath("../../../Assert");
+
+		Content content;
+		bool ret = ReadFile(content, "test.txt", false);
+
 		if (!Graphics::Init(_width, _height))
 		{
 			KGE_LOG_ERROR("Graphics Init failed");
