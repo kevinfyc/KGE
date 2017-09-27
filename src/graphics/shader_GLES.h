@@ -68,7 +68,7 @@ namespace kge
 		virtual ~ShaderGLES();
 
 		uint32 GetPassCount() const { return 1; }
-		void ClearPipelines();
+		void ClearPipelines() {};
 		void PreparePass(uint32 index) {}
 		void UpdateRendererDescriptorSet(Ref<UniformBuffer>& descriptor_set_buffer, const void* data, uint32 size);
 		void BeginPass(uint32 index);

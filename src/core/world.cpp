@@ -9,6 +9,8 @@
 #include "world.h"
 
 #include "graphics/camera.h"
+#include "graphics/shader.h"
+
 #include "Object.h"
 
 namespace kge
@@ -30,6 +32,9 @@ namespace kge
 	bool World::Init()
 	{
 		Component::RegisterComponents();
+
+		if (!Shader::Init())
+			return false;
 
 		if (!Camera::Init())
 			return false;
