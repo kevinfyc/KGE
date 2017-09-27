@@ -16,6 +16,7 @@ namespace kge
 		Unknow = 0,
 		Vertex,
 		Index,
+		Uniform,
 		Max
 	};
 } // end of namespace kge

@@ -8,6 +8,7 @@
 
 #include "mesh.h"
 #include "io/memory_stream.h"
+#include "vertex_attribute.h"
 
 namespace kge
 {
@@ -82,6 +83,31 @@ namespace kge
 				ms.Write<Vector2>(Vector2(0, 0));
 			else
 				ms.Write<Vector2>(mesh->uv[i]);
+
+			if (mesh->uv2.empty())
+				ms.Write<Vector2>(Vector2(0, 0));
+			else
+				ms.Write<Vector2>(mesh->uv2[i]);
+
+			if (mesh->normals.empty())
+				ms.Write<Vector3>(Vector3(0, 0, 0));
+			else
+				ms.Write<Vector3>(mesh->normals[i]);
+
+			if (mesh->tangents.empty())
+				ms.Write<Vector4>(Vector4(0, 0, 0, 0));
+			else
+				ms.Write<Vector4>(mesh->tangents[i]);
+
+			if (mesh->bone_weights.empty())
+				ms.Write<Vector4>(Vector4(0, 0, 0, 0));
+			else
+				ms.Write<Vector4>(mesh->bone_weights[i]);
+
+			if (mesh->bone_indices.empty())
+				ms.Write<Vector4>(Vector4(0, 0, 0, 0));
+			else
+				ms.Write<Vector4>(mesh->bone_indices[i]);
 		}
 
 		ms.Close();

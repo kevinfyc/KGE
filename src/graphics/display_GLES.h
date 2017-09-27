@@ -25,6 +25,8 @@ namespace kge
 
 		uint32 GetDefaultDepthRenderBuffer();
 
+		int GetMinUniformBufferOffsetAlignment() const { return _uniform_buffer_offset_alignment; }
+
 	private:
 
 		GLuint _default_depth_render_buffer;

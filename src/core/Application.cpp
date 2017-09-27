@@ -16,6 +16,7 @@
 #include "io/file_tool_imp.h"
 #include "io/section_factory.h"
 #include "graphics/texture2D.h"
+#include "graphics/shader_xml.h"
 
 namespace kge
 {
@@ -71,8 +72,14 @@ namespace kge
 		auto shader = x->Read("Shader");
 		auto name = shader->GetFirstAttribute("name");
 		auto queue = shader->GetFirstAttribute("queue");
+		x = nullptr;
 
 		auto t = Texture2D::LoadFromFile("test.png");
+
+		ShaderXML* shaderx = new ShaderXML();
+		shaderx->Load("test.xml");
+		//delete shaderx;
+		//shaderx = nullptr;
 
 		if (!Graphics::Init(_width, _height))
 		{

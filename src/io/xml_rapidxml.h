@@ -41,7 +41,7 @@ namespace kge
 
         virtual bool Valid() const { return doc_ && pNode_; }
         virtual const char* CTag() const;
-        virtual const char * Cvalue() const;
+        virtual const char * CValue() const;
         
         virtual std::string GetTag() const { return CTag(); }
         virtual void SetTag(const std::string &tag);

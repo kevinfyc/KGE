@@ -123,7 +123,11 @@ namespace kge
 		if (!pNode_)
 			return EmptyString;
 
-		return pNode_->first_attribute(attr_name.c_str())->value();
+		XmlAttributeType* xmlattr = pNode_->first_attribute(attr_name.c_str());
+		if (!xmlattr)
+			return EmptyString;
+		
+		return xmlattr->value();
 	}
 
 	Ref<ISection> RapidXmlImpl::Read(const std::string &tag) const
@@ -144,7 +148,7 @@ namespace kge
         return pNode_->name();
     }
 
-    const char * RapidXmlImpl::Cvalue() const
+    const char * RapidXmlImpl::CValue() const
     {
         assert(pNode_ && "pNode_ is NULL!");
         return pNode_->value();

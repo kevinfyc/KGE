@@ -23,8 +23,6 @@
 
 namespace kge
 {
-	const uint32 VERTEX_STRIDE = 9 * 4;
-
 	class Mesh : public Object
 	{
 	public:
@@ -42,6 +40,11 @@ namespace kge
 		std::vector<Vector3> vertices;
 		std::vector<Vector2> uv;
 		std::vector<Color> colors;
+		std::vector<Vector2> uv2;			//Lightmap
+		std::vector<Vector3> normals;		//Light
+		std::vector<Vector4> tangents;		//NormalMap
+		std::vector<Vector4> bone_weights;
+		std::vector<Vector4> bone_indices;	//Skinned
 
 		struct SubMesh
 		{

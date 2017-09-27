@@ -32,7 +32,7 @@ namespace kge
 
 	protected:
 		BufferGLES();
-		void _Create(BufferType type, bool dynamic);
+		void _Create(BufferType type, bool dynamic=false);
 
 		uint32 _size;
 
