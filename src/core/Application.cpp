@@ -17,6 +17,7 @@
 #include "io/section_factory.h"
 #include "graphics/texture2D.h"
 #include "graphics/shader_xml.h"
+#include "graphics/material.h"
 
 namespace kge
 {
@@ -92,6 +93,8 @@ namespace kge
 			KGE_LOG_ERROR("World Init failed");
 			return false;
 		}
+
+		auto mat = Material::Create("Base.shader.xml");
 
 		Start();
 

@@ -23,7 +23,7 @@ namespace kge
 
 	protected:
 		void UpdateUniformsBegin(uint32 pass_index);
-		void UpdateUniformsEnd(uint32 pass_index);
+		void UpdateUniformsEnd(uint32 pass_index) {}
 		void* SetUniformBegin(uint32 pass_index);
 		void SetUniformEnd(uint32 pass_index);
 		void SetUniform(uint32 pass_index, void* uniform_buffer, const std::string& name, void* data, uint32 size);
