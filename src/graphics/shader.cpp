@@ -100,7 +100,7 @@ namespace kge
 		}
 		else
 		{
-			if (FileSystemMgr::GetInstance()->getFileSystem()->isFileExist("shader/" + name))
+			if (FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(name))
 			{
 				shader = Ref<Shader>(new Shader(name));
 				shader->_xml.Load(name);

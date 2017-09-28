@@ -430,7 +430,7 @@ namespace kge
 
 	const std::string g_shader_header =
 		"#version 300 es\n"
-		"#define VR_GLES 1\n"
+		"#define KGE_GLES 1\n"
 		"#define UniformBuffer(set_index, binding_index) layout(std140)\n"
 		"#define UniformTexture(set_index, binding_index)\n"
 		"#define Varying(location_index)\n";
@@ -441,9 +441,9 @@ namespace kge
 		for (const auto& i : includes)
 		{
 			auto include_path = "shader/Include/" + i;
-			auto bytes = ReadFile(include_path, true);
-			auto include_str = std::string((const char*)bytes.Bytes());
-			source += include_str + "\n";
+			std::string content;
+			if (ReadFile(content, include_path, true))
+				source += content + "\n";
 		}
 		source += src;
 
@@ -457,6 +457,7 @@ namespace kge
 		for (const auto& i : xml.vss)
 		{
 			auto source = combine_shader_src(i.includes, i.src);
+			KGE_LOG_ERROR("vs : %s", source.c_str());
 
 			auto shader = create_shader(GL_VERTEX_SHADER, source);
 

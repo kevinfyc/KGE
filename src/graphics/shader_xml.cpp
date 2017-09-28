@@ -71,7 +71,7 @@ namespace kge
 			for (Ref<ISection> node : children)
 			{
 				std::string type = node->CTag();
-				std::string node_name = node->GetFirstAttribute("name");
+				std::string name = node->GetFirstAttribute("name");
 
 				if (type == "Pass")
 				{

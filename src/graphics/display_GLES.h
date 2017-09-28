@@ -25,13 +25,13 @@ namespace kge
 
 		uint32 GetDefaultDepthRenderBuffer();
 
-		int GetMinUniformBufferOffsetAlignment() const { return _uniform_buffer_offset_alignment; }
+		int32 GetMinUniformBufferOffsetAlignment() const { return _uniform_buffer_offset_alignment; }
 
 	private:
 
 		GLuint _default_depth_render_buffer;
 
-		int _uniform_buffer_offset_alignment;
+		int32 _uniform_buffer_offset_alignment;
 		std::string _extensions;
 		std::string _device_name;
     };

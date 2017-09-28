@@ -54,7 +54,7 @@ namespace kge
 		GLint uniform_buffer_offset_alignment;
 		glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &uniform_buffer_offset_alignment);
 
-		auto m_uniform_buffer_offset_alignment = (int)uniform_buffer_offset_alignment;
+		_uniform_buffer_offset_alignment = (int32)uniform_buffer_offset_alignment;
 
 		GLint maxTexSize;
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
