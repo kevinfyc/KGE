@@ -100,10 +100,11 @@ namespace kge
 		}
 		else
 		{
-			if (FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(name))
+			std::string path = "shader/" + name + ".shader.xml";
+			if (FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(path))
 			{
 				shader = Ref<Shader>(new Shader(name));
-				shader->_xml.Load(name);
+				shader->_xml.Load(path);
 				shader->Compile();
 
 				_shaders[name] = shader;

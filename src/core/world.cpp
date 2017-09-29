@@ -12,6 +12,7 @@
 #include "graphics/shader.h"
 
 #include "Object.h"
+#include "graphics/renderer.h"
 
 namespace kge
 {
@@ -39,6 +40,9 @@ namespace kge
 		if (!Camera::Init())
 			return false;
 
+		if (!Renderer::Init())
+			return false;
+
 		return true;
 	}
 
@@ -47,7 +51,10 @@ namespace kge
 		_gameObjects.clear();
 		_gameObjects_start.clear();
 
+		Renderer::Fini();
 		Camera::Fini();
+		Shader::Fini();
+
 	}
 
 	void World::Tick()
@@ -96,5 +103,42 @@ namespace kge
 
 			iter++;
 		}
+
+		if (Renderer::IsRenderersDirty())
+		{
+			Renderer::SetRenderersDirty(false);
+			Renderer::ClearPasses();
+
+			std::list<Renderer*>& renderers = Renderer::GetRenderers();
+			renderers.clear();
+
+			FindAllRenders(_gameObjects, renderers, false, false, false);
+		}
 	}
+
+	void World::FindAllRenders(const std::list<Ref<GameObject>>& objs, std::list<Renderer*>& renderers, bool include_inactive, bool include_disable, bool static_only)
+	{
+		for (Ref<GameObject> obj : objs)
+		{
+			if (obj->_deleted)
+				continue;
+
+			if (include_inactive || obj->IsActiveInHierarchy())
+			{
+				if (!static_only || obj->IsStatic())
+				{
+					std::vector<Ref<Renderer>> rs;
+					if (!obj->GetComponents<Renderer>(rs))
+						continue;
+
+					for (Ref<Renderer>& renderer : rs)
+					{
+						if (include_disable || renderer->IsEnable())
+							renderers.push_back(renderer.get());
+					}
+				}
+			}
+		}
+	}
+
 } // end namespace kge

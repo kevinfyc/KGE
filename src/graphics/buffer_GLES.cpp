@@ -21,7 +21,7 @@ namespace kge
 
 	BufferGLES::~BufferGLES()
 	{
-		glDeleteBuffers(1, &_buffer);
+		GL_ASSERT( glDeleteBuffers(1, &_buffer) );
 	}
 
 	const Ref<ByteBuffer>& BufferGLES::GetLocalBuffer()
@@ -34,7 +34,6 @@ namespace kge
 
 	void BufferGLES::_Create(BufferType type, bool dynamic)
 	{
-		KGE_LOG_GL_ERROR();
 		switch (type)
 		{
 		case kge::BufferType::Vertex:
@@ -45,59 +44,54 @@ namespace kge
 			_type = GL_ELEMENT_ARRAY_BUFFER;
 			_usage = dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW;
 			break;
+		case kge::BufferType::Uniform:
+			_type = GL_UNIFORM_BUFFER;
+			_usage = GL_DYNAMIC_DRAW;
+			break;
 		default:
 			_type = _usage = 0;
+			assert(0);
 			break;
 		}
 
-		glGenBuffers(1, &_buffer);
+		GL_ASSERT( glGenBuffers(1, &_buffer) );
 
 		if (_usage == GL_DYNAMIC_DRAW)
 		{
-			glBindBuffer(_type, _buffer);
-			glBufferData(_type, _size, nullptr, _usage);
-			glBindBuffer(_type, 0);
+			GL_ASSERT( glBindBuffer(_type, _buffer) );
+			GL_ASSERT( glBufferData(_type, _size, nullptr, _usage) );
+			GL_ASSERT( glBindBuffer(_type, 0) );
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	void BufferGLES::UpdateRange(int offset, int size, const void* data)
 	{
-		KGE_LOG_GL_ERROR();
-
 		if (_usage == GL_DYNAMIC_DRAW)
 		{
-			glBindBuffer(_type, _buffer);
-			glBufferSubData(_type, offset, size, data);
-			glBindBuffer(_type, 0);
+			GL_ASSERT( glBindBuffer(_type, _buffer) );
+			GL_ASSERT( glBufferSubData(_type, offset, size, data) );
+			GL_ASSERT( glBindBuffer(_type, 0) );
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	void BufferGLES::Fill(void* param, FillFunc fill)
 	{
-		KGE_LOG_GL_ERROR();
-
-		glBindBuffer(_type, _buffer);
+		GL_ASSERT( glBindBuffer(_type, _buffer) );
 
 		if (_usage == GL_DYNAMIC_DRAW)
 		{
 			auto& buffer = *GetLocalBuffer().get();
 			fill(param, buffer);
-			glBufferSubData(_type, 0, _size, buffer.Bytes());
+			GL_ASSERT( glBufferSubData(_type, 0, _size, buffer.Bytes()) );
 		}
 		else
 		{
 			ByteBuffer buffer(_size);
 			fill(param, buffer);
-			glBufferData(_type, _size, buffer.Bytes(), _usage);
+			GL_ASSERT( glBufferData(_type, _size, buffer.Bytes(), _usage) );
 		}
 
-		glBindBuffer(_type, 0);
-
-		KGE_LOG_GL_ERROR();
+		GL_ASSERT( glBindBuffer(_type, 0) );
 	}
 }
 

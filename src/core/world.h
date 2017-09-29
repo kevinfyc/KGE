@@ -13,6 +13,8 @@
 
 namespace kge
 {
+	class Renderer;
+
 	class World
 	{
 	public:
@@ -22,6 +24,9 @@ namespace kge
 		static bool Init();
 		static void Fini();
 		static void Tick();
+
+	private:
+		static void FindAllRenders(const std::list<Ref<GameObject>>& objs, std::list<Renderer*>& renderers, bool include_inactive, bool include_disable, bool static_only);
 
 	private:
 		static std::list<Ref<GameObject>> _gameObjects;

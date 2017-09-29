@@ -17,8 +17,8 @@ namespace kge
 {
 #if KGE_GLES
 	class VertexBuffer : public BufferGLES
-#endif
 	{
+#endif
 	public:
 		static Ref<VertexBuffer> Create(int size, bool dynamic = false);
 

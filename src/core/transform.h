@@ -27,7 +27,7 @@ namespace kge
 	public:
 		~Transform();
 		WeakRef<Transform> GetParent()const { return _parent; }
-		void SetParent(const WeakRef<Transform>& parent) { _parent = parent; }
+		void SetParent(const WeakRef<Transform>& parent);
 		bool IsRoot()const { return _parent.expired(); }
 		
 		uint32 GetChildCount() { return _children.size(); }
@@ -60,10 +60,18 @@ namespace kge
 		Vector3 GetUp();
 		Vector3 GetForward();
 
+		bool IsDeltyNotifying() const { return _delty_notifying; }
+
 	private:
 		Transform();
 
 		void ApplyDelta();
+
+		void RemoveChild(WeakRef<Transform>& child);
+		void AddChild(WeakRef<Transform>& child);
+		void NotifyDelty();
+		void NotifyParentHierarchyChange();
+		void NotifyChildHierarchyChange();
 
 	private:
 		WeakRef<Transform> _parent;
@@ -81,6 +89,7 @@ namespace kge
 		Matrix _world_to_local_matrix;
 
 		bool _delty;
+		bool _delty_notifying;
 	};
 }
 

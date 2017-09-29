@@ -12,6 +12,8 @@
 #include "core/transform.h"
 #include "render_texture.h"
 #include "render_pass.h"
+#include "renderer.h"
+#include "core/game_object.h"
 
 namespace kge
 {
@@ -66,12 +68,47 @@ namespace kge
 		_cameras.remove(this);
 	}
 
+	void Camera::SetCullingMask(uint32 mask)
+	{
+		if (_culling_mask != mask)
+		{
+			_culling_mask = mask;
+
+			Renderer::SetCullingDirty(this);
+		}
+	}
+
+	bool Less(const Camera* c1, Camera* c2)
+	{
+		return c1->GetDepth() < c2->GetDepth();
+	}
+
+	void Camera::SetDepth(uint32 depth)
+	{
+		_depth = depth;
+
+		_cameras.sort(Less);
+	}
+
+	bool Camera::CanRender() const
+	{
+		return GetGameObject()->IsActiveInHierarchy() && IsEnable();
+	}
+
+	bool Camera::IsCulling(const Ref<GameObject>& obj) const
+	{
+		return (GetCullingMask() & (1 << obj->GetLayer())) == 0;
+	}
+
 	void Camera::PrepareAll()
 	{
 		for (Camera* camera : _cameras)
 		{
-			_current = camera;
-			camera->Prepare();
+			if (camera->CanRender())
+			{
+				_current = camera;
+				camera->Prepare();
+			}
 		}
 
 		_current = nullptr;
@@ -81,8 +118,11 @@ namespace kge
 	{
 		for (Camera* camera : _cameras)
 		{
-			_current = camera;
-			camera->Render();
+			if (camera->CanRender())
+			{
+				_current = camera;
+				camera->Render();
+			}
 		}
 
 		_current = nullptr;
@@ -95,7 +135,7 @@ namespace kge
 
 		_render_pass->Bind();
 
-		// prepare something
+		Renderer::PrepareAllPass();
 
 		_render_pass->UnBind();
 	}
@@ -104,7 +144,7 @@ namespace kge
 	{
 		_render_pass->Begin(GetClearColor());
 
-		// render somthing
+		Renderer::RenderAllPass();
 
 		_render_pass->End();
 	}
@@ -156,6 +196,18 @@ namespace kge
 			UpdateMatrix();
 
 		return _view_projection_matrix;
+	}
+	
+	const Frustum& Camera::GetFrustum()
+	{
+		if (_matrix_dirty)
+		{
+			UpdateMatrix();
+
+			_frustum = Frustum(_view_projection_matrix);
+		}
+
+		return _frustum;
 	}
 
 	uint32 Camera::GetTargetWidth() const

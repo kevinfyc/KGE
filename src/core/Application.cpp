@@ -94,7 +94,7 @@ namespace kge
 			return false;
 		}
 
-		auto mat = Material::Create("shader/Base.shader.xml");
+		auto mat = Material::Create("Base");
 
 		Start();
 

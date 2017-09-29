@@ -9,6 +9,9 @@
 #include "display_GLES.h"
 
 #include "util/log.h"
+#include "vertex_buffer.h"
+#include "shader.h"
+#include "graphics.h"
 
 namespace kge
 {
@@ -77,6 +80,43 @@ namespace kge
 #if WIN32
 		DisplayWin::Fini();
 #endif
+	}
+
+	void DisplayGLES::BindVertexBuffer(const VertexBuffer* buffer)
+	{
+		GL_ASSERT( glBindBuffer(GL_ARRAY_BUFFER, buffer->GetBuffer()) );
+	}
+
+	void DisplayGLES::BindIndexBuffer(const IndexBuffer* buffer, IndexType index_type)
+	{
+		GL_ASSERT( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->GetBuffer()) );
+	}
+
+	void DisplayGLES::BindVertexArray(const Ref<Shader>& shader, int pass_index)
+	{
+		const VertexShader* vs = shader->GetVertexShaderInfo(pass_index);
+		for (const auto& attr : vs->attrs)
+		{
+			GL_ASSERT( glEnableVertexAttribArray(attr.location) );
+			GL_ASSERT( glVertexAttribPointer(attr.location, attr.size / 4, GL_FLOAT, GL_FALSE, vs->stride, (const GLvoid*)attr.offset) );
+		}
+	}
+
+	void DisplayGLES::DrawIndexed(int start, int count, IndexType index_type)
+	{
+		GLenum type = index_type == IndexType::U16 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+		uint32 type_size = index_type == IndexType::U16 ? 2 : 4;
+
+		GL_ASSERT( glDrawElements(GL_TRIANGLES, count, type, (const GLvoid*)(start * type_size)) );
+
+		Graphics::draw_call++;
+	}
+
+	void DisplayGLES::DisableVertexArray(const Ref<Shader>& shader, int pass_index)
+	{
+		const VertexShader* vs = shader->GetVertexShaderInfo(pass_index);
+		for (const auto& attr : vs->attrs)
+			GL_ASSERT( glDisableVertexAttribArray(attr.location) );
 	}
 
 	void DisplayGLES::SwapBuffers()

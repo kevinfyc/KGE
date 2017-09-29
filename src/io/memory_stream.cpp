@@ -32,7 +32,7 @@ namespace kge
 		uint32 write = Stream::Write(buffer, size);
 
 		if (write > 0 && buffer != nullptr)
-			::memcpy(&_buffer[pos], buffer, pos);
+			::memcpy(&_buffer[pos], buffer, write);
 
 		return write;
 	}

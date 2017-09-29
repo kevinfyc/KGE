@@ -125,8 +125,6 @@ namespace kge
 
 	void TextureGLES::UpdateTexture2D(uint32 x, uint32 y, uint32 w, uint32 h, const ByteBuffer& colors)
 	{
-		KGE_LOG_GL_ERROR();
-
 		Texture2D* texture = dynamic_cast<Texture2D*>(this);
 		TextureFormat texture_format = texture->GetFormat();
 
@@ -156,14 +154,10 @@ namespace kge
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, format, type, colors.Bytes());
 		glBindTexture(GL_TEXTURE_2D, 0);
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	void TextureGLES::Create(GLenum format, GLenum type, void* pixels, bool mipmap)
 	{
-		KGE_LOG_GL_ERROR();
-
 		Texture* texture = dynamic_cast<Texture*>(this);
 		uint32 width = texture->GetWidth();
 		uint32 height = texture->GetHeight();
@@ -175,13 +169,11 @@ namespace kge
 		glTexImage2D(GL_TEXTURE_2D, 0, _format, width, height, 0, format, type, pixels);
 
 		if (mipmap)
-			glGenerateMipmap(GL_TEXTURE_2D);
+			GL_ASSERT( glGenerateMipmap(GL_TEXTURE_2D) );
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		UpdateSampler();
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	uint32 TextureGLES::GetMipCount()
@@ -209,8 +201,6 @@ namespace kge
 
 	void TextureGLES::UpdateSampler()
 	{
-		KGE_LOG_GL_ERROR();
-
 		bool mipmap = GetMipCount() > 1;
 
 		glBindTexture(GL_TEXTURE_2D, _texture);

@@ -47,6 +47,8 @@ namespace kge
 		virtual void LateUpdate() { }
 		virtual void OnEnable() { }
 		virtual void OnDisable() { }
+		virtual void OnTransformChanged() { }
+		virtual void OnTransformHierarchyChanged() { }
 
 	private:
 		void Delete();

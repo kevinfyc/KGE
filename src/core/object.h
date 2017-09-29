@@ -99,6 +99,8 @@ namespace kge
 		inline void SetName(const std::string& name) { _name = name; }
 		inline const std::string& GetName() { return _name; }
 
+		inline uint32 GetID() const  { return _id; }
+
 	protected:
 		Object(const Object&) {}
 		Object& operator = (const Object& obj) { return *this; }

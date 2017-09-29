@@ -23,9 +23,9 @@
 namespace kge
 {
 	class Camera;
-
+	class Material
 #if KGE_GLES
-	class Material: public MaterialGLES
+	 : public MaterialGLES
 #endif
 	{
 	public:

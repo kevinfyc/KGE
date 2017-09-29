@@ -8,6 +8,7 @@
 
 #include "transform.h"
 #include "util/log.h"
+#include "game_object.h"
 
 namespace kge
 {
@@ -27,6 +28,71 @@ namespace kge
 	Transform::~Transform()
 	{
 
+	}
+
+	void Transform::AddChild(WeakRef<Transform>& child)
+	{
+		_children.push_back(child);
+	}
+
+	void Transform::RemoveChild(WeakRef<Transform>& child)
+	{
+		for (uint32 i = 0; i < _children.size(); ++i)
+		{
+			if (_children[i].lock() == child.lock())
+			{
+				_children.erase(_children.begin() + i);
+				break;
+			}
+		}
+	}
+
+	void Transform::SetParent(const WeakRef<Transform>& parent)
+	{
+		auto obj = GetGameObject();
+		ApplyDelta();
+
+		if (!_parent.expired())
+		{
+			auto p = _parent.lock();
+			p->RemoveChild(_transform);
+			p->NotifyParentHierarchyChange();
+			_parent.reset();
+
+			if (parent.expired())
+			{
+				_local_position = _world_position;
+				_local_rotation = _world_rotation;
+				_local_scale = _world_scale;
+				DeltyTransform();
+				NotifyChildHierarchyChange();
+
+				obj->SetActiveInHierarchy(obj->IsActiveSelf());
+			}
+		}
+
+		_parent = parent;
+
+		if (!_parent.expired())
+		{
+			auto p = _parent.lock();
+			p->AddChild(_transform);
+			p->NotifyParentHierarchyChange();
+
+			{
+				p->World2Local(_local_position, _world_position);
+				_local_rotation = Quaternion::inverse(p->GetWorldRotation()) * _world_rotation;
+				const Vector3& parent_scale = p->GetWorldScale();
+				float x = _world_scale.x / parent_scale.x;
+				float y = _world_scale.x / parent_scale.y;
+				float z = _world_scale.x / parent_scale.z;
+				_local_scale = Vector3(x, y, z);
+				DeltyTransform();;
+				NotifyChildHierarchyChange();
+
+				obj->SetActiveInHierarchy(p->GetGameObject()->IsActiveInHierarchy() && obj->IsActiveSelf());
+			}
+		}
 	}
 
 	Ref<Transform> Transform::GetChild(uint32 index)const
@@ -185,6 +251,46 @@ namespace kge
 		_local_to_world_matrix.preMultiply(mat_trans);
 		_local_to_world_matrix.preMultiply(mat_rot);
 		_local_to_world_matrix.preMultiply(mat_scale);
+	}
+
+	void Transform::NotifyDelty()
+	{
+		_delty_notifying = true;
+		GetGameObject()->OnTransformChanged();
+
+		for (auto& child : _children)
+			child.lock()->NotifyDelty();
+
+		_delty_notifying = false;
+	}
+
+	void Transform::NotifyParentHierarchyChange()
+	{
+		_delty_notifying = true;
+
+		GetGameObject()->OnTransformHierarchyChanged();
+
+		auto p = _parent;
+		while (!p.expired())
+		{
+			auto parent = p.lock();
+			parent->NotifyParentHierarchyChange();
+			p = parent->GetParent();
+		}
+
+		_delty_notifying = false;
+	}
+
+	void Transform::NotifyChildHierarchyChange()
+	{
+		_delty_notifying = true;
+
+		GetGameObject()->OnTransformHierarchyChanged();
+
+		for (auto& child : _children)
+			child.lock()->NotifyChildHierarchyChange();
+
+		_delty_notifying = false;
 	}
 
 	const Matrix& Transform::GetWorld2LocalMatrix()

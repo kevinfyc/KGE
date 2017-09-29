@@ -17,6 +17,7 @@
 #include "uniform_buffer.h"
 #include "render_pass.h"
 #include "shader.h"
+#include "material.h"
 
 namespace kge
 {
@@ -24,20 +25,18 @@ namespace kge
 
 	static GLuint create_shader(GLenum type, const std::string& src)
 	{
-		KGE_LOG_GL_ERROR();
-
 		auto shader = glCreateShader(type);
 
 		auto source = src.c_str();
-		glShaderSource(shader, 1, &source, NULL);
-		glCompileShader(shader);
+		GL_ASSERT( glShaderSource(shader, 1, &source, nullptr) );
+		GL_ASSERT( glCompileShader(shader) );
 
 		GLint success;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		GL_ASSERT( glGetShaderiv(shader, GL_COMPILE_STATUS, &success) );
 		if (!success)
 		{
 			GLint len;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+			GL_ASSERT( glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len) );
 			if (len > 0)
 			{
 				ByteBuffer buffer(len);
@@ -45,32 +44,28 @@ namespace kge
 				KGE_LOG_ERROR("shader compile error:\n%s", buffer.Bytes());
 			}
 
-			glDeleteShader(shader);
+			GL_ASSERT( glDeleteShader(shader) );
 			shader = 0;
 		}
-
-		KGE_LOG_GL_ERROR();
 
 		return shader;
 	}
 
 	static GLuint create_program(GLuint vs, GLuint ps)
 	{
-		KGE_LOG_GL_ERROR();
-
 		auto program = glCreateProgram();
 
-		glAttachShader(program, vs);
-		glAttachShader(program, ps);
+		GL_ASSERT( glAttachShader(program, vs) );
+		GL_ASSERT( glAttachShader(program, ps) );
 
-		glLinkProgram(program);
+		GL_ASSERT( glLinkProgram(program) );
 
 		GLint success;
-		glGetProgramiv(program, GL_LINK_STATUS, &success);
+		GL_ASSERT( glGetProgramiv(program, GL_LINK_STATUS, &success) );
 		if (!success)
 		{
 			GLint len;
-			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+			GL_ASSERT( glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len) );
 			if (len > 0)
 			{
 				ByteBuffer buffer(len);
@@ -78,25 +73,22 @@ namespace kge
 				KGE_LOG_ERROR("shader link error:\n%s", buffer.Bytes());
 			}
 
-			glDeleteProgram(program);
+			GL_ASSERT( glDeleteProgram(program) );
 			program = 0;
 		}
 
-		KGE_LOG_GL_ERROR();
 
 		return program;
 	}
 
 	static void prepare_pipeline( const Pass& pass, ShaderXML& xml, ShaderPass& shader_pass)
 	{
-		KGE_LOG_GL_ERROR();
-
 		DisplayGLES* display = (DisplayGLES*)Graphics::GetDisplay();
 		GLuint program = shader_pass.program;
 
 		shader_pass.buf_obj_index = glGetUniformBlockIndex(program, "buf_vs_obj");
 		if (shader_pass.buf_obj_index != 0xffffffff)
-			glUniformBlockBinding(program, shader_pass.buf_obj_index, UNIFORM_BUFFER_OBJ_BINDING);
+			GL_ASSERT( glUniformBlockBinding(program, shader_pass.buf_obj_index, UNIFORM_BUFFER_OBJ_BINDING) );
 
 		auto& uniform_buffer_infos = shader_pass.uniform_buffer_infos;
 		for (auto& i : xml.vss)
@@ -141,10 +133,10 @@ namespace kge
 		for (auto& i : uniform_buffer_infos)
 		{
 			auto index = glGetUniformBlockIndex(program, i->name.c_str());
-			glUniformBlockBinding(program, index, i->binding);
+			GL_ASSERT( glUniformBlockBinding(program, index, i->binding) );
 
 			GLint size;
-			glGetActiveUniformBlockiv(program, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size);
+			GL_ASSERT( glGetActiveUniformBlockiv(program, index, GL_UNIFORM_BLOCK_DATA_SIZE, &size) );
 			assert(size == i->size);
 
 			int offset = buffer_size;
@@ -160,11 +152,9 @@ namespace kge
 				const char* names[] = { name.c_str() };
 
 				GLuint index;
-				glGetUniformIndices(program, 1, names, &index);
+				GL_ASSERT( glGetUniformIndices(program, 1, names, &index) );
 				GLint offset;
-				glGetActiveUniformsiv(program, 1, &index, GL_UNIFORM_OFFSET, &offset);
-
-				//Log("%s uniform:%s index:%d offset:%d", xml.name.CString(), name.CString(), index, offset);
+				GL_ASSERT( glGetActiveUniformsiv(program, 1, &index, GL_UNIFORM_OFFSET, &offset) );
 			}
 		}
 
@@ -398,8 +388,6 @@ namespace kge
 				}
 			}
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 
 
@@ -515,8 +503,6 @@ namespace kge
 
 	void ShaderGLES::BeginPass(uint32 index)
 	{
-		KGE_LOG_GL_ERROR();
-
 		auto& rs = _passes[index].render_state;
 		if (rs.offset_enable)
 		{
@@ -543,7 +529,7 @@ namespace kge
 		if (rs.blend_enable)
 		{
 			glEnable(GL_BLEND);
-			glBlendFuncSeparate(rs.blend_src_c, rs.blend_dst_c, rs.blend_src_a, rs.blend_dst_a);
+			GL_ASSERT( glBlendFuncSeparate(rs.blend_src_c, rs.blend_dst_c, rs.blend_src_a, rs.blend_dst_a) );
 		}
 		else
 		{
@@ -576,9 +562,12 @@ namespace kge
 
 		glViewport(viewport_x, viewport_y, viewport_width, viewport_height);
 
-		glUseProgram(_passes[index].program);
+		GL_ASSERT( glUseProgram(_passes[index].program) );
+	}
 
-		KGE_LOG_GL_ERROR();
+	void ShaderGLES::BindSharedMaterial(uint32 index, const Ref<Material>& material)
+	{
+		material->Apply(index);
 	}
 
 	void ShaderGLES::UpdateRendererDescriptorSet(Ref<UniformBuffer>& descriptor_set_buffer, const void* data, uint32 size)
@@ -594,15 +583,9 @@ namespace kge
 
 	void ShaderGLES::BindRendererDescriptorSet(uint32 index, Ref<UniformBuffer>& descriptor_set_buffer)
 	{
-		KGE_LOG_GL_ERROR();
-
 		auto& pass = _passes[index];
 		if (pass.buf_obj_index != 0xffffffff)
-		{
-			glBindBufferBase(GL_UNIFORM_BUFFER, UNIFORM_BUFFER_OBJ_BINDING, descriptor_set_buffer->GetBuffer());
-		}
-
-		KGE_LOG_GL_ERROR();
+			GL_ASSERT( glBindBufferBase(GL_UNIFORM_BUFFER, UNIFORM_BUFFER_OBJ_BINDING, descriptor_set_buffer->GetBuffer()) );
 	}
 
 }

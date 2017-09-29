@@ -16,9 +16,8 @@ namespace kge
 
         float x, y, z, w;
 
-        Vector4();
-        Vector4( float x_, float y_, float z_, float w_ );
-        Vector4( const Vector3 & v, float w );
+        Vector4( float x_ = 0, float y_ = 0, float z_ = 0, float w_ = 0);
+        Vector4( const Vector3 & v, float w = 0);
 #ifdef SSE_MATH
         Vector4( __m128 v4 );
 #endif

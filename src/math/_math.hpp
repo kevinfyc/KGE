@@ -31,6 +31,9 @@
 #define MATH_TOLERANCE              2e-37f
 #define MATH_EPSILON                0.000001f
 
+const float MAX_FLOAT_VALUE = 3.402823466e+38F;
+const float MIN_FLOAT_VALUE = -MAX_FLOAT_VALUE;
+
 #define MATH_PI 3.14159265f
 
 #ifndef PI_FULL

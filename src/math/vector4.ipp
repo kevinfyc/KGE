@@ -1,13 +1,5 @@
 namespace kge
 {
-    /**
-     *	This constructor sets this vector to the zero vector.
-     */
-    INLINE
-    Vector4::Vector4()
-    {
-    }
-
 	INLINE
     Vector4::Vector4( float x_, float y_, float z_, float w_ ) :
         x( x_ ),

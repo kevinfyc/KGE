@@ -62,6 +62,8 @@ namespace kge
 		unsigned int lightmap_location;
 	};
 
+	class Material;
+
 	class ShaderGLES : public Object
 	{
 	public:
@@ -72,6 +74,8 @@ namespace kge
 		void PreparePass(uint32 index) {}
 		void UpdateRendererDescriptorSet(Ref<UniformBuffer>& descriptor_set_buffer, const void* data, uint32 size);
 		void BeginPass(uint32 index);
+		void BindSharedMaterial(uint32 index, const Ref<Material>& material);
+		void BindMaterial(int index, const Ref<Material>& material) { }
 		void BindRendererDescriptorSet(uint32 index, Ref<UniformBuffer>& descriptor_set_buffer);
 		void EndPass(uint32 index) {}
 

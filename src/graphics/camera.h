@@ -14,6 +14,7 @@
 
 #include "math/math_def.h"
 #include "math/rect.h"
+#include "math/frustum.h"
 
 #include "frame_buffer.h"
 
@@ -37,6 +38,9 @@ namespace kge
 
 		virtual ~Camera();
 
+		uint32 GetDepth() const { return _depth; }
+		void SetDepth(uint32 depth);
+
 		CameraClearFlags GetClearFlags() const { return _clear_flags; }
 		void SetClearFlags(CameraClearFlags flags) { _clear_flags = flags; }
 
@@ -45,7 +49,6 @@ namespace kge
 
 		void SetOrthographic(bool value) { _orthographic = value; }
 		bool IsOrthographic()const { return _orthographic; }
-
 
 		float GetFieldOfView() const { return _field_of_view; }
 		void SetFieldOfView(float fov) { _field_of_view = fov; }
@@ -59,9 +62,16 @@ namespace kge
 		const Rect& GetRect() const { return _rect; }
 		void SetRect(const Rect& rect) { _rect = rect; }
 
+		uint32 GetCullingMask() const { return _culling_mask; }
+		void SetCullingMask(uint32 mask);
+
+		bool CanRender() const;
+		bool IsCulling(const Ref<GameObject>& obj) const;
+
 		const Matrix& GetViewMatrix();
 		const Matrix& GetProjectionMatrix();
 		const Matrix& GetViewProjectionMatrix();
+		const Frustum& GetFrustum();
 
 		void SetFrameBuffer(const Ref<FrameBuffer>& frame_buffer) { _matrix_dirty = true; _frame_buffer = frame_buffer; };
 		uint32 GetTargetWidth() const;
@@ -92,8 +102,12 @@ namespace kge
 		Matrix _view_matrix;
 		Matrix _projection_matrix;
 		Matrix _view_projection_matrix;
+		Frustum _frustum;
 
 		Ref<RenderPass> _render_pass;
+
+		uint32 _culling_mask;
+		uint32 _depth;
 	};
 }
 

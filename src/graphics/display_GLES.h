@@ -13,13 +13,28 @@
 #include "display_win.h"
 #endif
 
+#include "index_buffer.h"
+
 namespace kge
 {
+	class VertexBuffer;
+	class Shader;
+
     class DisplayGLES : public DisplayWin
     {
     public:
 		virtual bool Init(uint32 width, uint32 height) override;
 		virtual void Fini() override;
+
+		void BeginFrame() { }
+		void EndFrame() { }
+		void WaitQueueIdle() { }
+		void BindVertexBuffer(const VertexBuffer* buffer);
+		void BindIndexBuffer(const IndexBuffer* buffer, IndexType index_type);
+		void BindVertexArray(const Ref<Shader>& shader, int pass_index);
+		void DrawIndexed(int start, int count, IndexType index_type);
+		void DisableVertexArray(const Ref<Shader>& shader, int pass_index);
+		void SubmitQueue(void* cmd) { }
 
 		void SwapBuffers();
 

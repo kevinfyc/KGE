@@ -12,6 +12,9 @@
 
 #include "world.h"
 
+#include "graphics/renderer.h"
+#include "graphics/layer.h"
+
 namespace kge
 {
 	Ref<GameObject> GameObject::Create(const std::string& name, bool add_to_world)
@@ -41,6 +44,10 @@ namespace kge
 	}
 
 	GameObject::GameObject(const std::string& name) :_deleted(false)
+		, _layer((uint32)Layer::Default)
+		, _active_in_hierarchy(true)
+		, _active_self(true)
+		, _static(false)
 		, _in_world(false)
 		, _in_world_update(false)
 	{
@@ -51,6 +58,21 @@ namespace kge
 	{
 
 	}
+
+	void GameObject::SetLayer(uint32 layer)
+	{
+		if (_layer != layer)
+		{
+			_layer = layer;
+
+			auto renderer = GetComponent<Renderer>();
+			if (renderer)
+			{
+				Renderer::ClearPasses();
+			}
+		}
+	}
+
 
 	void GameObject::SetName(const std::string& name)
 	{
@@ -81,7 +103,7 @@ namespace kge
 			if (!com->_deleted && com->IsComponent(name))
 				return com;
 		}
-		
+
 		for (Ref<Component> com : _components_neo)
 		{
 			if (!com->_deleted && com->IsComponent(name))
@@ -91,14 +113,16 @@ namespace kge
 		return Ref<Component>();
 	}
 
-	bool GameObject::GetComponentsInChildren(const std::string& name, std::vector<Ref<Component>>& coms) const
+	std::vector<Ref<Component>> GameObject::GetComponentsInChildren(const std::string& name) const
 	{
+		std::vector<Ref<Component>> coms;
+
 		for (auto com : _components)
 		{
 			if (!com->_deleted && com->IsComponent(name))
 				coms.push_back(com);
 		}
-		
+
 		for (auto com : _components_neo)
 		{
 			if (!com->_deleted && com->IsComponent(name))
@@ -110,8 +134,7 @@ namespace kge
 		for (int i = 0; i < child_count; i++)
 		{
 			auto child = transform->GetChild(i);
-			std::vector<Ref<Component>> child_coms;
-			child->GetGameObject()->GetComponentsInChildren(name, child_coms);
+			std::vector<Ref<Component>> child_coms = child->GetGameObject()->GetComponentsInChildren(name);
 
 			if (!child_coms.empty())
 			{
@@ -122,7 +145,7 @@ namespace kge
 			}
 		}
 
-		return coms.size() > 0;
+		return coms;
 	}
 
 	Ref<Component> GameObject::GetComponentRef(const Component* com) const
@@ -134,7 +157,7 @@ namespace kge
 				return i;
 			}
 		}
-		
+
 		for (const auto& i : _components_neo)
 		{
 			if (i.get() == com && !i->_deleted)
@@ -157,6 +180,97 @@ namespace kge
 
 		if (_in_world)
 			World::AddGameObject(GetTransform()->GetGameObject());
+	}
+
+	void GameObject::SetActive(bool active)
+	{
+		if (_active_self != active)
+		{
+			_active_self = active;
+
+			Ref<Transform> t = _transform.lock();
+			if (_active_in_hierarchy != active &&
+				(t->IsRoot() || t->GetParent().lock()->GetGameObject()->IsActiveInHierarchy()))
+			{
+				SetActiveInHierarchy(active);
+
+				if (!t->IsRoot())
+					t->GetParent().lock()->NotifyParentHierarchyChange();
+			}
+		}
+	}
+
+	void GameObject::SetActiveInHierarchy(bool active)
+	{
+		if (_active_in_hierarchy != active)
+		{
+			_active_in_hierarchy = active;
+
+			for (const auto& i : _components)
+			{
+				if (i->IsEnable())
+				{
+					if (_active_in_hierarchy)
+					{
+						i->OnEnable();
+					}
+					else
+					{
+						i->OnDisable();
+					}
+				}
+			}
+
+			auto transform = _transform.lock();
+			int child_count = transform->GetChildCount();
+			for (int i = 0; i < child_count; i++)
+			{
+				auto child = transform->GetChild(i);
+				if (child->GetGameObject()->IsActiveSelf())
+				{
+					child->GetGameObject()->SetActiveInHierarchy(active);
+				}
+			}
+		}
+	}
+
+	void GameObject::SetLayerRecursively(int layer)
+	{
+		SetLayer(layer);
+
+		auto transform = _transform.lock();
+		int child_count = transform->GetChildCount();
+		for (int i = 0; i < child_count; i++)
+		{
+			auto child = transform->GetChild(i);
+			child->GetGameObject()->SetLayerRecursively(layer);
+		}
+	}
+
+	void GameObject::OnTransformChanged()
+	{
+		for (const auto& i : _components)
+		{
+			i->OnTransformChanged();
+		}
+
+		for (const auto& i : _components_neo)
+		{
+			i->OnTransformChanged();
+		}
+	}
+
+	void GameObject::OnTransformHierarchyChanged()
+	{
+		for (const auto& i : _components)
+		{
+			i->OnTransformHierarchyChanged();
+		}
+
+		for (const auto& i : _components_neo)
+		{
+			i->OnTransformHierarchyChanged();
+		}
 	}
 
 	void GameObject::Delete()

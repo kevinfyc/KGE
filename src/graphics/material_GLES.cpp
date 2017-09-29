@@ -35,32 +35,26 @@ namespace kge
 
 	void* MaterialGLES::SetUniformBegin(uint32 pass_index)
 	{
-		KGE_LOG_GL_ERROR();
 		void* mapped = nullptr;
 
 		Ref<UniformBuffer> uniform_buffer = _uniform_buffers[pass_index];
 		if (uniform_buffer)
 		{
-			glBindBuffer(GL_UNIFORM_BUFFER, uniform_buffer->GetBuffer());
+			GL_ASSERT( glBindBuffer(GL_UNIFORM_BUFFER, uniform_buffer->GetBuffer()) );
 			mapped = uniform_buffer->GetLocalBuffer()->Bytes();
 		}
-		KGE_LOG_GL_ERROR();
 
 		return mapped;
 	}
 
 	void MaterialGLES::SetUniformEnd(uint32 pass_index)
 	{
-		KGE_LOG_GL_ERROR();
-
 		Ref<UniformBuffer> uniform_buffer = _uniform_buffers[pass_index];
 		if (uniform_buffer)
 		{
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, uniform_buffer->GetSize(), uniform_buffer->GetLocalBuffer()->Bytes());
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			GL_ASSERT( glBufferSubData(GL_UNIFORM_BUFFER, 0, uniform_buffer->GetSize(), uniform_buffer->GetLocalBuffer()->Bytes()) );
+			GL_ASSERT( glBindBuffer(GL_UNIFORM_BUFFER, 0) );
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	void MaterialGLES::SetUniform(uint32 pass_index, void* uniform_buffer, const std::string& name, void* data, uint32 size)
@@ -86,8 +80,6 @@ namespace kge
 
 	void MaterialGLES::Apply(uint32 pass_index)
 	{
-		KGE_LOG_GL_ERROR();
-
 		Material* mat = dynamic_cast<Material*>(this);
 		Ref<Shader> shader = mat->GetShader();
 		std::vector<const Sampler*> sampler_infos = shader->GetSamplerInfos(pass_index);
@@ -98,7 +90,7 @@ namespace kge
 		{
 			GLint location = sampler_locations[i];
 
-			glActiveTexture(GL_TEXTURE0 + i + 1);
+			GL_ASSERT( glActiveTexture(GL_TEXTURE0 + i + 1) );
 
 			std::string name = sampler_infos[i]->name;
 			const Ref<Texture>* tex = nullptr;
@@ -115,7 +107,7 @@ namespace kge
 				glBindTexture(GL_TEXTURE_2D, default_texture);
 			}
 
-			glUniform1i(location, i + 1);
+			GL_ASSERT( glUniform1i(location, i + 1) );
 		}
 
 		std::vector<UniformBufferNode*> uniform_buffer_infos = shader->GetUniformBufferInfos(pass_index);
@@ -123,10 +115,8 @@ namespace kge
 
 		for (UniformBufferNode* node : uniform_buffer_infos)
 		{
-			glBindBufferRange(GL_UNIFORM_BUFFER, node->binding, uniform_buffer->GetBuffer(), node->offset, node->size);
+			GL_ASSERT( glBindBufferRange(GL_UNIFORM_BUFFER, node->binding, uniform_buffer->GetBuffer(), node->offset, node->size) );
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 }
 

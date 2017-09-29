@@ -25,13 +25,11 @@ namespace kge
 	RenderPassGLES::~RenderPassGLES()
 	{
 		if (_frameBuffer)
-			glDeleteFramebuffers(1, &_frameBuffer);
+			GL_ASSERT( glDeleteFramebuffers(1, &_frameBuffer) );
 	}
 
 	void RenderPassGLES::_Create()
 	{
-		KGE_LOG_GL_ERROR();
-
 		RenderPass* pass = dynamic_cast<RenderPass*>(this);
 
 		bool is_default = !pass->HasFrameBuffer();
@@ -73,34 +71,30 @@ namespace kge
 				attachment = GL_DEPTH_STENCIL_ATTACHMENT;
 			}
 
-			glGenFramebuffers(1, &_frameBuffer);
-			glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+			GL_ASSERT( glGenFramebuffers(1, &_frameBuffer) );
+			GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer) );
 
 			if (frame_buffer.color_texture)
 			{
 				GLuint color_texture = frame_buffer.color_texture->GetTexture();
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ALPHA_PAIRING_ATI, GL_TEXTURE_2D, color_texture, 0);
+				GL_ASSERT( glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ALPHA_PAIRING_ATI, GL_TEXTURE_2D, color_texture, 0) );
 			}
 
 			if (frame_buffer.depth_texture)
-				glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, depth_texture, 0);
+				GL_ASSERT( glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, depth_texture, 0) );
 			else
-				glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, depth_texture);
+				GL_ASSERT( glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, depth_texture) );
 
 			auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE)
 				KGE_LOG_ERROR("glCheckFramebufferStatus error:%d", status);
 
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, 0) );
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	void RenderPassGLES::Begin(const Color& clear_color)
 	{
-		KGE_LOG_GL_ERROR();
-
 		RenderPass* pass = dynamic_cast<RenderPass*>(this);
 		CameraClearFlags clear_flag = pass->_clear_flag;
 
@@ -114,7 +108,7 @@ namespace kge
 
 		if (_frameBuffer == 0)
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, 0) );
 
 			attachments.push_back(GL_COLOR);
 			attachments.push_back(GL_DEPTH);
@@ -157,13 +151,13 @@ namespace kge
 				has_stencil = true;
 			}
 
-			glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+			GL_ASSERT( glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer) );
 		}
 
 		switch (clear_flag)
 		{
 		case kge::CameraClearFlags::Invalidate:
-			glInvalidateFramebuffer(GL_FRAMEBUFFER, attachments.size(), &attachments[0]);
+			GL_ASSERT( glInvalidateFramebuffer(GL_FRAMEBUFFER, attachments.size(), &attachments[0]) );
 			break;
 
 		case kge::CameraClearFlags::Color:
@@ -195,8 +189,6 @@ namespace kge
 		default:
 			break;
 		}
-
-		KGE_LOG_GL_ERROR();
 	}
 
 	void RenderPassGLES::End()
