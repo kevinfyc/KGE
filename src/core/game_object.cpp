@@ -90,6 +90,9 @@ namespace kge
 
 	Ref<Component> GameObject::AddComponent(const std::string& name)
 	{
+		if (_deleted)
+			return Ref<Component>();
+
 		Ref<Component> t = Ref<Component>(Component::Create(name));
 		AddComponent(t);
 
@@ -313,7 +316,7 @@ namespace kge
 	{
 		for (const auto& i : _components)
 		{
-			if (_deleted)
+			if (!IsActiveInHierarchy() || _deleted)
 				break;
 
 			if (i->IsEnable())

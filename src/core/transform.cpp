@@ -14,7 +14,7 @@ namespace kge
 {
 	DEFINE_COM_CLASS(Transform);
 
-	Transform::Transform() :_delty(false)
+	Transform::Transform() :_delty(true)
 		,_local_position(0, 0, 0)
 		,_local_rotation(0, 0, 0, 1)
 		,_local_scale(1, 1, 1)
@@ -113,15 +113,20 @@ namespace kge
 		{
 			_local_position = pos;
 			DeltyTransform();
+			NotifyDelty();
 		}
 	}
 
 	void Transform::SetLocalRotation(const Quaternion& rotation)
 	{
-		if (_local_rotation != rotation)
+		Quaternion r = rotation;
+		r.normalise();
+
+		if (_local_rotation != r)
 		{
-			_local_rotation = rotation;
+			_local_rotation = r;
 			DeltyTransform();
+			NotifyDelty();
 		}
 	}
 
@@ -131,6 +136,7 @@ namespace kge
 		{
 			_local_scale = scale;
 			DeltyTransform();
+			NotifyDelty();
 		}
 	}
 
@@ -240,17 +246,8 @@ namespace kge
 			_world_scale = parent->GetWorldScale() * _local_scale;
 		}
 
-		Matrix mat_trans = Matrix();
-		mat_trans.translation(_world_position);
-		Matrix mat_rot = Matrix();
-		mat_rot.setRotate(_world_rotation);
-		Matrix mat_scale = Matrix();
-		mat_scale.setScale(_world_scale);
-
-		_local_to_world_matrix.setIdentity();
-		_local_to_world_matrix.preMultiply(mat_trans);
-		_local_to_world_matrix.preMultiply(mat_rot);
-		_local_to_world_matrix.preMultiply(mat_scale);
+		
+		_local_to_world_matrix = Matrix::TRS(_world_position, _world_rotation, _world_scale);
 	}
 
 	void Transform::NotifyDelty()

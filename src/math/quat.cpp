@@ -190,6 +190,19 @@ namespace kge
         w *= oodivisor;
     }
 
+	bool Quaternion::operator !=(const Quaternion& v) const
+	{
+		return !(*this == v);
+	}
+
+	bool Quaternion::operator ==(const Quaternion& v) const
+	{
+		return almostEqual(v.x, x) &&
+			almostEqual(v.y, y) &&
+			almostEqual(v.z, z) &&
+			almostEqual(v.w, w);
+	}
+
 }// end namespace kge
 
 /*quat.cpp*/

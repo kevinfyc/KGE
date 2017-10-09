@@ -12,6 +12,7 @@
 #include "texture2D.h"
 #include "util\log.h"
 #include "io\file_tool.h"
+#include "image.h"
 
 namespace kge
 {
@@ -50,6 +51,8 @@ namespace kge
 				colors[i++] = 255;
 
 				texture = Texture2D::Create(1, 1, TextureFormat::RGBA32, TextureWrapMode::Clamp, FilterMode::Point, false, colors);
+				Image img;
+				img.EncodeToPNG(texture.get(), 32, "mytest.png");
 			}
 			else if (name == "black")
 			{

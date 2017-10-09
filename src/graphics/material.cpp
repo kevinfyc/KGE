@@ -20,10 +20,11 @@ namespace kge
 
 	Ref<Material> Material::Create(const std::string& shader_name)
 	{
+		Ref<Shader> shader = Shader::Find(shader_name);
+
 		Ref<Material> mat = Ref<Material>(new Material());
 		mat->SetName(shader_name);
 
-		Ref<Shader> shader = Shader::Find(shader_name);
 		if (shader)
 		{
 			mat->_shader = shader;

@@ -81,7 +81,7 @@ namespace kge
 	void MaterialGLES::Apply(uint32 pass_index)
 	{
 		Material* mat = dynamic_cast<Material*>(this);
-		Ref<Shader> shader = mat->GetShader();
+		auto& shader = mat->GetShader();
 		std::vector<const Sampler*> sampler_infos = shader->GetSamplerInfos(pass_index);
 		std::vector<GLint> sampler_locations = shader->GetSamplerLocations(pass_index);
 		std::map<std::string, Ref<Texture>> textures = mat->GetTextures();

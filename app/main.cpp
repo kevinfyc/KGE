@@ -30,7 +30,7 @@ App::App()
 void App::Start()
 {
 	auto camera = GameObject::Create("camera")->AddComponent<Camera>();
-	camera->GetTransform()->SetWorldPosition(Vector3(0, 0, -2));
+	camera->GetTransform()->SetWorldPosition(Vector3(0, 0, -6));
 	Quaternion rot = Quaternion();
 	rot.fromAngleAxis(0, Vector3(1, 0, 0));
 	camera->GetTransform()->SetWorldRotation(rot);
@@ -88,7 +88,7 @@ void App::Update()
 {
 	//Quaternion rot = Quaternion();
 	//rot.fromAngleAxis(m_rotate_deg, Vector3(0, 1, 0));
-	//_cube.lock()->GetTransform()->SetLocalRotation(rot);
+	//_camera.lock()->GetTransform()->SetLocalRotation(rot);
 	//m_rotate_deg += 30 * 0.01f;
 }
 

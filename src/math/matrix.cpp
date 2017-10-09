@@ -394,15 +394,6 @@ namespace kge
         m[0][2] = xz - wy;
         m[1][2] = yz + wx;
         m[2][2] = 1.f - (xx + yy);
-
-        m[0][3] = 0.f;
-        m[1][3] = 0.f;
-        m[2][3] = 0.f;
-
-        m[3][0] = 0.0f;
-        m[3][1] = 0.0f;
-        m[3][2] = 0.0f;
-        m[3][3] = 0.0f;
     }
 
     /**
@@ -545,34 +536,18 @@ namespace kge
     void Matrix::lookAt(const Vector3& position, const Vector3& direction,
         const Vector3& up)
     {
-        Vector3 Up;
-        Vector3 Direction(direction);
-        Vector3 Right;
+		Vector3 zaxis(-direction);
+		zaxis.normalise();
 
-        Direction.normalise();
-        Right.crossProduct(up, Direction);
-        Right.normalise();
-        Up.crossProduct(Direction, Right);
+		Vector3 xaxis = zaxis.crossProduct(up);
+		xaxis.normalise();
 
-        m[0][0] = Right.x;
-        m[1][0] = Right.y;
-        m[2][0] = Right.z;
-        m[3][0] = 0.f;
+		Vector3 yaxis = xaxis.crossProduct(zaxis);
 
-        m[0][1] = Up.x;
-        m[1][1] = Up.y;
-        m[2][1] = Up.z;
-        m[3][1] = 0.f;
-
-        m[0][2] = Direction.x;
-        m[1][2] = Direction.y;
-        m[2][2] = Direction.z;
-        m[3][2] = 0.f;
-
-        m[3][0] = -position.dotProduct(Right);
-        m[3][1] = -position.dotProduct(Up);
-        m[3][2] = -position.dotProduct(Direction);
-        m[3][3] = 1.f;
+		m00 = xaxis.x;	m01 = xaxis.y;	m02 = xaxis.z;	m03 = -xaxis.dotProduct(position);
+		m10 = yaxis.x;	m11 = yaxis.y;	m12 = yaxis.z;	m13 = -yaxis.dotProduct(position);
+		m20 = zaxis.x;	m21 = zaxis.y;	m22 = zaxis.z;	m23 = -zaxis.dotProduct(position);
+		m30 = 0;		m31 = 0;		m32 = 0;		m33 = 1.0f;
     }
 
 
@@ -744,6 +719,22 @@ namespace kge
         m[1][1] = -sa * v0[1] + ca * m[1][1];
         m[1][2] = -sa * v0[2] + ca * m[1][2];
     }
+
+	Matrix Matrix::TRS(const Vector3& t, const Quaternion& r, const Vector3& s)
+	{
+		Matrix mt = Matrix::identity;
+		mt.translation(t);
+		Matrix mr = Matrix::identity; 
+		mr.setRotate(r);
+		Matrix ms = Matrix::identity; 
+		ms.setScale(s);
+
+		Matrix tmp = Matrix::identity;
+		tmp.postMultiply(mt);
+		tmp.postMultiply(mr);
+		tmp.postMultiply(ms);
+		return tmp;
+	}
 
 #endif // EXT_MATH
 

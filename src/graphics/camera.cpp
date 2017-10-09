@@ -48,6 +48,7 @@ namespace kge
 	}
 
 	Camera::Camera() :_matrix_dirty(true)
+		,_culling_mask(-1)
 	{
 		_cameras.push_back(this);
 
@@ -81,6 +82,13 @@ namespace kge
 	bool Less(const Camera* c1, Camera* c2)
 	{
 		return c1->GetDepth() < c2->GetDepth();
+	}
+
+	void Camera::OnTransformChanged()
+	{
+		_matrix_dirty = true;
+
+		Renderer::SetCullingDirty(this);
 	}
 
 	void Camera::SetDepth(uint32 depth)
@@ -161,7 +169,7 @@ namespace kge
 		_view_matrix = Matrix();
 		_view_matrix.lookAt(transform->GetWorldPosition(), transform->GetForward(), transform->GetUp());
 
-		_projection_matrix = Matrix();
+		_projection_matrix = Matrix::identity;
 		if (!IsOrthographic())
 		{
 			_projection_matrix.perspectiveProjection(GetFieldOfView(), width / (float)height, GetClipNear(), GetClipFar());
@@ -171,6 +179,7 @@ namespace kge
 			_projection_matrix.orthogonalProjection((float)width, (float)height, GetClipNear(), GetClipFar());
 		}
 
+		_view_projection_matrix.setIdentity();
 		_view_projection_matrix.multiply(_projection_matrix, _view_matrix);
 	}
 

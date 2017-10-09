@@ -50,6 +50,9 @@ namespace kge
 		void SetOrthographic(bool value) { _orthographic = value; }
 		bool IsOrthographic()const { return _orthographic; }
 
+		float GetOrthographicSize() const { return _orthographic_size; }
+		void SetOrthographicSize(float size) { _orthographic_size = size; }
+
 		float GetFieldOfView() const { return _field_of_view; }
 		void SetFieldOfView(float fov) { _field_of_view = fov; }
 
@@ -62,7 +65,7 @@ namespace kge
 		const Rect& GetRect() const { return _rect; }
 		void SetRect(const Rect& rect) { _rect = rect; }
 
-		uint32 GetCullingMask() const { return _culling_mask; }
+		int32 GetCullingMask() const { return _culling_mask; }
 		void SetCullingMask(uint32 mask);
 
 		bool CanRender() const;
@@ -77,6 +80,9 @@ namespace kge
 		uint32 GetTargetWidth() const;
 		uint32 GetTargetHeight() const;
 
+	protected:
+		virtual void OnTransformChanged() override;
+
 	private:
 		Camera();
 		void Prepare();
@@ -90,6 +96,7 @@ namespace kge
 		Color _clear_color;
 		CameraClearFlags _clear_flags;
 		bool _orthographic;
+		float _orthographic_size;
 
 		float _field_of_view;
 		float _clip_near;
@@ -106,7 +113,7 @@ namespace kge
 
 		Ref<RenderPass> _render_pass;
 
-		uint32 _culling_mask;
+		int32 _culling_mask;
 		uint32 _depth;
 	};
 }

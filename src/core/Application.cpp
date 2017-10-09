@@ -35,24 +35,17 @@ namespace kge
 
 	IApplication::~IApplication()
 	{
+		fileSystem = nullptr;
 		_instance = nullptr;
 		World::Fini();
 	}
 
 	bool IApplication::Init()
 	{
-
-		FILE * f = new FILE();
-		fopen_s(&f, "F:\\git\\KGE\\Assert\\test.xml", "r");
-		size_t cur = ftell(f);
-		fseek(f, 0, SEEK_END);
-		size_t l = ftell(f);
-		fseek(f, 0, SEEK_SET);
-
 		SectionFactory::InitInstance();
 		FileSystemMgr::InitInstance();
 
-		Ref<IFileSystem> fileSystem = Ref<IFileSystem>(new FileSystemImp());
+		fileSystem = Ref<IFileSystem>(new FileSystemImp());
 		if (!fileSystem->init())
 		{
 			KGE_LOG_ERROR("failed to init filesystem!");
@@ -62,25 +55,6 @@ namespace kge
 
 		//add defualt resource path
 		fileSystem->AddSearchPath("../../../Assert");
-
-		//std::string content;
-		//bool ret = ReadFile(content, "test.txt", false);
-
-		auto x = SectionFactory::Load("test.xml", SectionType::Xml);
-		//auto j = SectionFactory::Load("test.json", SectionType::Json);
-		auto d = SectionFactory::Load("test.cfg", SectionType::DS);
-
-		auto shader = x->Read("Shader");
-		auto name = shader->GetFirstAttribute("name");
-		auto queue = shader->GetFirstAttribute("queue");
-		x = nullptr;
-
-		auto t = Texture2D::LoadFromFile("test.png");
-
-		ShaderXML* shaderx = new ShaderXML();
-		shaderx->Load("test.xml");
-		//delete shaderx;
-		//shaderx = nullptr;
 
 		if (!Graphics::Init(_width, _height))
 		{
@@ -93,8 +67,6 @@ namespace kge
 			KGE_LOG_ERROR("World Init failed");
 			return false;
 		}
-
-		auto mat = Material::Create("Base");
 
 		Start();
 

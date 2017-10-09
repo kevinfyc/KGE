@@ -9,6 +9,7 @@
 #include "shader_xml.h"
 #include "io\section_factory.h"
 #include "render_queue.h"
+#include "util\string_tool.h"
 
 namespace kge
 {
@@ -211,7 +212,9 @@ namespace kge
 							Sampler sampler;
 							sampler.name = ps_node->GetFirstAttribute("name");
 							sampler.binding = atoi(ps_node->GetFirstAttribute("binding").c_str());
-							sampler.default_tex = ps_node->GetFirstAttribute("default");
+							std::string def = ps_node->GetFirstAttribute("default");
+							sampler.default_tex = def == EmptyString ? sampler.default_tex : def;
+							ps.samplers.push_back(sampler);
 						}
 						else if (ps_type == "Include")
 						{

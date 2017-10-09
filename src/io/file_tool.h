@@ -26,7 +26,7 @@ namespace kge
 
 
 
-    class IFile : public Object
+    class IFile
     {
     public:
     

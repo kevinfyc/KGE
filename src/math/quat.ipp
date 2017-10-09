@@ -164,18 +164,18 @@ namespace kge
 		return Vector3(p_.x, p_.y, p_.z);
 	}
 
-    /**
-     *	This method returns whether or not two quaternions are equal. Two
-     *	quaternions are equal if all of their elements are equal.
-     */
-    INLINE
-    bool operator ==( const Quaternion& q1, const Quaternion& q2 )
-    {
-        return ( q1.x == q2.x &&
-                 q1.y == q2.y &&
-                 q1.z == q2.z &&
-                 q1.w == q2.w );
-    }
+    ///**
+    // *	This method returns whether or not two quaternions are equal. Two
+    // *	quaternions are equal if all of their elements are equal.
+    // */
+    //INLINE
+    //bool operator ==( const Quaternion& q1, const Quaternion& q2 )
+    //{
+    //    return ( q1.x == q2.x &&
+    //             q1.y == q2.y &&
+    //             q1.z == q2.z &&
+    //             q1.w == q2.w );
+    //}
 
     /**
      *	This method makes the w member of this quaternion non-negative.

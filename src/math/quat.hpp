@@ -53,6 +53,8 @@ namespace kge
         operator float *()				{ return (float *)&x; }
         operator const float *() const	{ return (float *)&x; }
 		Vector3 operator *(const Vector3& p) const;
+		bool operator !=(const Quaternion& v) const;
+		bool operator ==(const Quaternion& v) const;
 
         static const Quaternion& identity() { return s_identity; }
         static const Quaternion& zero(){ return s_zero; }
@@ -67,7 +69,7 @@ namespace kge
     };
 
     Quaternion  operator *( const Quaternion& q1, const Quaternion& q2 );
-    bool		operator ==( const Quaternion& q1, const Quaternion& q2 );
+    //bool		operator ==( const Quaternion& q1, const Quaternion& q2 );
 
 } // end namespace kge
 

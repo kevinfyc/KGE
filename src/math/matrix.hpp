@@ -109,6 +109,8 @@ namespace kge
         void postRotateZ(const float angle);
         void postTranslateBy(const Vector3 & v);
 
+		static Matrix TRS(const Vector3& t, const Quaternion& r, const Vector3& s);
+
         bool isMirrored() const;
 
         void orthogonalProjection( float w, float h, float zn, float zf );

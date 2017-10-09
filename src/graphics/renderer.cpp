@@ -546,67 +546,67 @@ namespace kge
 			}
 		}
 
-		//mat_passes.sort(
-		//	[](const MaterialPass& a, const MaterialPass& b)->bool {
-		//	if (dynamic_cast<UICanvasRenderer*>(a.renderer) || dynamic_cast<UICanvasRenderer*>(b.renderer))
-		//	{
-		//		return false;
-		//	}
+		mat_passes.sort(
+			[](const MaterialPass& a, const MaterialPass& b)->bool {
+			//if (dynamic_cast<UICanvasRenderer*>(a.renderer) || dynamic_cast<UICanvasRenderer*>(b.renderer))
+			//{
+			//	return false;
+			//}
 
-		//	if (a.queue == b.queue)
-		//	{
-		//		int static_a = a.renderer->GetGameObject()->IsStatic() ? 0 : 1;
-		//		int static_b = b.renderer->GetGameObject()->IsStatic() ? 0 : 1;
+			if (a.queue == b.queue)
+			{
+				int static_a = a.renderer->GetGameObject()->IsStatic() ? 0 : 1;
+				int static_b = b.renderer->GetGameObject()->IsStatic() ? 0 : 1;
 
-		//		if (static_a == static_b)
-		//		{
-		//			if (a.shader_pass_count == 1 && b.shader_pass_count == 1)
-		//			{
-		//				if (a.shader_id == b.shader_id)
-		//				{
-		//					if (a.material_id == b.material_id)
-		//					{
-		//						if (a.renderer->m_lightmap_index == b.renderer->m_lightmap_index)
-		//						{
-		//							if (a.renderer->GetId() == b.renderer->GetId())
-		//							{
-		//								return a.material_index < b.material_index;
-		//							}
-		//							else
-		//							{
-		//								return a.renderer->GetId() < b.renderer->GetId();
-		//							}
-		//						}
-		//						else
-		//						{
-		//							return a.renderer->m_lightmap_index < b.renderer->m_lightmap_index;
-		//						}
-		//					}
-		//					else
-		//					{
-		//						return a.material_id < b.material_id;
-		//					}
-		//				}
-		//				else
-		//				{
-		//					return a.shader_id < b.shader_id;
-		//				}
-		//			}
-		//			else
-		//			{
-		//				return a.shader_pass_count < b.shader_pass_count;
-		//			}
-		//		}
-		//		else
-		//		{
-		//			return static_a < static_b;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		return a.queue < b.queue;
-		//	}
-		//});
+				if (static_a == static_b)
+				{
+					if (a.shader_pass_count == 1 && b.shader_pass_count == 1)
+					{
+						if (a.shader_id == b.shader_id)
+						{
+							if (a.material_id == b.material_id)
+							{
+								if (a.renderer->m_lightmap_index == b.renderer->m_lightmap_index)
+								{
+									if (a.renderer->GetID() == b.renderer->GetID())
+									{
+										return a.material_index < b.material_index;
+									}
+									else
+									{
+										return a.renderer->GetID() < b.renderer->GetID();
+									}
+								}
+								else
+								{
+									return a.renderer->m_lightmap_index < b.renderer->m_lightmap_index;
+								}
+							}
+							else
+							{
+								return a.material_id < b.material_id;
+							}
+						}
+						else
+						{
+							return a.shader_id < b.shader_id;
+						}
+					}
+					else
+					{
+						return a.shader_pass_count < b.shader_pass_count;
+					}
+				}
+				else
+				{
+					return static_a < static_b;
+				}
+			}
+			else
+			{
+				return a.queue < b.queue;
+			}
+		});
 
 		passes.clear();
 

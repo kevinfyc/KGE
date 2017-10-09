@@ -45,7 +45,7 @@ namespace kge
 
 	void Mesh::UpdateIndexBuffer()
 	{
-		uint32 buffer_size = VertexBufferSize();
+		uint32 buffer_size = IndexBufferSize();
 		bool dynamic = IsDynamic();
 
 		if (!_index_buffer || _index_buffer->GetSize() < buffer_size)

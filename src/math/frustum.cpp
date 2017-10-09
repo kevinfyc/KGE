@@ -171,7 +171,7 @@ namespace kge
 	ContainsResult Frustum::ContainsPoints(const std::vector<Vector3>& points, const Matrix* matrix) const
 	{
 		std::vector<Vector3> ps(points.size());
-		for (int i = 0; i < points.size(); i++)
+		for (uint32 i = 0; i < points.size(); i++)
 		{
 			if (matrix != NULL)
 			{
@@ -183,13 +183,13 @@ namespace kge
 			}
 		}
 
-		int in_plane_count = 0;
+		uint32 in_plane_count = 0;
 
-		for (int i = 0; i < 6; i++)
+		for (uint32 i = 0; i < 6; i++)
 		{
-			int in_count = 0;
+			uint32 in_count = 0;
 
-			for (int j = 0; j < ps.size(); j++)
+			for (uint32 j = 0; j < ps.size(); j++)
 			{
 				float dis = DistanceToPlane(ps[j], i);
 				if (dis >= 0)

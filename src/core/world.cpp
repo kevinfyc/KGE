@@ -61,12 +61,16 @@ namespace kge
 	{
 		for (Ref<GameObject> obj : _gameObjects_start)
 		{
-			obj->Start();
-
-			if (!obj->_in_world_update)
+			if (!obj->_deleted)
 			{
-				obj->_in_world_update = true;
-				_gameObjects.push_back(obj);
+				if (obj->IsActiveInHierarchy())
+					obj->Start();
+
+				if (!obj->_in_world_update)
+				{
+					obj->_in_world_update = true;
+					_gameObjects.push_back(obj);
+				}
 			}
 		}
 		_gameObjects_start.clear();
@@ -76,8 +80,11 @@ namespace kge
 			auto& obj = *iter;
 			if (!obj->_deleted)
 			{
-				obj->Start();
-				obj->Update();
+				if (obj->IsActiveInHierarchy())
+				{
+					obj->Start();
+					obj->Update();
+				}
 			}
 			else
 			{
@@ -93,7 +100,8 @@ namespace kge
 			auto& obj = *iter;
 			if (!obj->_deleted)
 			{
-				obj->LateUpdate();
+				if(obj->IsActiveInHierarchy())
+					obj->LateUpdate();
 			}
 			else
 			{

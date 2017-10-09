@@ -50,7 +50,7 @@ namespace kge
 		int GetSortingOrder() const { return m_sorting_order; }
 		void SetSortingOrder(uint32 order) { m_sorting_order = order; }
 		int GetLightmapIndex() const { return m_lightmap_index; }
-		void SetLightmapIndex(uint32 index) { m_lightmap_index = index; }
+		void SetLightmapIndex(int32 index) { m_lightmap_index = index; }
 		const Vector4& GetLightmapScaleOffset() const { return m_lightmap_scale_offset; }
 		void SetLightmapScaleOffset(const Vector4& scale_offset) { m_lightmap_scale_offset = scale_offset; }
 		void SetBounds(const Bounds& bounds) { m_bounds = bounds; }
@@ -130,7 +130,7 @@ namespace kge
 	protected:
 		std::vector<Ref<Material>> m_shared_materials;
 		uint32 m_sorting_order;
-		uint32 m_lightmap_index;
+		int32 m_lightmap_index;
 		Vector4 m_lightmap_scale_offset;
 		Bounds m_bounds;
 		std::vector<BatchInfo> m_batch_indices;

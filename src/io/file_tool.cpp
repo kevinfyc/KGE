@@ -52,7 +52,7 @@ namespace kge
     bool WriteFile(const std::string & content, const std::string & filename, bool isBinary)
     {
         IFile::Mode mode = IFile::Mode(IFile::ModeWrite | (isBinary ? IFile::ModeBinary : 0));
-		Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
+		Ref<IFile> file = FileSystemMgr::GetInstance()->getFileSystem()->openFile(filename, mode);
         if (!file)
         {
 			KGE_LOG_ERROR("Failed to create file '%s'", filename.c_str());
@@ -70,14 +70,14 @@ namespace kge
 	bool WriteFile(const ByteBuffer & content, const std::string & filename, bool isBinary)
 	{
 		IFile::Mode mode = IFile::Mode(IFile::ModeWrite | (isBinary ? IFile::ModeBinary : 0));
-		Ref<IFile> file = FileSystemMgr::Instance()->FileSystem()->openFile(filename, mode);
+		Ref<IFile> file = FileSystemMgr::GetInstance()->getFileSystem()->openFile(filename, mode);
 		if (!file)
 		{
 			KGE_LOG_ERROR("Failed to create file '%s'", filename.c_str());
 			return false;
 		}
 
-		file->write((char*)content.Bytes(), file->length());
+		file->write((char*)content.Bytes(), content.Size());
 
 		return true;
 	}

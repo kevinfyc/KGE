@@ -622,6 +622,8 @@ namespace kge
 #ifdef EXT_MATH
         XPMatrixPerspectiveFovLH( this, fov, aspectRatio, nearPlane, farPlane );
 #else
+
+#if D3D
         float cot = 1 / (float)tan(fov * 0.5f);
         float rcp = 1 / (farPlane - nearPlane);
 
@@ -644,6 +646,18 @@ namespace kge
         m[3][1] = 0;
         m[3][2] = - rcp  * farPlane * nearPlane;
         m[3][3] = 0;
+#else
+		float scale_y = 1 / tan(Deg2Rad * fov * 0.5f);
+		float scale_x = scale_y / aspectRatio;
+
+		m00 = scale_x;
+		m11 = scale_y;
+		m22 = (nearPlane + farPlane) / (nearPlane - farPlane);
+		m23 = 2 * nearPlane * farPlane / (nearPlane - farPlane);
+		m32 = -1.0f;
+		m33 = 0;
+#endif
+
 #endif
     }
 
@@ -654,8 +668,9 @@ namespace kge
     INLINE
     void Matrix::translation( const Vector3& v )
     {
-        (*this)[3] = v;
-        m[3][3] = 1;
+		m03 = v.x;
+		m13 = v.y;
+		m23 = v.z;
     }
 
     /**

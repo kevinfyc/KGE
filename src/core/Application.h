@@ -11,6 +11,7 @@
 
 #include "pre_define.h"
 #include "world.h"
+#include "io/file_tool.h"
 
 namespace kge
 {
@@ -50,6 +51,7 @@ namespace kge
 
 		uint32 _width;
 		uint32 _height;
+		Ref<IFileSystem> fileSystem;// = Ref<IFileSystem>(new FileSystemImp());
     };
 }
 

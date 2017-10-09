@@ -34,6 +34,9 @@
 const float MAX_FLOAT_VALUE = 3.402823466e+38F;
 const float MIN_FLOAT_VALUE = -MAX_FLOAT_VALUE;
 
+const float Deg2Rad = 0.0174533f;
+const float Rad2Deg = 57.2958f;
+
 #define MATH_PI 3.14159265f
 
 #ifndef PI_FULL
