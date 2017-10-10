@@ -13,7 +13,7 @@ if (WIN32)
 	list(APPEND INCLUDE_DIRS_ONLY ${THIRD_PARTY_DIR}/glew)
 endif()
 
-set(SOURCES core math graphics util io rapidjson rapidxml jpeg png zlib)
+set(SOURCES core math graphics ui util io rapidjson rapidxml jpeg png zlib)
 
 foreach(SOURCE ${SOURCES})
 	add_subdirectory(${SOURCE})

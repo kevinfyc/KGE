@@ -12,6 +12,8 @@
 #include "transform.h"
 #include "graphics/camera.h"
 #include "graphics/mesh_renderer.h"
+#include "ui/ui_view.h"
+#include "ui/ui_canvas_renderer.h"
 
 namespace kge
 {
@@ -22,6 +24,8 @@ namespace kge
 		Transform::RegisterComponent();
 		Camera::RegisterComponent();
 		MeshRenderer::RegisterComponent();
+		UIView::RegisterComponent();
+		UICanvasRenderer::RegisterComponent();
 	}
 
 	/*static*/void Component::Destroy(Ref<Component> com)
