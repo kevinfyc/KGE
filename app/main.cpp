@@ -33,10 +33,10 @@ App::App()
 void App::Start()
 {
 	auto camera = GameObject::Create("camera")->AddComponent<Camera>();
-	camera->GetTransform()->SetWorldPosition(Vector3(0, 0, -6));
-	Quaternion rot = Quaternion();
-	rot.fromAngleAxis(0, Vector3(0, 0, 0));
-	camera->GetTransform()->SetWorldRotation(rot);
+	camera->GetTransform()->SetWorldPosition(Vector3(0, 1, -4));
+	//Quaternion rot = Quaternion();
+	//rot.fromAngleAxis(0, Vector3(0, 0, 0));
+	//camera->GetTransform()->SetWorldRotation(rot);
 	camera->SetCullingMask(1 << 0);
 
 	_camera = camera;
@@ -94,7 +94,7 @@ void App::Start()
 	m_rotate_deg = 0.1f;
 
 
-	Resource::LoadGameObjectAsync("Assets/AppMesh/plane.prefab", true);
+	_gameObject = Resource::LoadGameObject("Assets/AppMesh/plane.prefab");
 
 }
 
@@ -108,7 +108,7 @@ void App::Update()
 	Quaternion rot = Quaternion();
 	rot.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(0, 1, 0));
 	//_cube.lock()->GetTransform()->SetLocalRotation(rot);
-	//_gameObject.lock()->GetTransform()->SetLocalRotation(rot);
+	_gameObject.lock()->GetTransform()->SetLocalRotation(rot);
 	m_rotate_deg += 30 * Time::GetDeltaTime();
 }
 

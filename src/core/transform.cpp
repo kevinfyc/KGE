@@ -102,7 +102,7 @@ namespace kge
 			p->NotifyParentHierarchyChange();
 
 			{
-				p->World2Local(_local_position, _world_position);
+				p->World2Local(_world_position, _local_position);
 				_local_rotation = Quaternion::inverse(p->GetWorldRotation()) * _world_rotation;
 				const Vector3& parent_scale = p->GetWorldScale();
 				float x = _world_scale.x / parent_scale.x;
@@ -164,7 +164,7 @@ namespace kge
 
 	void Transform::SetWorldPosition(const Vector3& pos)
 	{
-		if (!_delty && _local_position == pos)
+		if (!_delty && _world_position == pos)
 			return;
 
 		if (IsRoot())
@@ -314,8 +314,9 @@ namespace kge
 
 	const Matrix& Transform::GetWorld2LocalMatrix()
 	{
-		_world_to_local_matrix = GetLocal2WorldMatrix();
-		_world_to_local_matrix.invert();
+		Matrix tmp = GetLocal2WorldMatrix();
+		tmp.invert();
+		_world_to_local_matrix = tmp;
 
 		return _world_to_local_matrix;
 	}

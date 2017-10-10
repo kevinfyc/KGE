@@ -19,16 +19,21 @@ namespace kge
 {
 	std::list<Ref<GameObject>> World::_gameObjects;
 	std::list<Ref<GameObject>> World::_gameObjects_start;
+	std::mutex World::_mutex;
 
 	void World::AddGameObject(const Ref<GameObject>& obj)
 	{
+		_mutex.lock();
 		_gameObjects_start.push_back(obj);
+		_mutex.unlock();
 	}
 
 	void World::AddGameObjects(const std::list<Ref<GameObject>>& objs)
 	{
+		_mutex.lock();
 		for (Ref<GameObject> obj : objs)
 			_gameObjects_start.push_back(obj);
+		_mutex.unlock();
 	}
 
 	bool World::Init()
@@ -63,6 +68,7 @@ namespace kge
 
 	void World::Tick()
 	{
+		_mutex.lock();
 		for (Ref<GameObject> obj : _gameObjects_start)
 		{
 			if (!obj->_deleted)
@@ -78,6 +84,7 @@ namespace kge
 			}
 		}
 		_gameObjects_start.clear();
+		_mutex.unlock();
 
 		for (auto iter = _gameObjects.begin(); iter != _gameObjects.end();)
 		{

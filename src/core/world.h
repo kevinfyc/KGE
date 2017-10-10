@@ -31,6 +31,7 @@ namespace kge
 	private:
 		static std::list<Ref<GameObject>> _gameObjects;
 		static std::list<Ref<GameObject>> _gameObjects_start;
+		static std::mutex _mutex;
 	};
 }
 

@@ -5,6 +5,7 @@
 #ifndef CODE_INLINE
     #include "matrix.ipp"
 #endif
+#include <math.h>
 
 namespace kge
 {
@@ -383,6 +384,7 @@ namespace kge
         float wy = q.w * v[1] * 2.f;
         float wz = q.w * v[2] * 2.f;
 
+#if D3D
         m[0][0] = 1.f - (yy + zz);
         m[1][0] = xy - wz;
         m[2][0] = xz + wy;
@@ -394,6 +396,19 @@ namespace kge
         m[0][2] = xz - wy;
         m[1][2] = yz + wx;
         m[2][2] = 1.f - (xx + yy);
+#else        
+		m[0][0] = 1.f - (yy + zz);
+		m[1][0] = xy + wz;
+		m[2][0] = xz - wy;
+
+		m[0][1] = xy - wz;
+		m[1][1] = 1.f - (xx + zz);
+		m[2][1] = yz + wx;
+
+		m[0][2] = xz + wy;
+		m[1][2] = yz - wx;
+		m[2][2] = 1.f - (xx + yy);
+#endif
     }
 
     /**
@@ -443,7 +458,13 @@ namespace kge
         m[3][3] = 1.f;
     }
 
-
+#define SWAP(a, b, temp) \
+	do \
+	{ \
+		temp = a; \
+		a = b; \
+		b = temp; \
+	} while(false)
     /**
      *	This method inverts the input matrix. This matrix is set to the result.
      *
@@ -451,6 +472,7 @@ namespace kge
      */
     bool Matrix::invert(const Matrix& matrix)
     {
+#if 0
         float determinant = matrix.getDeterminant();
 
         if (determinant == 0.f)
@@ -496,6 +518,113 @@ namespace kge
         }
 
         return true;
+#else
+		float* mat = (float*)this;
+		int is[4];
+		int js[4];
+
+		for (int i = 0; i < 4; i++)
+		{
+			float max = 0.0f;
+
+			for (int j = i; j < 4; j++)
+			{
+				for (int k = i; k < 4; k++)
+				{
+					const float f = fabs(mat[j * 4 + k]);
+					if (f > max)
+					{
+						max = f;
+						is[i] = j;
+						js[i] = k;
+					}
+				}
+			}
+
+			if (max < 0.0001f)
+			{
+				return false;
+			}
+
+			if (is[i] != i)
+			{
+				float temp;
+
+				SWAP(mat[is[i] * 4 + 0], mat[i * 4 + 0], temp);
+				SWAP(mat[is[i] * 4 + 1], mat[i * 4 + 1], temp);
+				SWAP(mat[is[i] * 4 + 2], mat[i * 4 + 2], temp);
+				SWAP(mat[is[i] * 4 + 3], mat[i * 4 + 3], temp);
+			}
+
+			if (js[i] != i)
+			{
+				float temp;
+
+				SWAP(mat[0 * 4 + js[i]], mat[0 * 4 + i], temp);
+				SWAP(mat[1 * 4 + js[i]], mat[1 * 4 + i], temp);
+				SWAP(mat[2 * 4 + js[i]], mat[2 * 4 + i], temp);
+				SWAP(mat[3 * 4 + js[i]], mat[3 * 4 + i], temp);
+			}
+
+			float& key = mat[i * 4 + i];
+			key = 1.0f / key;
+
+			for (int j = 0; j < 4; j++)
+			{
+				if (j != i)
+				{
+					mat[i * 4 + j] *= key;
+				}
+			}
+
+			for (int j = 0; j < 4; j++)
+			{
+				if (j != i)
+				{
+					for (int k = 0; k < 4; k++)
+					{
+						if (k != i)
+						{
+							mat[j * 4 + k] -= mat[i * 4 + k] * mat[j * 4 + i];
+						}
+					}
+				}
+			}
+
+			for (int j = 0; j < 4; j++)
+			{
+				if (j != i)
+				{
+					mat[j * 4 + i] *= -key;
+				}
+			}
+		}
+
+		for (int i = 3; i >= 0; i--)
+		{
+			if (js[i] != i)
+			{
+				float temp;
+
+				SWAP(mat[js[i] * 4 + 0], mat[i * 4 + 0], temp);
+				SWAP(mat[js[i] * 4 + 1], mat[i * 4 + 1], temp);
+				SWAP(mat[js[i] * 4 + 2], mat[i * 4 + 2], temp);
+				SWAP(mat[js[i] * 4 + 3], mat[i * 4 + 3], temp);
+			}
+
+			if (is[i] != i)
+			{
+				float temp;
+
+				SWAP(mat[0 * 4 + is[i]], mat[0 * 4 + i], temp);
+				SWAP(mat[1 * 4 + is[i]], mat[1 * 4 + i], temp);
+				SWAP(mat[2 * 4 + is[i]], mat[2 * 4 + i], temp);
+				SWAP(mat[3 * 4 + is[i]], mat[3 * 4 + i], temp);
+			}
+		}
+
+		return true;
+#endif
     }
 
 

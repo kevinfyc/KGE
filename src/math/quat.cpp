@@ -147,6 +147,7 @@ namespace kge
      */
     void Quaternion::multiply(const Quaternion& q1, const Quaternion& q2)
     {
+#if 0
         const Vector3 q1v(q1.x, q1.y, q1.z);
         const Vector3 q2v(q2.x, q2.y, q2.z);
 
@@ -160,6 +161,13 @@ namespace kge
         y = result.y;
         z = result.z;
         w = resultw;
+#else
+
+		x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
+		y = q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z;
+		z = q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x;
+		w = q1.w * q2.w + q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
+#endif
     }
 
 

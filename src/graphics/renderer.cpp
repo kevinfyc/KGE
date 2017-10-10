@@ -628,14 +628,14 @@ namespace kge
 			else
 			{
 				const auto& last = pass.back();
-				//if (dynamic_cast<UICanvasRenderer*>(i.renderer) == NULL &&
-				//	i.queue == last.queue &&
-				//	i.shader_pass_count == 1 && last.shader_pass_count == 1 &&
-				//	i.shader_id == last.shader_id)
-				//{
-				//	pass.AddLast(i);
-				//}
-				//else
+				if (/*dynamic_cast<UICanvasRenderer*>(i.renderer) == NULL &&*/
+					i.queue == last.queue &&
+					i.shader_pass_count == 1 && last.shader_pass_count == 1 &&
+					i.shader_id == last.shader_id)
+				{
+					pass.push_back(i);
+				}
+				else
 				{
 					passes.push_back(pass);
 
