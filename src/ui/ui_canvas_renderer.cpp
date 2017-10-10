@@ -68,7 +68,7 @@ namespace kge
 				t->GetGameObject()->IsActiveSelf())
 			{
 				auto type_name = view->GetTypeName();
-				if (type_name == "UISprite")
+				if (type_name == "UIImage")
 				{
 					if (_type == RenderType::BaseView || _type == RenderType::Sprite)
 					{
