@@ -55,6 +55,11 @@ namespace kge
 		m_batching_count = -1;
 	}
 
+	void Renderer::OnResize(uint32 width, uint32 height)
+	{
+		Shader::ClearAllPipelines();
+	}
+
 	void Renderer::DeepCopy(const Ref<Object>& source)
 	{
 		Component::DeepCopy(source);

@@ -35,6 +35,7 @@ namespace kge
 		static void RenderAll();
 		static Camera* Current() { return _current; }
 		static bool IsValidCamera(Camera* camera);
+		static void OnResize(uint32 width, uint32 height);
 
 		virtual ~Camera();
 

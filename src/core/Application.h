@@ -46,6 +46,7 @@ namespace kge
 
 		virtual void Start() {}
 		virtual void Update() {}
+		virtual void OnResize(uint32 width, uint32 height);
 
 	private:
 		static IApplication* _instance;

@@ -36,6 +36,7 @@ namespace kge
 		static void RenderAllPass();
 		static void HandleUIEvent();
 		static void BuildStaticBatch(const Ref<GameObject>& obj);
+		static void OnResize(uint32 width, uint32 height);
 
 		Ref<Material> GetSharedMaterial() const;
 		void SetSharedMaterial(const Ref<Material>& mat);

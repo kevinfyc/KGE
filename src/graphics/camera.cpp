@@ -95,6 +95,19 @@ namespace kge
 
 		Renderer::SetCullingDirty(this);
 	}
+	
+	void Camera::OnResize(uint32 width, uint32 height)
+	{
+		for (auto i : _cameras)
+		{
+			i->_render_pass.reset();
+			i->_matrix_dirty = true;
+
+			Renderer::SetCullingDirty(i);
+		}
+
+		Renderer::OnResize(width, height);
+	}
 
 	void Camera::SetDepth(uint32 depth)
 	{

@@ -25,6 +25,7 @@ namespace kge
     public:
 		virtual bool Init(uint32 width, uint32 height) override;
 		virtual void Fini() override;
+		void OnResize(uint32 width, uint32 height);
 
 		void BeginFrame() { }
 		void EndFrame() { }

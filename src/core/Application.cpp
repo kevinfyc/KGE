@@ -120,6 +120,11 @@ namespace kge
 		Graphics::Draw();
 	}
 
+	void IApplication::OnResize(uint32 width, uint32 height)
+	{
+		Graphics::OnResize(width, height);
+	}
+
 	void IApplication::RunTaskInPreLoop(TaskLoop::TaskNode task)
 	{
 		_pre_taskloop->Add(task);

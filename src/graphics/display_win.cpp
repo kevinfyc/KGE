@@ -43,6 +43,16 @@ namespace kge
 		case WM_CLOSE:
 			PostQuitMessage(0);
 			break;
+
+		case WM_SIZE:
+			if (wParam != SIZE_MINIMIZED)
+			{
+				int width = lParam & 0xffff;
+				int height = (lParam & 0xffff0000) >> 16;
+
+				IApplication::GetInstance()->OnResize(width, height);
+			}
+			break;
 		}
 
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);

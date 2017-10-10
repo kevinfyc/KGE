@@ -24,6 +24,8 @@ namespace kge
 
 		static void Draw();
 
+		static void OnResize(uint32 width, uint32 height);
+
 		inline static Display* GetDisplay() { return s_display.get(); }
 
 	public:

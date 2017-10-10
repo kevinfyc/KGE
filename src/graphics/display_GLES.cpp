@@ -131,6 +131,11 @@ namespace kge
 #endif
 	}
 
+	void DisplayGLES::OnResize(uint32 width, uint32 height)
+	{
+		_width = width; _height = height;
+	}
+
 	uint32 DisplayGLES::GetDefaultDepthRenderBuffer()
 	{
 		if (_default_depth_render_buffer == 0)

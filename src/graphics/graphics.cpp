@@ -34,6 +34,12 @@ namespace kge
 	{
 		s_display->Fini();
 	}
+	
+	void Graphics::OnResize(uint32 width, uint32 height)
+	{
+		Camera::OnResize(width, height);
+		s_display->OnResize(width, height);
+	}
 
 	/*static*/void Graphics::Draw()
 	{
