@@ -9,13 +9,53 @@
 #include "display_win.h"
 
 #include "core/Application.h"
+#include "core/input.h"
 
 #include <string>
 #include <assert.h>
 #include <windowsx.h>
 
+#include "graphics.h"
+#include "display.h"
+#include "util/time.h"
+
+extern std::vector<kge::Touch> g_input_touches;
+extern std::list<kge::Touch> g_input_touch_buffer;
+extern bool g_key_down[(kge::uint32)kge::KeyCode::COUNT];
+extern bool g_key[(kge::uint32)kge::KeyCode::COUNT];
+extern bool g_key_up[(kge::uint32)kge::KeyCode::COUNT];
+extern bool g_key_held[(kge::uint32)kge::KeyCode::COUNT];
+extern bool g_mouse_button_down[3];
+extern bool g_mouse_button_up[3];
+extern kge::Vector3 g_mouse_position;
+extern bool g_mouse_button_held[3];
+
 namespace kge
 {
+	static bool g_input_down = false;
+
+	static uint32 get_key_code(int wParam)
+	{
+		uint32 key = (uint32)KeyCode::None;
+
+		if (wParam >= 48 && wParam < 48 + 10)
+			key = (uint32)KeyCode::Alpha0 + wParam - 48;
+		else if (wParam >= 96 && wParam < 96 + 10)
+			key = (uint32)KeyCode::Keypad0 + wParam - 96;
+		else if (wParam >= 65 && wParam < 65 + 'z' - 'a')
+			key = (uint32)KeyCode::A + wParam - 65;
+		else if (wParam == VK_BACK)
+			key = (uint32)KeyCode::Backspace;
+		else if (wParam == VK_SPACE)
+			key = (uint32)KeyCode::Space;
+		else if (wParam == VK_ESCAPE)
+			key = (uint32)KeyCode::Escape;
+		else if (wParam == VK_RETURN)
+			key = (uint32)KeyCode::Return;
+
+		return key;
+	}
+
 	DisplayWin::DisplayWin() :_hwnd(nullptr)
 	{
 	
@@ -47,12 +87,200 @@ namespace kge
 		case WM_SIZE:
 			if (wParam != SIZE_MINIMIZED)
 			{
-				int width = lParam & 0xffff;
-				int height = (lParam & 0xffff0000) >> 16;
+				uint32 width = lParam & 0xffff;
+				uint32 height = (lParam & 0xffff0000) >> 16;
 
 				IApplication::GetInstance()->OnResize(width, height);
 			}
 			break;
+
+		case WM_KEYDOWN:
+		{
+			uint32 key = get_key_code((uint32)wParam);
+
+			if (key > 0)
+			{
+				if (!g_key_held[key])
+				{
+					g_key_down[key] = true;
+					g_key_held[key] = true;
+					g_key[key] = true;
+				}
+			}
+		}
+		break;
+
+		case WM_KEYUP:
+		{
+			uint32 key = get_key_code((uint32)wParam);
+
+			if (key > 0)
+			{
+				g_key_up[key] = true;
+				g_key_held[key] = false;
+				g_key[key] = false;
+			}
+		}
+		break;
+
+		case WM_SYSCHAR:
+			if (wParam == VK_RETURN)
+			{
+				//Alt + Enter
+				//switch_full_screen(hWnd);
+			}
+			break;
+
+		case WM_LBUTTONDOWN:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			if (!g_input_down)
+			{
+				Touch t;
+				t.deltaPosition = Vector2(0, 0);
+				t.deltaTime = 0;
+				t.fingerID = 0;
+				t.phase = TouchPhase::Began;
+				t.position = Vector2((float)x, (float)Graphics::GetDisplay()->GetHeight() - y - 1);
+				t.tapCount = 1;
+				t.time = Time::GetTime();
+
+				if (!g_input_touches.empty())
+					g_input_touch_buffer.push_back(t);
+				else
+					g_input_touches.push_back(t);
+
+				g_input_down = true;
+			}
+
+			g_mouse_button_down[0] = true;
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+			g_mouse_button_held[0] = true;
+		}
+		break;
+
+		case WM_RBUTTONDOWN:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			g_mouse_button_down[1] = true;
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+			g_mouse_button_held[1] = true;
+		}
+		break;
+
+		case WM_MBUTTONDOWN:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			g_mouse_button_down[2] = true;
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+			g_mouse_button_held[2] = true;
+		}
+		break;
+
+		case WM_MOUSEMOVE:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			if (g_input_down)
+			{
+				Touch t;
+				t.deltaPosition = Vector2(0, 0);
+				t.deltaTime = 0;
+				t.fingerID = 0;
+				t.phase = TouchPhase::Moved;
+				t.position = Vector2((float)x, (float)Graphics::GetDisplay()->GetHeight() - y - 1);
+				t.tapCount = 1;
+				t.time = Time::GetTime();
+
+				if (!g_input_touches.empty())
+				{
+					if (g_input_touch_buffer.empty())
+					{
+						g_input_touch_buffer.push_back(t);
+					}
+					else
+					{
+						if (g_input_touch_buffer.back().phase == TouchPhase::Moved)
+							g_input_touch_buffer.back() = t;
+						else
+							g_input_touch_buffer.push_back(t);
+					}
+				}
+				else
+				{
+					g_input_touches.push_back(t);
+				}
+			}
+
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+		}
+		break;
+
+		case WM_LBUTTONUP:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			if (g_input_down)
+			{
+				Touch t;
+				t.deltaPosition = Vector2(0, 0);
+				t.deltaTime = 0;
+				t.fingerID = 0;
+				t.phase = TouchPhase::Ended;
+				t.position = Vector2((float)x, (float)Graphics::GetDisplay()->GetHeight() - y - 1);
+				t.tapCount = 1;
+				t.time = Time::GetTime();
+
+				if (!g_input_touches.empty())
+					g_input_touch_buffer.push_back(t);
+				else
+					g_input_touches.push_back(t);
+
+				g_input_down = false;
+			}
+
+			g_mouse_button_up[0] = true;
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+			g_mouse_button_held[0] = false;
+		}
+		break;
+
+		case WM_RBUTTONUP:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			g_mouse_button_up[1] = true;
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+			g_mouse_button_held[1] = false;
+		}
+		break;
+
+		case WM_MBUTTONUP:
+		{
+			uint32 x = GET_X_LPARAM(lParam);
+			uint32 y = GET_Y_LPARAM(lParam);
+
+			g_mouse_button_up[2] = true;
+			g_mouse_position.x = (float)x;
+			g_mouse_position.y = (float)Graphics::GetDisplay()->GetHeight() - y - 1;
+			g_mouse_button_held[2] = false;
+		}
+		break;
 		}
 
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);

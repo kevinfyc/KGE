@@ -7,6 +7,9 @@
 #include "graphics/mesh_renderer.h"
 #include "util/time.h"
 #include "core/resource.h"
+#include "core/input.h"
+#include "graphics/graphics.h"
+#include "graphics/display.h"
 
 using namespace kge;
 
@@ -94,22 +97,34 @@ void App::Start()
 	m_rotate_deg = 0.1f;
 
 
-	_gameObject = Resource::LoadGameObject("Assets/AppMesh/plane.prefab", true);
+	_gameObject = Resource::LoadGameObject("Assets/AppMesh/plane.prefab");
 
 }
 
 void App::Update()
 {
-	//Quaternion rot = Quaternion();
-	//rot.fromAngleAxis(m_rotate_deg, Vector3(0, 1, 0));
-	//_camera.lock()->GetTransform()->SetLocalRotation(rot);
-	//m_rotate_deg += 30 * 0.01f;
-
 	Quaternion rot = Quaternion();
 	rot.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(0, 1, 0));
 	//_cube.lock()->GetTransform()->SetLocalRotation(rot);
 	_gameObject.lock()->GetTransform()->SetLocalRotation(rot);
 	m_rotate_deg += 30 * Time::GetDeltaTime();
+
+	if (Input::GetMouseButton(0))
+	{
+		auto mouse = Input::GetMousePosition();
+		if (mouse.x > Graphics::GetDisplay()->GetWidth() * 0.5f)
+		{
+			auto pos = _camera.lock()->GetTransform()->GetWorldPosition();
+			pos = pos + (_camera.lock()->GetTransform()->GetForward() * Time::GetDeltaTime() * 5);
+			_camera.lock()->GetTransform()->SetWorldPosition(pos);
+		}
+		else
+		{
+			auto pos = _camera.lock()->GetTransform()->GetWorldPosition();
+			pos = pos + (-_camera.lock()->GetTransform()->GetForward() * Time::GetDeltaTime() * 5);
+			_camera.lock()->GetTransform()->SetWorldPosition(pos);
+		}
+	}
 }
 
 KGE_MAIN(App);
