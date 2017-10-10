@@ -6,18 +6,21 @@
 //
 //
 
-#include "application.h"
-#include "graphics/graphics.h"
-
-#include "util/log.h"
-
 #include <assert.h>
+
+#include "application.h"
+
 #include "io/file_tool.h"
 #include "io/file_tool_imp.h"
 #include "io/section_factory.h"
+
 #include "graphics/texture2D.h"
 #include "graphics/shader_xml.h"
 #include "graphics/material.h"
+#include "graphics/graphics.h"
+
+#include "util/log.h"
+#include "util/time.h"
 
 namespace kge
 {
@@ -27,8 +30,10 @@ namespace kge
 		return _instance;
 	}
 
-	IApplication::IApplication():_width(1280)
-		,_height(720)
+	IApplication::IApplication() :_width(1280)
+		, _height(720)
+		, _pre_taskloop(RefMake<TaskLoop>())
+		, _post_taskloop(RefMake<TaskLoop>())
 	{
 		_instance = this;
 	}
@@ -100,15 +105,29 @@ namespace kge
     
 	void IApplication::OnUpdate()
 	{
-		Graphics::Tick();
+		Time::Tick();
+
+		_pre_taskloop->Tick();
 
 		Update();
 		World::Tick();
+
+		_post_taskloop->Tick();
 	}
 
 	void IApplication::OnDraw()
 	{
 		Graphics::Draw();
+	}
+
+	void IApplication::RunTaskInPreLoop(TaskLoop::TaskNode task)
+	{
+		_pre_taskloop->Add(task);
+	}
+
+	void IApplication::RunTaskInPostLoop(TaskLoop::TaskNode task)
+	{
+		_pre_taskloop->Add(task);
 	}
 
 } // end namespace kge

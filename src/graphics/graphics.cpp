@@ -11,6 +11,7 @@
 #include "display.h"
 
 #include "camera.h"
+#include "core/Application.h"
 
 namespace kge
 {
@@ -22,13 +23,11 @@ namespace kge
 		s_display = RefMake<Display>();
 		s_display->Init(width, height);
 
+		IApplication::GetInstance()->RunTaskInPreLoop(TaskLoop::TaskNode([] {
+			s_display->ProcessEvent();
+		}, false));
 
 		return true;
-	}
-
-	/*static*/void Graphics::Tick()
-	{
-		s_display->ProcessEvent();
 	}
 
 	/*static*/void Graphics::Fini()

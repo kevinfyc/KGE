@@ -5,6 +5,7 @@
 #include "graphics/mesh.h"
 #include "graphics/material.h"
 #include "graphics/mesh_renderer.h"
+#include "util/time.h"
 
 using namespace kge;
 
@@ -81,7 +82,7 @@ void App::Start()
 	renderer->SetSharedMaterial(mat);
 
 	_cube = obj;
-	m_rotate_deg = 0;
+	m_rotate_deg = 0.1f;
 }
 
 void App::Update()
@@ -90,6 +91,11 @@ void App::Update()
 	//rot.fromAngleAxis(m_rotate_deg, Vector3(0, 1, 0));
 	//_camera.lock()->GetTransform()->SetLocalRotation(rot);
 	//m_rotate_deg += 30 * 0.01f;
+
+	Quaternion rot = Quaternion();
+	rot.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(0, 1, 0));
+	_cube.lock()->GetTransform()->SetLocalRotation(rot);
+	m_rotate_deg += 30 * Time::GetDeltaTime();
 }
 
 KGE_MAIN(App);

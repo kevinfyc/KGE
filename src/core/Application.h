@@ -12,6 +12,7 @@
 #include "pre_define.h"
 #include "world.h"
 #include "io/file_tool.h"
+#include "util/task_loop.h"
 
 namespace kge
 {
@@ -25,6 +26,9 @@ namespace kge
 		void Fini();
 
 		void Tick();
+
+		void RunTaskInPreLoop(TaskLoop::TaskNode task);
+		void RunTaskInPostLoop(TaskLoop::TaskNode task);
 
 		void OnUpdate();
 		void OnDraw();
@@ -51,7 +55,10 @@ namespace kge
 
 		uint32 _width;
 		uint32 _height;
-		Ref<IFileSystem> fileSystem;// = Ref<IFileSystem>(new FileSystemImp());
+		Ref<IFileSystem> fileSystem;
+
+		Ref<TaskLoop> _pre_taskloop;
+		Ref<TaskLoop> _post_taskloop;
     };
 }
 

@@ -15,10 +15,17 @@
 #else
 #include <sys/time.h>
 #endif
+#include "log.h"
 
 namespace kge
 {
-	long long Time::_time_startup = 0;
+	long long Time::s_time_startup = 0;
+	float Time::s_time_delta = 0;
+	float Time::s_time_record = -1;
+	uint32 Time::s_frame_count = 0;
+	uint32 Time::s_frame_record;
+	float Time::s_time = 0;
+	uint32 Time::s_fps;
 
 	long long Time::GetTimeMS()
 	{
@@ -51,12 +58,37 @@ namespace kge
 
 	float Time::GetTime()
 	{
-		if (_time_startup == 0)
-			_time_startup = GetTimeMS();
+		if (s_time_startup == 0)
+			s_time_startup = GetTimeMS();
 
-		long long time = GetTimeMS() - _time_startup;
+		long long time = GetTimeMS() - s_time_startup;
 
 		return time / 1000.0f;
+	}
+
+	void Time::Tick()
+	{
+		float time = Time::GetTime();
+		Time::s_time_delta = time - Time::s_time;
+		Time::s_time = time;
+
+		if (Time::s_time_record < 0)
+		{
+			Time::s_time_record = Time::GetTime();
+			Time::s_frame_record = Time::GetFrameCount();
+		}
+
+		uint32 frame = Time::GetFrameCount();
+		if (time - Time::s_time_record >= 1)
+		{
+			Time::s_fps = frame - Time::s_frame_record;
+			Time::s_time_record = time;
+			Time::s_frame_record = frame;
+
+			KGE_LOG_DEBUG("fps:%d", Time::GetFPS());
+		}
+
+		Time::s_frame_count++;
 	}
 
 } // end of namespace

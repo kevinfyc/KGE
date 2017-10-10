@@ -21,7 +21,7 @@ namespace kge
 
 	BufferGLES::~BufferGLES()
 	{
-		GL_ASSERT( glDeleteBuffers(1, &_buffer) );
+		glDeleteBuffers(1, &_buffer);
 	}
 
 	const Ref<ByteBuffer>& BufferGLES::GetLocalBuffer()
