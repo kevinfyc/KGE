@@ -45,7 +45,7 @@ namespace kge
 		static void EnableMultiTouch(bool value);
 		static int GetTouchCount();
 		static const Touch *GetTouch(uint32 index);
-		static void Update();
+		static void Tick();
 		static bool GetKeyDown(KeyCode key);
 		static bool GetKey(KeyCode key);
 		static bool GetKeyUp(KeyCode key);

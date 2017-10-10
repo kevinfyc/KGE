@@ -21,6 +21,7 @@
 
 #include "util/log.h"
 #include "util/time.h"
+#include "input.h"
 
 namespace kge
 {
@@ -113,6 +114,8 @@ namespace kge
 		World::Tick();
 
 		_post_taskloop->Tick();
+
+		Input::Tick();
 	}
 
 	void IApplication::OnDraw()

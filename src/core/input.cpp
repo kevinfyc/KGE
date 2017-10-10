@@ -87,7 +87,7 @@ namespace kge
 		return g_key_up[(uint32)key];
 	}
 
-	void Input::Update()
+	void Input::Tick()
 	{
 		g_input_touches.clear();
 		if (!g_input_touch_buffer.empty())
