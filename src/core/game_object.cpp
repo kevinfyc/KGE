@@ -43,6 +43,15 @@ namespace kge
 		obj->Delete();
 	}
 
+	Ref<GameObject> GameObject::Instantiate(const Ref<GameObject>& source)
+	{
+		Ref<GameObject> clone = GameObject::Create(source->GetName());
+
+		clone->DeepCopy(RefCast<Object>(source));
+
+		return clone;
+	}
+
 	GameObject::GameObject(const std::string& name) :_deleted(false)
 		, _layer((uint32)Layer::Default)
 		, _active_in_hierarchy(true)
@@ -57,6 +66,49 @@ namespace kge
 	GameObject::~GameObject()
 	{
 
+	}
+
+	void GameObject::CopyComponent(const Ref<Component>& com)
+	{
+		auto transform = RefCast<Transform>(com);
+
+		if (transform)
+		{
+			GetTransform()->DeepCopy(transform);
+		}
+		else
+		{
+			auto class_name = com->GetTypeName();
+			auto* p_com = Component::Create(class_name);
+			if (p_com != NULL)
+			{
+				AddComponent(Ref<Component>(p_com));
+				p_com->DeepCopy(com);
+			}
+		}
+	}
+
+	void GameObject::DeepCopy(const Ref<Object>& source)
+	{
+		Object::DeepCopy(source);
+
+		auto src = RefCast<GameObject>(source);
+
+		for (const auto& i : src->_components)
+		{
+			CopyComponent(i);
+		}
+
+		for (const auto& i : src->_components_neo)
+		{
+			CopyComponent(i);
+		}
+
+		this->SetLayer(src->GetLayer());
+		_active_in_hierarchy = src->_active_in_hierarchy;
+		_active_self = src->_active_self;
+		_deleted = src->_deleted;
+		_static = src->_static;
 	}
 
 	void GameObject::SetLayer(uint32 layer)

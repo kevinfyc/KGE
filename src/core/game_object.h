@@ -26,8 +26,11 @@ namespace kge
 		virtual ~GameObject();
 		static Ref<GameObject> Create(const std::string& name, bool add_to_world = true);
 		static void Destroy(Ref<GameObject> obj);
+		static Ref<GameObject> Instantiate(const Ref<GameObject>& source);
 
 		void SetName(const std::string& name);
+
+		void DeepCopy(const Ref<Object>& source);
 
 		Ref<Component> AddComponent(const std::string& name);
 		Ref<Component> GetComponent(const std::string& name) const;
@@ -57,6 +60,8 @@ namespace kge
 	private:
 		GameObject(const std::string& name);
 		void AddComponent(const Ref<Component>& com);
+
+		void CopyComponent(const Ref<Component>& com);
 
 		void Delete();
 		void Start();

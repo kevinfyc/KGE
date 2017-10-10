@@ -140,9 +140,21 @@ namespace kge
 		wglShareLists(_context, _shared_context);
 
 		wglMakeCurrent(_hdc, _context);
+
+		//wglSwapIntervalEXT(0);
 #endif
 
 		return true;
+	}
+
+	void DisplayWin::CreateSharedContext()
+	{
+		wglMakeCurrent(_hdc, _shared_context);
+	}
+
+	void DisplayWin::DestroySharedContext()
+	{
+		wglMakeCurrent(nullptr, nullptr);
 	}
 
 	void DisplayWin::Fini()

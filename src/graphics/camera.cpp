@@ -31,6 +31,11 @@ namespace kge
 	{
 		_cameras.clear();
 	}
+	
+	void Camera::DeepCopy(const Ref<Object>& source)
+	{
+		assert(!"can not copy a camera");
+	}
 
 	bool Camera::IsValidCamera(Camera* camera)
 	{

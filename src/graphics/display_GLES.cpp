@@ -119,6 +119,11 @@ namespace kge
 			GL_ASSERT( glDisableVertexAttribArray(attr.location) );
 	}
 
+	void DisplayGLES::FlushContext()
+	{
+		GL_ASSERT( glFlush() );
+	}
+
 	void DisplayGLES::SwapBuffers()
 	{
 #if WIN32

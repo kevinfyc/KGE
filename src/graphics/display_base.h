@@ -19,6 +19,9 @@ namespace kge
 		virtual bool Init(uint32 width, uint32 height);
 		virtual void Fini();
 
+		virtual void CreateSharedContext() = 0;
+		virtual void DestroySharedContext() = 0;
+
 		uint32 GetWidth() const { return _width; }
 		uint32 GetHeight() const { return _height; }
 

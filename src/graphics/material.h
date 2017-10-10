@@ -30,6 +30,9 @@ namespace kge
 	{
 	public:
 		static Ref<Material> Create(const std::string& shader_name);
+
+		virtual void DeepCopy(const Ref<Object>& source);
+
 		const Ref<Shader>& GetShader()const { return _shader; }
 
 		void SetMatrix(const std::string & name, const Matrix& v);

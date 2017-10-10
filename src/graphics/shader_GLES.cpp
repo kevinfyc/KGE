@@ -428,7 +428,7 @@ namespace kge
 		std::string source = g_shader_header;
 		for (const auto& i : includes)
 		{
-			auto include_path = "shader/Include/" + i;
+			auto include_path = "Assets/shader/Include/" + i;
 			std::string content;
 			if (ReadFile(content, include_path, true))
 				source += content + "\n";

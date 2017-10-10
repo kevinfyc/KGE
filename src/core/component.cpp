@@ -30,6 +30,16 @@ namespace kge
 			com->Delete();
 	}
 
+	void Component::DeepCopy(const Ref<Object>& source)
+	{
+		Object::DeepCopy(source);
+
+		auto src = RefCast<Component>(source);
+		_deleted = src->_deleted;
+		_enable = src->_enable;
+		_started = false;
+	}
+
 	Component::Component():_deleted(false)
 		,_started(false)
 		,_enable(true)
@@ -49,6 +59,11 @@ namespace kge
 	Ref<Transform> Component::GetTransform() const
 	{
 		return _transform.lock();
+	}
+
+	Ref<Component> Component::GetRef() const
+	{
+		return GetGameObject()->GetComponentRef(this);
 	}
 
 	void Component::Delete()

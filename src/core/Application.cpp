@@ -59,7 +59,7 @@ namespace kge
 		FileSystemMgr::Instance()->SetFileSystem(fileSystem.get());
 
 		//add defualt resource path
-		fileSystem->AddSearchPath("../../../Assert");
+		fileSystem->AddSearchPath("../../../");
 
 		if (!Graphics::Init(_width, _height))
 		{

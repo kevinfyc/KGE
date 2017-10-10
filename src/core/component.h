@@ -32,6 +32,7 @@ namespace kge
 
 		Ref<GameObject> GetGameObject() const;
 		Ref<Transform> GetTransform() const;
+		Ref<Component> GetRef() const;
 
 		void Enable(bool enable);
 		bool IsEnable() const { return _enable; }

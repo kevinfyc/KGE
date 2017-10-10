@@ -13,6 +13,7 @@
 
 #include "Object.h"
 #include "graphics/renderer.h"
+#include "resource.h"
 
 namespace kge
 {
@@ -43,6 +44,9 @@ namespace kge
 		if (!Renderer::Init())
 			return false;
 
+		if (!Resource::Init())
+			return false;
+
 		return true;
 	}
 
@@ -54,7 +58,7 @@ namespace kge
 		Renderer::Fini();
 		Camera::Fini();
 		Shader::Fini();
-
+		Resource::Fini();
 	}
 
 	void World::Tick()

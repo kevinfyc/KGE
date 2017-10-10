@@ -38,6 +38,17 @@ namespace kge
 
 		return mat;
 	}
+	void Material::DeepCopy(const Ref<Object>& source)
+	{
+		Object::DeepCopy(source);
+
+		auto src = RefCast<Material>(source);
+		_matrices = src->_matrices;
+		_vectors = src->_vectors;
+		_vector_arrays = src->_vector_arrays;
+		_textures = src->_textures;
+		_colors = src->_colors;
+	}
 
 	Material::Material()
 	{

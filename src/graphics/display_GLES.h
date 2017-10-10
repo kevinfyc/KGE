@@ -36,6 +36,7 @@ namespace kge
 		void DisableVertexArray(const Ref<Shader>& shader, int pass_index);
 		void SubmitQueue(void* cmd) { }
 
+		void FlushContext();
 		void SwapBuffers();
 
 		uint32 GetDefaultDepthRenderBuffer();

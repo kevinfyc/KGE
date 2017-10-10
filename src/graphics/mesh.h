@@ -54,6 +54,7 @@ namespace kge
 
 		std::vector<uint16> triangles;
 		std::vector<SubMesh> submeshes;
+		std::vector<Matrix> bind_poses;
 
 	private:
 		static void FillVertexBuffer(void* param, const ByteBuffer& buffer);

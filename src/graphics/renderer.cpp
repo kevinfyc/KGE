@@ -55,6 +55,14 @@ namespace kge
 		m_batching_count = -1;
 	}
 
+	void Renderer::DeepCopy(const Ref<Object>& source)
+	{
+		Component::DeepCopy(source);
+
+		auto src = RefCast<Renderer>(source);
+		SetSharedMaterials(src->GetSharedMaterials());
+	}
+
 	void Renderer::PreRenderByMaterial(uint32 material_index)
 	{
 		auto& vp = Camera::Current()->GetViewProjectionMatrix();

@@ -7,12 +7,11 @@
 //
 
 #include "shader.h"
-#include "util\byte_buffer.h"
+#include "util/byte_buffer.h"
 #include "texture_format.h"
 #include "texture2D.h"
-#include "util\log.h"
-#include "io\file_tool.h"
-#include "image.h"
+#include "util/log.h"
+#include "io/file_tool.h"
 
 namespace kge
 {
@@ -51,8 +50,6 @@ namespace kge
 				colors[i++] = 255;
 
 				texture = Texture2D::Create(1, 1, TextureFormat::RGBA32, TextureWrapMode::Clamp, FilterMode::Point, false, colors);
-				Image img;
-				img.EncodeToPNG(texture.get(), 32, "mytest.png");
 			}
 			else if (name == "black")
 			{
@@ -103,7 +100,7 @@ namespace kge
 		}
 		else
 		{
-			std::string path = "shader/" + name + ".shader.xml";
+			std::string path = "Assets/shader/" + name + ".shader.xml";
 			if (FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(path))
 			{
 				shader = Ref<Shader>(new Shader(name));

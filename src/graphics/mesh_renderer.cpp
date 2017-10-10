@@ -15,6 +15,14 @@ namespace kge
 	MeshRenderer::MeshRenderer()
 	{
 	}
+	
+	void MeshRenderer::DeepCopy(const Ref<Object>& source)
+	{
+		Renderer::DeepCopy(source);
+
+		auto src = RefCast<MeshRenderer>(source);
+		SetSharedMesh(src->GetSharedMesh());
+	}
 
 	const VertexBuffer* MeshRenderer::GetVertexBuffer() const
 	{

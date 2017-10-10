@@ -30,6 +30,28 @@ namespace kge
 
 	}
 
+	void Transform::DeepCopy(const Ref<Object>& source)
+	{
+		Component::DeepCopy(source);
+
+		auto src = RefCast<Transform>(source);
+		_delty = true;
+		_world_position = src->GetWorldPosition();
+		_world_rotation = src->GetWorldRotation();
+		_world_scale = src->GetWorldScale();
+		SetLocalPosition(_world_position);
+		SetLocalRotation(_world_rotation);
+		SetLocalScale(_world_scale);
+
+		for (int i = 0; i < src->_children.size(); i++)
+		{
+			auto src_child = src->_children[i].lock();
+			auto child = GameObject::Instantiate(src_child->GetGameObject());
+
+			child->GetTransform()->SetParent(RefCast<Transform>(GetRef()));
+		}
+	}
+
 	void Transform::AddChild(WeakRef<Transform>& child)
 	{
 		_children.push_back(child);
