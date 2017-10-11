@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "core/pre_define.h"
 
 namespace kge
 {
@@ -23,6 +24,9 @@ namespace kge
     bool IsWhiteSpace(char ch);
 
     void TrimString(std::string & str);
+	void LowerString(std::string& str);
+	void UpperString(std::string& str);
+	void ToUnicode32(const std::string& str, std::vector<char32_t>& ret);
     
     bool StringFromFormat(std::string & out, const char * format, ...);
     bool StringFromVAList(std::string & out, const char * format, va_list va);
@@ -46,7 +50,8 @@ namespace kge
     // 返回值包含'.'
     std::string GetFileExt(const std::string & name);
 
-
+	std::vector<char> unicode322utf8(char32_t c32);
+	uint32 utf82unicode32(const char* utf8, char32_t& c32);
 
     class OutputNChar
     {

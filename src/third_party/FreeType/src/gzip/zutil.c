@@ -19,9 +19,9 @@ extern void exit OF((int));
 #  ifndef verbose
 #    define verbose 0
 #  endif
-int z_verbose = verbose;
+int z_verbose2 = verbose;
 
-void z_error (m)
+void z_error2 (m)
 char *m;
 {
     fprintf(stderr, "%s\n", m);

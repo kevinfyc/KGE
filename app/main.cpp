@@ -13,6 +13,7 @@
 
 #include "ui/ui_canvas_renderer.h"
 #include "ui/ui_image.h"
+#include "ui/ui_label.h"
 
 using namespace kge;
 
@@ -41,15 +42,15 @@ void App::Start()
 {
 	TestUI();
 
-	auto camera = GameObject::Create("camera")->AddComponent<Camera>();
-	camera->GetTransform()->SetWorldPosition(Vector3(0, 1, -4));
-	camera->SetCullingMask(1 << 0);
+	//auto camera = GameObject::Create("camera")->AddComponent<Camera>();
+	//camera->GetTransform()->SetWorldPosition(Vector3(0, 1, -4));
+	//camera->SetCullingMask(1 << 0);
 
-	_camera = camera;
+	//_camera = camera;
 
 	m_rotate_deg = 0.1f;
 
-	_gameObject = Resource::LoadGameObject("Assets/AppMesh/plane.prefab");
+	//_gameObject = Resource::LoadGameObject("Assets/AppMesh/plane.prefab");
 
 }
 
@@ -68,41 +69,60 @@ void App::TestUI()
 	canvas->GetTransform()->SetParent(camera->GetTransform());
 	canvas->SetSize(Vector2((float)camera->GetTargetWidth(), (float)camera->GetTargetHeight()));
 
-	auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
+	//auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
 
-	auto img = GameObject::Create("img")->AddComponent<UIImage>();
-	img->GetTransform()->SetParent(canvas->GetTransform());
-	img->SetSpriteGroup(sp);
-	img->SetSpriteName("bg_day");
-	img->OnAnchor();
+	//auto img = GameObject::Create("img")->AddComponent<UIImage>();
+	//img->GetTransform()->SetParent(canvas->GetTransform());
+	//img->SetSpriteGroup(sp);
+	//img->SetSpriteName("bg_day");
+	//img->OnAnchor();
+
+	auto font = Resource::LoadFont("Assets/font/arial.ttf");
+	auto p = "xxx.png";
+	font->GetTexture()->EncodeToPNG(p);
+
+	auto fps = GameObject::Create("fps")->AddComponent<UILabel>();
+	fps->GetTransform()->SetParent(canvas->GetTransform());
+	fps->SetFont(font);
+	fps->SetFontSize(20);
+	fps->SetColor(Color(0, 1, 0, 1));
+	fps->SetText("fps");
+	fps->SetRich(true);
+	fps->SetAlignment(TextAlignment::UpperLeft);
+
+	fps->SetAnchors(Vector2(0, 1), Vector2(0, 1));
+	int32 h = camera->GetTargetHeight();
+	int32 w = camera->GetTargetWidth();
+	fps->SetOffsets(Vector2(0, (float)-h), Vector2((float)w, 0));
+	fps->OnAnchor();
 
 	canvas->GetGameObject()->SetLayerRecursively(1);
 }
 
 void App::Update()
 {
-	Quaternion rot = Quaternion();
-	rot.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(0, 1, 0));
-	//_cube.lock()->GetTransform()->SetLocalRotation(rot);
-	_gameObject.lock()->GetTransform()->SetLocalRotation(rot);
-	m_rotate_deg += 30 * Time::GetDeltaTime();
+	//Quaternion rot = Quaternion();
+	//rot.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(0, 1, 0));
+	////_cube.lock()->GetTransform()->SetLocalRotation(rot);
+	//_gameObject.lock()->GetTransform()->SetLocalRotation(rot);
+	//m_rotate_deg += 30 * Time::GetDeltaTime();
 
-	if (Input::GetMouseButton(0))
-	{
-		auto mouse = Input::GetMousePosition();
-		if (mouse.x > Graphics::GetDisplay()->GetWidth() * 0.5f)
-		{
-			auto pos = _camera.lock()->GetTransform()->GetWorldPosition();
-			pos = pos + (_camera.lock()->GetTransform()->GetForward() * Time::GetDeltaTime() * 5);
-			_camera.lock()->GetTransform()->SetWorldPosition(pos);
-		}
-		else
-		{
-			auto pos = _camera.lock()->GetTransform()->GetWorldPosition();
-			pos = pos + (-_camera.lock()->GetTransform()->GetForward() * Time::GetDeltaTime() * 5);
-			_camera.lock()->GetTransform()->SetWorldPosition(pos);
-		}
-	}
+	//if (Input::GetMouseButton(0))
+	//{
+	//	auto mouse = Input::GetMousePosition();
+	//	if (mouse.x > Graphics::GetDisplay()->GetWidth() * 0.5f)
+	//	{
+	//		auto pos = _camera.lock()->GetTransform()->GetWorldPosition();
+	//		pos = pos + (_camera.lock()->GetTransform()->GetForward() * Time::GetDeltaTime() * 5);
+	//		_camera.lock()->GetTransform()->SetWorldPosition(pos);
+	//	}
+	//	else
+	//	{
+	//		auto pos = _camera.lock()->GetTransform()->GetWorldPosition();
+	//		pos = pos + (-_camera.lock()->GetTransform()->GetForward() * Time::GetDeltaTime() * 5);
+	//		_camera.lock()->GetTransform()->SetWorldPosition(pos);
+	//	}
+	//}
 }
 
 KGE_MAIN(App);

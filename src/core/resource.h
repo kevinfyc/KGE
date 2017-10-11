@@ -15,6 +15,7 @@
 #include "graphics/texture2D.h"
 #include <functional>
 #include "ui/sprite_group.h"
+#include "ui/font.h"
 
 namespace kge
 {
@@ -32,6 +33,7 @@ namespace kge
 		static Ref<GameObject> LoadGameObject(const std::string& path, bool static_back = false, LoadFiniCallback callback = nullptr);
 		static Ref<Texture> LoadTexture(const std::string& path);
 		static Ref<Mesh> LoadMesh(const std::string& path);
+		static Ref<Font> LoadFont(const std::string& path);
 
 		static void LoadGameObjectAsync(const std::string& path, bool static_batch = false, LoadFiniCallback callback = nullptr);
 		static void LoadTextureAsync(const std::string& path, LoadFiniCallback callback = nullptr);

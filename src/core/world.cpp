@@ -40,6 +40,9 @@ namespace kge
 	{
 		Component::RegisterComponents();
 
+		if (!Font::Init())
+			return false;
+
 		if (!Shader::Init())
 			return false;
 
@@ -64,6 +67,7 @@ namespace kge
 		Camera::Fini();
 		Shader::Fini();
 		Resource::Fini();
+		Font::Fini();
 	}
 
 	void World::Tick()

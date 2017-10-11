@@ -77,6 +77,32 @@ namespace kge
 		return  texture;
 	}
 
+	static Ref<Font> read_font(const std::string& path)
+	{
+		Ref<Font> font;
+
+		if (!FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(path))
+		{
+			KGE_LOG_ERROR("Failed to create file '%s'", path.c_str());
+			return font;
+		}
+
+		auto cache = Object::GetCache(path);
+		if (cache)
+		{
+			font = RefCast<Font>(cache);
+		}
+		else
+		{
+			font = Font::LoadFromFile(path);
+
+			if (font)
+				Object::AddCache(path, font);
+		}
+
+		return font;
+	}
+
 	static Ref<Mesh> read_mesh(const std::string& path)
 	{
 		Ref<Mesh> mesh;
@@ -531,6 +557,11 @@ namespace kge
 	Ref<Mesh> Resource::LoadMesh(const std::string& path)
 	{
 		return read_mesh(path);
+	}
+
+	Ref<Font> Resource::LoadFont(const std::string& path)
+	{
+		return read_font(path);
 	}
 
 	Ref<GameObject> Resource::LoadGameObject(const std::string& path, bool static_back /* = false */, LoadFiniCallback callback /* = nullptr */)

@@ -105,7 +105,7 @@ namespace kge
 			break;
 		}
 
-		//Image::EncodeToPNG(this, bpp, file);
+		Image::EncodeToPNG(this, bpp, file);
 	}
 
 	Ref<Texture2D> Texture2D::Create(

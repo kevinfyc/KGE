@@ -3,6 +3,11 @@ set(TARGET_NAME kge)
 
 set(THIRD_PARTY_DIR ${PROJECT_SOURCE_DIR}/src/third_party)
 
+set(FREETYPE_FT2BUILD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third_party/FreeType/include)
+include_directories(
+	${FREETYPE_INCLUDE_DIRS} ${FREETYPE_FT2BUILD_INCLUDE_DIR}
+)
+
 set(INCLUDE_DIRS_ONLY 
 	${PROJECT_SOURCE_DIR}/src
 	${PROJECT_SOURCE_DIR}/src/zlib

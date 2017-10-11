@@ -16,6 +16,8 @@
 #include "ui/ui_canvas_renderer.h"
 #include "ui/ui_view.h"
 #include "ui/ui_image.h"
+#include "ui/ui_label.h"
+
 #include "util/string_tool.h"
 
 namespace kge
@@ -30,6 +32,7 @@ namespace kge
 		UICanvasRenderer::RegisterComponent();
 		UIView::RegisterComponent();
 		UIImage::RegisterComponent();
+		UILabel::RegisterComponent();
 	}
 
 	/*static*/void Component::Destroy(Ref<Component> com)
