@@ -76,7 +76,7 @@ namespace kge
 		void SetFillOrigin(uint32 fill_origin);
 		void SetFillAmount(float fill_amount);
 		void SetFillClockWise(bool fill_clock_wise);
-		const Ref<SpriteGroup>& GetAtlas() const { return _sprite_group; }
+		const Ref<SpriteGroup>& GetSpriteGroup() const { return _sprite_group; }
 		const std::string& GetSpriteName() const { return _sprite_name; }
 		SpriteType GetSpriteType() const { return _sprite_type; }
 		SpriteFillMethod GetFillMethod() const { return _fill_method; }

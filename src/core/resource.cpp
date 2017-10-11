@@ -19,6 +19,8 @@
 #include "world.h"
 #include "graphics/mesh_renderer.h"
 #include "graphics/material.h"
+#include "ui/ui_image.h"
+#include "ui/ui_canvas_renderer.h"
 
 namespace kge
 {
@@ -306,6 +308,103 @@ namespace kge
 		renderer->SetLightmapScaleOffset(lightmap_scale_offset);
 	}
 
+	static void read_rect(MemoryStream& ms, Ref<UIRect>& rect)
+	{
+		auto anchor_min = ms.Read<Vector2>();
+		auto anchor_max = ms.Read<Vector2>();
+		auto offset_min = ms.Read<Vector2>();
+		auto offset_max = ms.Read<Vector2>();
+		auto pivot = ms.Read<Vector2>();
+
+		rect->SetAnchors(anchor_min, anchor_max);
+		rect->SetOffsets(offset_min, offset_max);
+		rect->SetPivot(pivot);
+
+		auto canvas = RefCast<UICanvasRenderer>(rect);
+		if (canvas)
+		{
+			uint32 screen_w = Graphics::GetDisplay()->GetWidth();
+			uint32 screen_h = Graphics::GetDisplay()->GetHeight();
+			canvas->SetSize(Vector2((float)screen_w, (float)screen_h));
+		}
+
+		rect->OnAnchor();
+	}
+
+	Ref<SpriteGroup> Resource::read_sprite_group(const std::string& path)
+	{
+		Ref<SpriteGroup> sg;
+
+		if (!FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(path))
+		{
+			KGE_LOG_ERROR("Failed to create file '%s'", path.c_str());
+			return sg;
+		}
+
+		auto cache = Object::GetCache(path);
+		if (cache)
+		{
+			sg = RefCast<SpriteGroup>(cache);
+		}
+		else
+		{
+			auto ms = MemoryStream(ReadFile(path, true));
+
+			sg = SpriteGroup::Create();
+
+			auto texture_path = read_string(ms);
+			auto texture = RefCast<Texture2D>(read_texture(texture_path));
+			sg->SetTexture(texture);
+
+			auto sprite_count = ms.Read<int>();
+			for (int i = 0; i < sprite_count; i++)
+			{
+				auto name = read_string(ms);
+				auto rect = ms.Read<Rect>();
+				ms.Read<Vector2>();//pivot
+				ms.Read<float>();//pixel per unit
+				auto border = ms.Read<Vector4>();
+
+				auto sprite = Sprite::Create(rect, border);
+				sprite->SetName(name);
+				sg->AddSprite(name, sprite);
+			}
+
+			Object::AddCache(path, sg);
+
+			ms.Close();
+		}
+
+		return sg;
+	}
+
+	static void read_image(MemoryStream& ms, Ref<UIImage>& view)
+	{
+		//auto color = ms.Read<Color>();
+		//auto sprite_type = (SpriteType)ms.Read<int>();
+		//auto fill_method = (SpriteFillMethod)ms.Read<int>();
+		//auto fill_origin = ms.Read<int>();
+		//auto fill_amount = ms.Read<float>();
+		//auto fill_clock_wise = ms.Read<bool>();
+		//auto sprite_name = read_string(ms);
+
+		//if (!sprite_name.empty())
+		//{
+		//	auto atlas_path = read_string(ms);
+		//	auto atlas = read_sprite_group(atlas_path);
+
+		//	view->SetSpriteGroup(atlas);
+		//	view->SetSpriteName(sprite_name);
+		//}
+
+		//view->SetColor(color);
+		//view->SetSpriteType(sprite_type);
+		//view->SetFillMethod(fill_method);
+		//view->SetFillOrigin(fill_origin);
+		//view->SetFillAmount(fill_amount);
+		//view->SetFillClockWise(fill_clock_wise);
+	}
+
 	static Ref<Transform> read_transform(MemoryStream& ms, const Ref<Transform>& parent, std::list<Ref<GameObject>>& objs, std::map<uint32, Ref<Transform>>& transform_instances)
 	{
 		auto name = read_string(ms);
@@ -343,6 +442,14 @@ namespace kge
 				auto com = obj->AddComponent<MeshRenderer>();
 
 				read_mesh_renderer(ms, com);
+			}
+			else if (component_name == "Image")
+			{
+				auto com = obj->AddComponent<UIImage>();
+
+				auto rect = RefCast<UIRect>(com);
+				read_rect(ms, rect);
+				read_image(ms, com);
 			}
 		}
 

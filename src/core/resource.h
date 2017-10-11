@@ -14,6 +14,7 @@
 #include "graphics/mesh.h"
 #include "graphics/texture2D.h"
 #include <functional>
+#include "ui/sprite_group.h"
 
 namespace kge
 {
@@ -36,6 +37,7 @@ namespace kge
 		static void LoadTextureAsync(const std::string& path, LoadFiniCallback callback = nullptr);
 		static void LoadMeshAsync(const std::string& path, LoadFiniCallback callback = nullptr);
 
+		static Ref<SpriteGroup> read_sprite_group(const std::string& path);
 	private:
 		static Ref<ThreadPool> s_thread_res_load;
 	};

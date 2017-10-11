@@ -28,6 +28,7 @@ namespace kge
     bool StringFromVAList(std::string & out, const char * format, va_list va);
     bool StringBeginWith(const std::string & str, const std::string & prefix);
     bool StringEndWith(const std::string & str, const std::string & postfix);
+	bool StringSplit(const std::string& res, const std::string& sep, StringVector& ret, bool exclude_empty = false);
 
     // 格式化斜线
     void FormatPathSlash(std::string & path);

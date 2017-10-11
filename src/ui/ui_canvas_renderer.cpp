@@ -95,7 +95,7 @@ namespace kge
 			}
 
 			uint32 child_count = t->GetChildCount();
-			for (uint32 i = child_count - 1; i >= 0; i--)
+			for (int32 i = child_count - 1; i >= 0; i--)
 			{
 				auto child = t->GetChild(i);
 				auto canvas = child->GetGameObject()->GetComponent<UICanvasRenderer>();

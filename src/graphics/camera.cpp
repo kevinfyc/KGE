@@ -59,8 +59,10 @@ namespace kge
 
 		SetClearFlags(CameraClearFlags::Color);
 		SetClearColor(Color(0, 0, 0, 1));
+		SetDepth(0);
 
 		SetOrthographic(false);
+		SetOrthographicSize(1);
 
 		SetFieldOfView(60);
 		SetClipNear(0.3f);
@@ -194,7 +196,14 @@ namespace kge
 		}
 		else
 		{
-			_projection_matrix.orthogonalProjection((float)width, (float)height, GetClipNear(), GetClipFar());
+			float ortho_size = GetOrthographicSize();
+			auto rect = GetRect();
+
+			float top = ortho_size;
+			float bottom = -ortho_size;
+			float plane_h = ortho_size * 2;
+			float plane_w = plane_h * (width * rect.width) / (height * rect.height);
+			_projection_matrix.orthogonalProjection(-plane_w / 2, plane_w / 2, bottom, top, GetClipNear(), GetClipFar());
 		}
 
 		_view_projection_matrix.setIdentity();

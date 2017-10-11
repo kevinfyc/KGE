@@ -29,7 +29,9 @@ namespace kge
 		WeakRef<Transform> GetParent()const { return _parent; }
 		void SetParent(const WeakRef<Transform>& parent);
 		bool IsRoot()const { return _parent.expired(); }
-		
+
+		Ref<Transform> Find(const std::string& path) const;
+
 		uint32 GetChildCount() { return _children.size(); }
 		Ref<Transform> GetChild(uint32 index)const;
 

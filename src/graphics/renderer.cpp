@@ -22,6 +22,7 @@
 #include "io/memory_stream.h"
 
 #include "math/math_def.h"
+#include "ui/ui_canvas_renderer.h"
 
 namespace kge
 {
@@ -410,27 +411,27 @@ namespace kge
 
 	void Renderer::HandleUIEvent()
 	{
-		//std::list<UICanvasRenderer*> canvas_list;
-		//for (auto i : m_renderers)
-		//{
-		//	if (!i->GetGameObject()->IsActiveInHierarchy() ||
-		//		!i->IsEnable())
-		//	{
-		//		continue;
-		//	}
+		std::list<UICanvasRenderer*> canvas_list;
+		for (auto i : m_renderers)
+		{
+			if (!i->GetGameObject()->IsActiveInHierarchy() ||
+				!i->IsEnable())
+			{
+				continue;
+			}
 
-		//	auto canvas = dynamic_cast<UICanvasRenderer*>(i);
-		//	if (canvas != NULL)
-		//	{
-		//		canvas_list.AddLast(canvas);
-		//	}
-		//}
+			auto canvas = dynamic_cast<UICanvasRenderer*>(i);
+			if (canvas != NULL)
+			{
+				canvas_list.push_back(canvas);
+			}
+		}
 
-		//canvas_list.Sort([](UICanvasRenderer* a, UICanvasRenderer* b) {
-		//	return a->GetSortingOrder() < b->GetSortingOrder();
-		//});
+		canvas_list.sort([](UICanvasRenderer* a, UICanvasRenderer* b) {
+			return a->GetSortingOrder() < b->GetSortingOrder();
+		});
 
-		//UICanvasRenderer::HandleUIEvent(canvas_list);
+		UICanvasRenderer::HandleUIEvent(canvas_list);
 	}
 
 	void Renderer::CheckPasses()
@@ -561,10 +562,10 @@ namespace kge
 
 		mat_passes.sort(
 			[](const MaterialPass& a, const MaterialPass& b)->bool {
-			//if (dynamic_cast<UICanvasRenderer*>(a.renderer) || dynamic_cast<UICanvasRenderer*>(b.renderer))
-			//{
-			//	return false;
-			//}
+			if (dynamic_cast<UICanvasRenderer*>(a.renderer) || dynamic_cast<UICanvasRenderer*>(b.renderer))
+			{
+				return false;
+			}
 
 			if (a.queue == b.queue)
 			{
@@ -633,7 +634,7 @@ namespace kge
 			else
 			{
 				const auto& last = pass.back();
-				if (/*dynamic_cast<UICanvasRenderer*>(i.renderer) == NULL &&*/
+				if (dynamic_cast<UICanvasRenderer*>(i.renderer) == nullptr &&
 					i.queue == last.queue &&
 					i.shader_pass_count == 1 && last.shader_pass_count == 1 &&
 					i.shader_id == last.shader_id)
@@ -710,15 +711,11 @@ namespace kge
 			}
 			else
 			{
-				//auto ui = dynamic_cast<UICanvasRenderer*>(i.First().renderer);
-				//if (ui)
-				//{
-				//	passes_ui.AddLast(i);
-				//}
-				//else
-				{
+				auto ui = dynamic_cast<UICanvasRenderer*>(i.front().renderer);
+				if (ui)
+					passes_ui.push_back(i);
+				else
 					passes_transparent.push_back(i);
-				}
 			}
 		}
 

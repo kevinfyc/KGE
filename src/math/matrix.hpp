@@ -113,7 +113,11 @@ namespace kge
 
         bool isMirrored() const;
 
+#if D3D
         void orthogonalProjection( float w, float h, float zn, float zf );
+#else
+		void orthogonalProjection(float left, float right, float bottom, float top, float near, float far);
+#endif
         void perspectiveProjection( float fov, float aspectRatio,
                                     float nearPlane, float farPlane );
 

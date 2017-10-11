@@ -636,7 +636,7 @@ namespace kge
 #endif
     }
 
-
+#if D3D
     /**
      *	This method sets this matrix to a left-handed orthogonal projection matrix.
      */
@@ -652,6 +652,7 @@ namespace kge
         this->row(3, Vector4( 0.f,	0.f,	zn / (zn - zf),		1.f ) );
 #endif
     }
+#endif
 
     /**
      *	This method sets this matrix to a left-handed perspective projection matrix.

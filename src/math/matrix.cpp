@@ -865,6 +865,33 @@ namespace kge
 		return tmp;
 	}
 
+#ifndef D3D
+	void Matrix::orthogonalProjection(float left, float right, float bottom, float top, float near, float far)
+	{
+		float r2l = right - left;
+		float t2b = top - bottom;
+		float n2f = near - far;
+
+		float r_l = 1 / r2l;
+		float t_b = 1 / t2b;
+		float n_f = 1 / n2f;
+
+		m00 = 2 * r_l;
+		m03 = -(right + left) * r_l;
+		m11 = 2 * t_b;
+		m13 = -(top + bottom) * t_b;
+#if 0
+		//cvv -1~1
+		m22 = 2 * n_f;
+		m23 = (near + far) * n_f;
+#else
+		//cvv 0~1
+		m22 = n_f;
+		m23 = near * n_f;
+#endif
+	}
+#endif
+
 #endif // EXT_MATH
 
 }// end namespace kge

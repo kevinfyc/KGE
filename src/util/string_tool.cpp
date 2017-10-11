@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdarg>
+#include "math\_math.hpp"
 
 namespace kge
 {
@@ -188,6 +189,32 @@ namespace kge
         return true;
     }
 
+
+	bool StringSplit(const std::string& res, const std::string& sep, StringVector& ret, bool exclude_empty)
+	{
+		uint32 start = 0;
+		while (true)
+		{
+			uint32 index = res.find(sep, start);
+			if (index >= 0)
+			{
+				std::string str = res.substr(start, index - start);
+				if (!str.empty() || !exclude_empty)
+					ret.push_back(str);
+				start = index + sep.size();
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		std::string str = res.substr(start, -1);
+		if (!str.empty() || !exclude_empty)
+			ret.push_back(str);
+
+		return ret.size() > 0;
+	}
 
 
     OutputNChar::OutputNChar(char ch, int nRepeat)

@@ -43,7 +43,7 @@ namespace kge
 		SetLocalRotation(_world_rotation);
 		SetLocalScale(_world_scale);
 
-		for (int i = 0; i < src->_children.size(); i++)
+		for (uint32 i = 0; i < src->_children.size(); i++)
 		{
 			auto src_child = src->_children[i].lock();
 			auto child = GameObject::Instantiate(src_child->GetGameObject());
