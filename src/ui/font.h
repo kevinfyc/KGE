@@ -12,23 +12,23 @@
 
 #include "core/object.h"
 
-#define FONT_TEXTURE_SIZE_MAX 2048
+#define FONT_TEXTURE_SIZE_MAX 128
 
 namespace kge
 {
 	struct GlyphInfo
 	{
 		char32_t c;
-		uint32 size;
+		int size;
 		unsigned int glyph_index;
-		uint32 uv_pixel_x;
-		uint32 uv_pixel_y;
-		uint32 uv_pixel_w;
-		uint32 uv_pixel_h;
-		uint32 bearing_x;
-		uint32 bearing_y;
-		uint32 advance_x;
-		uint32 advance_y;
+		int uv_pixel_x;
+		int uv_pixel_y;
+		int uv_pixel_w;
+		int uv_pixel_h;
+		int bearing_x;
+		int bearing_y;
+		int advance_x;
+		int advance_y;
 		bool bold;
 		bool italic;
 		bool mono;
@@ -44,18 +44,18 @@ namespace kge
 		static Ref<Font> LoadFromFile(const std::string& file);
 		~Font();
 		void* GetFont() const { return _font; }
-		GlyphInfo GetGlyph(char32_t c, uint32 size, bool bold, bool italic, bool mono);
+		GlyphInfo GetGlyph(char32_t c, int size, bool bold, bool italic, bool mono);
 		const Ref<Texture2D>& GetTexture() const { return _texture; }
 
 	private:
 		Font();
 
 		void* _font;
-		std::map<char32_t, std::map<uint32, GlyphInfo>> _glyphs;
+		std::map<char32_t, std::map<int, GlyphInfo>> _glyphs;
 		Ref<Texture2D> _texture;
-		uint32 _texture_x;
-		uint32 _texture_y;
-		uint32 _texture_line_h_max;
+		int _texture_x;
+		int _texture_y;
+		int _texture_line_h_max;
 	};
 }
 

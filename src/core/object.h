@@ -101,6 +101,9 @@ namespace kge
 		Object();
 		virtual ~Object();
 
+		static bool Init();
+		static void Fini();
+
 		static Ref<Object> GetCache(const std::string& path);
 		static void AddCache(const std::string& path, const Ref<Object>& obj);
 

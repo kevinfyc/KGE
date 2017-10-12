@@ -71,15 +71,15 @@ namespace kge
 
 	protected:
 		UILabel();
-		std::vector<LabelLine> ProcessText(uint32& actual_width, uint32& actual_height);
+		std::vector<LabelLine> ProcessText(int& actual_width, int& actual_height);
 
-		Ref<Font> m_font;
-		FontStyle m_font_style;
-		int m_font_size;
-		std::string m_text;
-		int m_line_space;
-		bool m_rich;
-		TextAlignment m_alignment;
+		Ref<Font> _font;
+		FontStyle _font_style;
+		int _font_size;
+		std::string _text;
+		int _line_space;
+		bool _rich;
+		TextAlignment _alignment;
 	};
 }
 

@@ -94,24 +94,20 @@ namespace kge
 		auto colors = texture->GetColors();
 		auto mipmap = texture->IsMipmap();
 
-		GLenum format = 0;
 		GLenum type = 0;
 		
 		switch (texture_format)
 		{
 		case kge::TextureFormat::Alpha8:
 			_format = GL_LUMINANCE;
-			format = GL_LUMINANCE;
 			type = GL_UNSIGNED_BYTE;
 			break;
 		case kge::TextureFormat::RGB24:
 			_format = GL_RGB;
-			format = GL_RGB;
 			type = GL_UNSIGNED_BYTE;
 			break;
 		case kge::TextureFormat::RGBA32:
 			_format = GL_RGBA;
-			format = GL_RGBA;
 			type = GL_UNSIGNED_BYTE;
 			break;
 		default:
@@ -120,7 +116,7 @@ namespace kge
 		}
 
 
-		Create(format, type, colors.Bytes(), mipmap);
+		Create(_format, type, colors.Bytes(), mipmap);
 	}
 
 	void TextureGLES::UpdateTexture2D(uint32 x, uint32 y, uint32 w, uint32 h, const ByteBuffer& colors)

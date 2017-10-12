@@ -46,6 +46,9 @@ namespace kge
 		if (!Shader::Init())
 			return false;
 
+		if (!Object::Init())
+			return false;
+
 		if (!Camera::Init())
 			return false;
 
@@ -65,6 +68,7 @@ namespace kge
 
 		Renderer::Fini();
 		Camera::Fini();
+		Object::Fini();
 		Shader::Fini();
 		Resource::Fini();
 		Font::Fini();

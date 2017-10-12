@@ -15,7 +15,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <freetype/ftoutln.h>
+#include <ftoutln.h>
 
 namespace kge
 {
@@ -36,16 +36,16 @@ namespace kge
 		std::string tag;
 		TagType type;
 		std::string value;
-		uint32 begin;
-		uint32 end;
+		int begin;
+		int end;
 	};
 
 	UILabel::UILabel() :
-		m_font_style(FontStyle::Normal),
-		m_font_size(20),
-		m_line_space(1),
-		m_rich(false),
-		m_alignment(TextAlignment::UpperLeft)
+		_font_style(FontStyle::Normal),
+		_font_size(20),
+		_line_space(1),
+		_rich(false),
+		_alignment(TextAlignment::UpperLeft)
 	{
 	}
 
@@ -54,20 +54,20 @@ namespace kge
 		UIView::DeepCopy(source);
 
 		auto src = RefCast<UILabel>(source);
-		m_font = src->m_font;
-		m_font_style = src->m_font_style;
-		m_font_size = src->m_font_size;
-		m_text = src->m_text;
-		m_line_space = src->m_line_space;
-		m_rich = src->m_rich;
-		m_alignment = src->m_alignment;
+		_font = src->_font;
+		_font_style = src->_font_style;
+		_font_size = src->_font_size;
+		_text = src->_text;
+		_line_space = src->_line_space;
+		_rich = src->_rich;
+		_alignment = src->_alignment;
 	}
 
 	void UILabel::SetFont(const Ref<Font>& font)
 	{
-		if (m_font != font)
+		if (_font != font)
 		{
-			m_font = font;
+			_font = font;
 			_dirty = true;
 			MarkRendererDirty();
 		}
@@ -75,9 +75,9 @@ namespace kge
 
 	void UILabel::SetFontStyle(FontStyle style)
 	{
-		if (m_font_style != style)
+		if (_font_style != style)
 		{
-			m_font_style = style;
+			_font_style = style;
 			_dirty = true;
 			MarkRendererDirty();
 		}
@@ -85,9 +85,9 @@ namespace kge
 
 	void UILabel::SetFontSize(int size)
 	{
-		if (m_font_size != size)
+		if (_font_size != size)
 		{
-			m_font_size = size;
+			_font_size = size;
 			_dirty = true;
 			MarkRendererDirty();
 		}
@@ -95,9 +95,9 @@ namespace kge
 
 	void UILabel::SetText(const std::string& text)
 	{
-		if (m_text != text)
+		if (_text != text)
 		{
-			m_text = text;
+			_text = text;
 			_dirty = true;
 			MarkRendererDirty();
 		}
@@ -105,9 +105,9 @@ namespace kge
 
 	void UILabel::SetLineSpace(int space)
 	{
-		if (m_line_space != space)
+		if (_line_space != space)
 		{
-			m_line_space = space;
+			_line_space = space;
 			_dirty = true;
 			MarkRendererDirty();
 		}
@@ -115,9 +115,9 @@ namespace kge
 
 	void UILabel::SetRich(bool rich)
 	{
-		if (m_rich != rich)
+		if (_rich != rich)
 		{
-			m_rich = rich;
+			_rich = rich;
 			_dirty = true;
 			MarkRendererDirty();
 		}
@@ -125,20 +125,20 @@ namespace kge
 
 	void UILabel::SetAlignment(TextAlignment alignment)
 	{
-		if (m_alignment != alignment)
+		if (_alignment != alignment)
 		{
-			m_alignment = alignment;
+			_alignment = alignment;
 			_dirty = true;
 			MarkRendererDirty();
 		}
 	}
 
-	static bool check_tag_begin(std::vector<char32_t>& str, uint32& char_index, const std::string& tag_str, uint32 value_length, TagInfo& tag)
+	static bool check_tag_begin(std::vector<char32_t>& str, int& char_index, const std::string& tag_str, int value_length, TagInfo& tag)
 	{
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
 
-		for (uint32 i = 0; i < tag_str.size(); i++)
+		for (int i = 0; i < tag_str.size(); i++)
 		{
 			if (tag_cstr[i] != str[char_index + i])
 			{
@@ -152,7 +152,7 @@ namespace kge
 			if (value_length > 0)
 			{
 				std::vector<char32_t> value;
-				for (uint32 i = 0; i < value_length; i++)
+				for (int i = 0; i < value_length; i++)
 				{
 					value.push_back(str[char_index + tag_str.size() + i]);
 				}
@@ -161,7 +161,7 @@ namespace kge
 				tag.tag = tag_str.substr(1, tag_str.size() - 3);
 
 				std::vector<char> str;
-				for (uint32 i = 0; (&value[0])[i] != 0; ++i)
+				for (int i = 0; (&value[0])[i] != 0; ++i)
 				{
 					char32_t c32 = (&value[0])[i];
 					auto bytes = unicode322utf8(c32);
@@ -171,7 +171,7 @@ namespace kge
 						auto old_size = str.size();
 						str.resize(old_size + bytes.size());
 
-						for (uint32 j = 0; j < bytes.size(); j++)
+						for (int j = 0; j < bytes.size(); j++)
 						{
 							str[old_size + j] = (&bytes[0])[j];
 						}
@@ -197,12 +197,12 @@ namespace kge
 		return match;
 	}
 
-	static bool check_tag_end(std::vector<char32_t>& str, uint32& char_index, const std::string& tag_str, std::vector<TagInfo>& tag_find, std::vector<TagInfo>& tags)
+	static bool check_tag_end(std::vector<char32_t>& str, int& char_index, const std::string& tag_str, std::vector<TagInfo>& tag_find, std::vector<TagInfo>& tags)
 	{
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
 
-		for (uint32 i = 0; i < tag_str.size(); i++)
+		for (int i = 0; i < tag_str.size(); i++)
 		{
 			if (tag_cstr[i] != str[char_index + i])
 			{
@@ -215,7 +215,7 @@ namespace kge
 		{
 			auto tag = tag_str.substr(2, tag_str.size() - 3);
 
-			for (uint32 i = tag_find.size() - 1; i >= 0; i--)
+			for (int i = tag_find.size() - 1; i >= 0; i--)
 			{
 				auto &t = tag_find[i];
 
@@ -253,7 +253,7 @@ namespace kge
 		std::vector<TagInfo> tags;
 		std::vector<TagInfo> tag_find;
 
-		for (uint32 i = 0; i < str.size(); i++)
+		for (int i = 0; i < str.size(); i++)
 		{
 			TagInfo tag;
 
@@ -340,16 +340,16 @@ namespace kge
 		return Color((float)r, (float)g, (float)b, (float)a) * div;
 	}
 
-	std::vector<LabelLine> UILabel::ProcessText(uint32& actual_width, uint32& actual_height)
+	std::vector<LabelLine> UILabel::ProcessText(int& actual_width, int& actual_height)
 	{
 		std::vector<char32_t> chars;
-		ToUnicode32(m_text, chars);
+		ToUnicode32(_text, chars);
 
 		std::vector<TagInfo> tags;
-		if (m_rich)
+		if (_rich)
 			tags = parse_rich_tags(chars);
 
-		auto face = (FT_Face)m_font->GetFont();
+		auto face = (FT_Face)_font->GetFont();
 		auto label_size = GetSize();
 		float v_size = 1.0f / FONT_TEXTURE_SIZE_MAX;
 		int vertex_count = 0;
@@ -365,14 +365,14 @@ namespace kge
 		std::vector<LabelLine> lines;
 		static LabelLine line;
 
-		for (uint32 i = 0; i < chars.size(); i++)
+		for (int i = 0; i < chars.size(); i++)
 		{
 			char32_t c = chars[i];
 
-			int font_size = m_font_size;
+			int font_size = _font_size;
 			Color color = _color;
-			bool bold = m_font_style == FontStyle::Bold || m_font_style == FontStyle::BoldAndItalic;
-			bool italic = m_font_style == FontStyle::Italic || m_font_style == FontStyle::BoldAndItalic;
+			bool bold = _font_style == FontStyle::Bold || _font_style == FontStyle::BoldAndItalic;
+			bool italic = _font_style == FontStyle::Italic || _font_style == FontStyle::BoldAndItalic;
 			bool mono = font_size <= 16;
 			Ref<Color> color_shadow;
 			Ref<Color> color_outline;
@@ -385,7 +385,7 @@ namespace kge
 				line_x_max = 0;
 				line_y_min = 0;
 				pen_x = 0;
-				pen_y += -(font_size + m_line_space);
+				pen_y += -(font_size + _line_space);
 
 				lines.push_back(line);
 				line.Clear();
@@ -393,7 +393,7 @@ namespace kge
 				continue;
 			}
 
-			if (m_rich)
+			if (_rich)
 			{
 				for (auto& j : tags)
 				{
@@ -424,13 +424,13 @@ namespace kge
 				}
 			}
 
-			GlyphInfo info = m_font->GetGlyph(c, font_size, bold, italic, mono);
+			GlyphInfo info = _font->GetGlyph(c, font_size, bold, italic, mono);
 
 			//	limit width
 			if (pen_x + info.bearing_x + info.uv_pixel_w > label_size.x)
 			{
 				pen_x = 0;
-				pen_y += -(font_size + m_line_space);
+				pen_y += -(font_size + _line_space);
 				previous = 0;
 			}
 
@@ -442,12 +442,12 @@ namespace kge
 				pen_x += delta.x >> 6;
 			}
 
-			auto base_info = m_font->GetGlyph('A', font_size, bold, italic, mono);
-			uint32 base_y0 = base_info.bearing_y;
-			uint32 base_y1 = base_info.bearing_y - base_info.uv_pixel_h;
+			auto base_info = _font->GetGlyph('A', font_size, bold, italic, mono);
+			int base_y0 = base_info.bearing_y;
+			int base_y1 = base_info.bearing_y - base_info.uv_pixel_h;
 			
 			float tmp = base_y0 + (font_size - base_y0 + base_y1) * 0.5f;
-			uint32 baseline = (uint32)((tmp > 0.0f) ? (tmp + 0.5f) : (tmp - 0.5f));
+			int baseline = (int)((tmp > 0.0f) ? (tmp + 0.5f) : (tmp - 0.5f));
 
 			int x0 = pen_x + info.bearing_x;
 			int y0 = pen_y + info.bearing_y - baseline;
@@ -466,13 +466,13 @@ namespace kge
 			if (line_y_min > y1)
 				line_y_min = y1;
 
-			uint32 char_space = 0;
+			int char_space = 0;
 			pen_x += info.advance_x + char_space;
 
-			uint32 uv_x0 = info.uv_pixel_x;
-			uint32 uv_y0 = info.uv_pixel_y;
-			uint32 uv_x1 = uv_x0 + info.uv_pixel_w;
-			uint32 uv_y1 = uv_y0 + info.uv_pixel_h;
+			int uv_x0 = info.uv_pixel_x;
+			int uv_y0 = info.uv_pixel_y;
+			int uv_x1 = uv_x0 + info.uv_pixel_w;
+			int uv_y1 = uv_y0 + info.uv_pixel_h;
 
 			if (color_shadow)
 			{
@@ -508,7 +508,7 @@ namespace kge
 				offsets[2] = Vector2(1, -1);
 				offsets[3] = Vector2(1, 1);
 
-				for (uint32 j = 0; j < 4; j++)
+				for (int j = 0; j < 4; j++)
 				{
 					line.vertices.push_back(Vector2((float)x0, (float)y0) + offsets[j]);
 					line.vertices.push_back(Vector2((float)x0, (float)y1) + offsets[j]);
@@ -557,10 +557,10 @@ namespace kge
 
 			if (underline)
 			{
-				uint32 ux0 = pen_x - (info.advance_x + char_space);
-				uint32 uy0 = pen_y - baseline - 2;
-				uint32 ux1 = ux0 + info.advance_x + char_space;
-				uint32 uy1 = uy0 - 1;
+				int ux0 = pen_x - (info.advance_x + char_space);
+				int uy0 = pen_y - baseline - 2;
+				int ux1 = ux0 + info.advance_x + char_space;
+				int uy1 = uy0 - 1;
 
 				line.vertices.push_back(Vector2((float)ux0, (float)uy0));
 				line.vertices.push_back(Vector2((float)ux0, (float)uy1));
@@ -603,29 +603,29 @@ namespace kge
 
 	void UILabel::FillVertices(std::vector<Vector3>& vertices, std::vector<Vector2>& uv, std::vector<Color>& colors, std::vector<uint16>& indices)
 	{
-		if (!m_font)
+		if (!_font)
 			return;
 
 		Vector2 size = this->GetSize();
 		Vector2 min = Vector2(-_pivot.x * size.x, -_pivot.y * size.y);
 		Vector2 max = Vector2((1 - _pivot.x) * size.x, (1 - _pivot.y) * size.y);
 
-		uint32 actual_width;
-		uint32 actual_height;
+		int actual_width;
+		int actual_height;
 		auto lines = ProcessText(actual_width, actual_height);
 
 		auto mat = GetVertexMatrix();
 		int index_begin = vertices.size();
 
-		for (uint32 i = 0; i < lines.size(); i++)
+		for (int i = 0; i < lines.size(); i++)
 		{
 			auto line = lines[i];
 
-			for (uint32 j = 0; j < line.vertices.size(); j++)
+			for (int j = 0; j < line.vertices.size(); j++)
 			{
 				auto v = line.vertices[j];
 
-				switch (m_alignment)
+				switch (_alignment)
 				{
 				case TextAlignment::UpperLeft:
 				case TextAlignment::MiddleLeft:
@@ -644,7 +644,7 @@ namespace kge
 					break;
 				}
 
-				switch (m_alignment)
+				switch (_alignment)
 				{
 				case TextAlignment::UpperLeft:
 				case TextAlignment::UpperCenter:
@@ -673,7 +673,7 @@ namespace kge
 					auto old_size = uv.size();
 					uv.resize(old_size + line.uv.size());
 
-					for (uint32 i = 0; i < line.uv.size(); i++)
+					for (int i = 0; i < line.uv.size(); i++)
 					{
 						uv[old_size + i] = line.uv[i];
 					}
@@ -683,25 +683,27 @@ namespace kge
 					auto old_size = colors.size();
 					colors.resize(old_size + line.colors.size());
 
-					for (uint32 i = 0; i < line.colors.size(); i++)
+					for (int i = 0; i < line.colors.size(); i++)
 					{
 						colors[old_size + i] = line.colors[i];
 					}
 				}
 			}
 
-			for (uint32 j = 0; j < line.indices.size(); j++)
+			for (int j = 0; j < line.indices.size(); j++)
 			{
 				indices.push_back(line.indices[j] + index_begin);
 			}
 		}
+
+		_font->GetTexture()->EncodeToPNG("xxx.png");
 	}
 
 	void UILabel::FillMaterial(Ref<Material>& mat)
 	{
-		if (m_font)
+		if (_font)
 		{
-			mat->SetMainTexture(m_font->GetTexture());
+			mat->SetMainTexture(_font->GetTexture());
 		}
 	}
 }

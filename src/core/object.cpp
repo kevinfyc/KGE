@@ -14,6 +14,18 @@ namespace kge
 	std::map<std::string, Ref<Object>> Object::s_caches;
 	std::mutex Object::s_mutex;
 
+	bool Object::Init()
+	{
+		return true;
+	}
+
+	void Object::Fini()
+	{
+		s_mutex.lock();
+		s_caches.clear();
+		s_mutex.unlock();
+	}
+
 	Object::Object() :_name("Object")
 	{
 		static int s_id = 0;
