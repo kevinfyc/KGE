@@ -138,7 +138,7 @@ namespace kge
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
 
-		for (int i = 0; i < tag_str.size(); i++)
+		for (uint32 i = 0; i < tag_str.size(); i++)
 		{
 			if (tag_cstr[i] != str[char_index + i])
 			{
@@ -160,7 +160,7 @@ namespace kge
 
 				tag.tag = tag_str.substr(1, tag_str.size() - 3);
 
-				std::vector<char> str;
+				std::vector<char> _;
 				for (int i = 0; (&value[0])[i] != 0; ++i)
 				{
 					char32_t c32 = (&value[0])[i];
@@ -168,19 +168,19 @@ namespace kge
 
 					if (bytes.size() > 0)
 					{
-						auto old_size = str.size();
-						str.resize(old_size + bytes.size());
+						auto old_size = _.size();
+						_.resize(old_size + bytes.size());
 
-						for (int j = 0; j < bytes.size(); j++)
+						for (uint32 j = 0; j < bytes.size(); j++)
 						{
-							str[old_size + j] = (&bytes[0])[j];
+							_[old_size + j] = (&bytes[0])[j];
 						}
 					}
 				}
 
-				str.push_back(0);
+				_.push_back(0);
 
-				tag.value = &str[0];
+				tag.value = &_[0];
 
 				str.erase(str.begin() + char_index, str.begin() + char_index + tag_str.size() + value_length + 1);
 			}
@@ -202,7 +202,7 @@ namespace kge
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
 
-		for (int i = 0; i < tag_str.size(); i++)
+		for (uint32 i = 0; i < tag_str.size(); i++)
 		{
 			if (tag_cstr[i] != str[char_index + i])
 			{
@@ -215,7 +215,7 @@ namespace kge
 		{
 			auto tag = tag_str.substr(2, tag_str.size() - 3);
 
-			for (int i = tag_find.size() - 1; i >= 0; i--)
+			for (uint32 i = tag_find.size() - 1; i >= 0; i--)
 			{
 				auto &t = tag_find[i];
 
@@ -253,7 +253,7 @@ namespace kge
 		std::vector<TagInfo> tags;
 		std::vector<TagInfo> tag_find;
 
-		for (int i = 0; i < str.size(); i++)
+		for (int i = 0; i < (int)str.size(); i++)
 		{
 			TagInfo tag;
 
@@ -365,7 +365,7 @@ namespace kge
 		std::vector<LabelLine> lines;
 		static LabelLine line;
 
-		for (int i = 0; i < chars.size(); i++)
+		for (int i = 0; i < (int)chars.size(); i++)
 		{
 			char32_t c = chars[i];
 
@@ -617,11 +617,11 @@ namespace kge
 		auto mat = GetVertexMatrix();
 		int index_begin = vertices.size();
 
-		for (int i = 0; i < lines.size(); i++)
+		for (uint32 i = 0; i < lines.size(); i++)
 		{
 			auto line = lines[i];
 
-			for (int j = 0; j < line.vertices.size(); j++)
+			for (uint32 j = 0; j < line.vertices.size(); j++)
 			{
 				auto v = line.vertices[j];
 
@@ -673,7 +673,7 @@ namespace kge
 					auto old_size = uv.size();
 					uv.resize(old_size + line.uv.size());
 
-					for (int i = 0; i < line.uv.size(); i++)
+					for (uint32 i = 0; i < line.uv.size(); i++)
 					{
 						uv[old_size + i] = line.uv[i];
 					}
@@ -683,14 +683,14 @@ namespace kge
 					auto old_size = colors.size();
 					colors.resize(old_size + line.colors.size());
 
-					for (int i = 0; i < line.colors.size(); i++)
+					for (uint32 i = 0; i < line.colors.size(); i++)
 					{
 						colors[old_size + i] = line.colors[i];
 					}
 				}
 			}
 
-			for (int j = 0; j < line.indices.size(); j++)
+			for (uint32 j = 0; j < line.indices.size(); j++)
 			{
 				indices.push_back(line.indices[j] + index_begin);
 			}

@@ -76,6 +76,8 @@ namespace kge
 
 	void World::Tick()
 	{
+		Renderer::HandleUIEvent();
+
 		_mutex.lock();
 		for (Ref<GameObject> obj : _gameObjects_start)
 		{

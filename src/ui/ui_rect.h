@@ -31,13 +31,13 @@ namespace kge
 		const Vector2& GetPivot() const { return _pivot; }
 
 		virtual void SetSize(const Vector2& size);
+		Vector2 GetSize() const;
 
 		void OnAnchor();
 
 	protected:
 		UIRect();
 		Ref<UIRect> GetParentRect() const;
-		Vector2 GetSize() const;
 
 		Vector2 _anchor_min;
 		Vector2 _anchor_max;

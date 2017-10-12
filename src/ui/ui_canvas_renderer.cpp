@@ -10,6 +10,7 @@
 #include "ui_canvas_renderer.h"
 #include "core/game_object.h"
 #include "graphics/material.h"
+#include "ui_event_handler.h"
 
 namespace kge
 {
@@ -34,6 +35,7 @@ namespace kge
 
 	void UICanvasRenderer::HandleUIEvent(const std::list<UICanvasRenderer*>& list)
 	{
+		UIEventHandler::HandleUIEvent(list);
 	}
 
 	void UICanvasRenderer::LateUpdate()

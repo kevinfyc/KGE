@@ -12,6 +12,7 @@
 #include "core/transform.h"
 #include "graphics/material.h"
 #include "ui_canvas_renderer.h"
+#include "ui_event_handler.h"
 
 namespace kge
 {

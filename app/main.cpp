@@ -25,11 +25,14 @@ public:
 	virtual void Update() override;
 	void App::TestUI();
 
+	void OnTouchDownBG(const WeakRef<Object>& obj, UIPointerEvent& e);
+
 private:
 	WeakRef<Camera> _camera;
 	WeakRef<GameObject> _cube;
 	float m_rotate_deg;
 	WeakRef<GameObject> _gameObject;
+	uint32 click_counter = 0;
 };
 
 App::App()
@@ -65,26 +68,20 @@ void App::TestUI()
 	camera->SetOrthographic(true);
 	camera->SetOrthographicSize(camera->GetTargetHeight() / 2.0f);
 
-	auto canvas = GameObject::Create("canvas")->AddComponent<UICanvasRenderer>();
-	canvas->GetTransform()->SetParent(camera->GetTransform());
-	canvas->SetSize(Vector2((float)camera->GetTargetWidth(), (float)camera->GetTargetHeight()));
+	auto font_canvas = GameObject::Create("canvas")->AddComponent<UICanvasRenderer>();
+	font_canvas->GetTransform()->SetParent(camera->GetTransform());
+	font_canvas->SetSize(Vector2((float)camera->GetTargetWidth(), (float)camera->GetTargetHeight()));
 
-	//auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
-
-	//auto img = GameObject::Create("img")->AddComponent<UIImage>();
-	//img->GetTransform()->SetParent(canvas->GetTransform());
-	//img->SetSpriteGroup(sp);
-	//img->SetSpriteName("bg_day");
-	//img->OnAnchor();
+	auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
 
 	auto font = Resource::LoadFont("Assets/font/arial.ttf");
 
 	auto fps = GameObject::Create("fps")->AddComponent<UILabel>();
-	fps->GetTransform()->SetParent(canvas->GetTransform());
+	fps->GetTransform()->SetParent(font_canvas->GetTransform());
 	fps->SetFont(font);
 	fps->SetFontSize(20);
 	fps->SetColor(Color(0, 1, 0, 1));
-	fps->SetText("A");
+	fps->SetText("A<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
 	fps->SetRich(true);
 	fps->SetAlignment(TextAlignment::UpperLeft);
 
@@ -94,7 +91,27 @@ void App::TestUI()
 	fps->SetOffsets(Vector2(0, (float)-h), Vector2((float)w, 0));
 	fps->OnAnchor();
 
-	canvas->GetGameObject()->SetLayerRecursively(1);
+	auto img_canvas = GameObject::Create("canvas")->AddComponent<UICanvasRenderer>();
+	img_canvas->GetTransform()->SetParent(camera->GetTransform());
+	auto img = GameObject::Create("img")->AddComponent<UIImage>();
+	img->GetTransform()->SetParent(img_canvas->GetTransform());
+	img->SetSpriteGroup(sp);
+	img->SetSpriteName("bg_day");
+	img->OnAnchor();
+	img_canvas->SetSize(img->GetSize());
+
+	img->event_handler.enable = true;
+	img->event_handler.on_pointer_down = std::bind(&App::OnTouchDownBG, this, std::placeholders::_1, std::placeholders::_2);
+
+	font_canvas->GetGameObject()->SetLayerRecursively(1);
+	img_canvas->GetGameObject()->SetLayerRecursively(1);
+}
+
+void App::OnTouchDownBG(const WeakRef<Object>& obj, UIPointerEvent& e)
+{
+	click_counter++;
+	auto img = RefCast<UIImage>(obj.lock());
+	img->SetSpriteName(click_counter % 2 ? "bg_night" : "bg_day");
 }
 
 void App::Update()

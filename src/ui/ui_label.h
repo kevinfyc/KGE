@@ -53,7 +53,18 @@ namespace kge
 			indices.clear();
 		}
 	};
-
+	//
+	//	Supported rich tags
+	//
+	//	<color=#ffffffff></color>
+	//	<shadow></shadow>
+	//	<shadow=#000000ff></shadow>
+	//	<outline></outline>
+	//	<outline=#000000ff></outline>
+	//	<underline></underline>
+	//	<bold></bold>£¨¥÷ÃÂ
+	//	<italic></italic>£¨–±ÃÂ
+	//
 	class UILabel: public UIView
 	{
 		DECLARE_COM_CLASS(UILabel, UIView);

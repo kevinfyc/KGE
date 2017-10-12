@@ -14,11 +14,11 @@
 #include "ui_rect.h"
 #include "graphics/color.h"
 #include "graphics/material.h"
+#include "ui_event_handler.h"
 
 namespace kge
 {
 	class UICanvasRenderer;
-	class UIEventHandler {};
 
 	class UIView:public Component, public UIRect
 	{
