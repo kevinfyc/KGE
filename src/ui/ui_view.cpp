@@ -18,8 +18,10 @@ namespace kge
 {
 	DEFINE_COM_CLASS(UIView);
 
-	UIView::UIView() :
-		_color(1, 1, 1, 1)
+	UIView::UIView() :_color(1, 1, 1, 1)
+		, _drag(false)
+		, _draging(false)
+		, _pointer_in(false)
 	{
 	}
 

@@ -22,6 +22,7 @@ namespace kge
 
 	class UIView:public Component, public UIRect
 	{
+		friend class UIEventHandler;
 		DECLARE_COM_CLASS(UIView, Component);
 
 	public:
@@ -36,11 +37,21 @@ namespace kge
 		const WeakRef<UICanvasRenderer>& GetRenderer() const { return _renderer; }
 		std::vector<Vector3> GetBoundsVertices();
 
+		bool GetDrag()const { return _drag; }
+		void SetDrag(bool drag) { _drag = drag; }
+
 	protected:
 		UIView();
 		void MarkRendererDirty();
 		Matrix GetVertexMatrix();
 		virtual void OnTranformChanged();
+
+	private:
+		bool GetDraging()const { return _draging; }
+		void SetDraging(bool draging) { _draging = draging; }
+
+		bool GetPointerIn()const { return _pointer_in; }
+		void setPointerIn(bool pointer_in) { _pointer_in = pointer_in; }
 
 	public:
 		UIEventHandler event_handler;
@@ -48,6 +59,9 @@ namespace kge
 	protected:
 		Color _color;
 		WeakRef<UICanvasRenderer> _renderer;
+		bool _drag;
+		bool _draging;
+		bool _pointer_in;
 	};
 } // end of namespace kge
 

@@ -92,7 +92,37 @@ namespace kge
 			}
 			else if (t->phase == TouchPhase::Moved)
 			{
-				//auto& pointer_views = g_hit_views[t->fingerID];
+				auto& pointer_views = g_hit_views[t->fingerID];
+				auto hit_views = hit_test(t->position, views);
+				for (int j = hit_views.size() - 1; j >= 0; j--)
+				{
+					auto v = hit_views[j].lock();
+
+					if (v->event_handler.enable && v->GetDrag())
+					{
+						// send drag begin to top view
+						for (auto& k : pointer_views)
+						{
+							if (!k.expired() && k.lock() == v)
+							{
+								auto on_drag_begin = v->event_handler.on_drag_begin;
+								if (on_drag_begin && !v->GetDraging())
+								{
+									on_drag_begin(hit_views[j], e);
+									v->SetDraging(true);
+								}
+								break;
+							}
+						}
+
+						// send drag to top view
+						auto on_drag = v->event_handler.on_drag;
+						if (on_drag && v->GetDraging())
+							on_drag(hit_views[j], e);
+
+						break;
+					}
+				}
 			}
 			else if (t->phase == TouchPhase::Ended || t->phase == TouchPhase::Canceled)
 			{
@@ -110,6 +140,14 @@ namespace kge
 						if (on_pointer_up)
 							on_pointer_up(hit_views[j], e);
 
+						// send drag end to top view
+						auto on_drag_end = v->event_handler.on_drag_end;
+						if (on_drag_end && v->GetDraging())
+						{
+							on_drag_end(hit_views[j], e);;
+							v->SetDraging(false);
+						}
+
 						// send click event to top view in down and in up
 						for (auto& k : pointer_views)
 						{
@@ -126,7 +164,6 @@ namespace kge
 					}
 				}
 
-				// send up event to top view in down but not in up
 				for (auto& j : pointer_views)
 				{
 					auto v = j.lock();
@@ -145,9 +182,18 @@ namespace kge
 					{
 						if (v->event_handler.enable)
 						{
+							// send up event to top view in down but not in up
 							auto on_pointer_up = v->event_handler.on_pointer_up;
 							if (on_pointer_up)
 								on_pointer_up(j, e);
+
+							// send drag end to top view
+							auto on_drag_end = v->event_handler.on_drag_end;
+							if (on_drag_end && v->GetDraging())
+							{
+								on_drag_end(j, e);;
+								v->SetDraging(false);
+							}
 
 							break;
 						}

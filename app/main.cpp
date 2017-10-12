@@ -27,6 +27,10 @@ public:
 
 	void OnTouchDownBG(const WeakRef<Object>& obj, UIPointerEvent& e);
 
+	void OnDragBeginBG(const WeakRef<Object>& obj, UIPointerEvent& e);
+	void OnDragBG(const WeakRef<Object>& obj, UIPointerEvent& e);
+	void OnDragEndBG(const WeakRef<Object>& obj, UIPointerEvent& e);
+
 private:
 	WeakRef<Camera> _camera;
 	WeakRef<GameObject> _cube;
@@ -99,9 +103,14 @@ void App::TestUI()
 	img->SetSpriteName("bg_day");
 	img->OnAnchor();
 	img_canvas->SetSize(img->GetSize());
+	img->SetDrag(true);
 
 	img->event_handler.enable = true;
 	img->event_handler.on_pointer_down = std::bind(&App::OnTouchDownBG, this, std::placeholders::_1, std::placeholders::_2);
+
+	img->event_handler.on_drag_begin = std::bind(&App::OnDragBeginBG, this, std::placeholders::_1, std::placeholders::_2);
+	img->event_handler.on_drag = std::bind(&App::OnDragBG, this, std::placeholders::_1, std::placeholders::_2);
+	img->event_handler.on_drag_end = std::bind(&App::OnDragEndBG, this, std::placeholders::_1, std::placeholders::_2);
 
 	font_canvas->GetGameObject()->SetLayerRecursively(1);
 	img_canvas->GetGameObject()->SetLayerRecursively(1);
@@ -112,6 +121,19 @@ void App::OnTouchDownBG(const WeakRef<Object>& obj, UIPointerEvent& e)
 	click_counter++;
 	auto img = RefCast<UIImage>(obj.lock());
 	img->SetSpriteName(click_counter % 2 ? "bg_night" : "bg_day");
+}
+
+void App::OnDragBeginBG(const WeakRef<Object>& obj, UIPointerEvent& e)
+{
+	KGE_LOG_DEBUG("drag begin %s (%f, %f)", obj.lock()->GetName(), e.position.x, e.position.y);
+}
+void App::OnDragBG(const WeakRef<Object>& obj, UIPointerEvent& e)
+{
+	KGE_LOG_DEBUG("drag %s (%f, %f)", obj.lock()->GetName(), e.position.x, e.position.y);
+}
+void App::OnDragEndBG(const WeakRef<Object>& obj, UIPointerEvent& e)
+{
+	KGE_LOG_DEBUG("drag end %s (%f, %f)", obj.lock()->GetName(), e.position.x, e.position.y);
 }
 
 void App::Update()

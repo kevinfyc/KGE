@@ -34,6 +34,10 @@ namespace kge
 		std::function<void(const WeakRef<Object>& obj, UIPointerEvent& e)> on_pointer_down;
 		std::function<void(const WeakRef<Object>& obj, UIPointerEvent& e)> on_pointer_up;
 		std::function<void(const WeakRef<Object>& obj, UIPointerEvent& e)> on_pointer_click;
+
+		std::function<void(const WeakRef<Object>& obj, UIPointerEvent& e)> on_drag_begin;
+		std::function<void(const WeakRef<Object>& obj, UIPointerEvent& e)> on_drag;
+		std::function<void(const WeakRef<Object>& obj, UIPointerEvent& e)> on_drag_end;
 	};
 }
 
