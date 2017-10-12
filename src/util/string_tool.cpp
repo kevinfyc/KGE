@@ -89,27 +89,6 @@ namespace kge
 		str = (&tmp[0]);
 	}
 
-	void ToUnicode32(const std::string& str, std::vector<char32_t>& ret)
-	{
-		uint32 size = str.size();
-
-		for (uint32 i = 0; i < size; ++i)
-		{
-			char32_t unicode32 = 0;
-			uint32 byte_count = utf82unicode32(&str[i], unicode32);
-
-			if (byte_count > 0)
-			{
-				ret.push_back(unicode32);
-				//i += byte_count - 1;
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-
 	std::string RemoveFileExt(const std::string & name)
 	{
 		size_t pos = name.find_last_of('.');
@@ -298,77 +277,5 @@ namespace kge
 		while (n-- > 0) stream << '\t';
 
 		return stream;
-	}
-
-	std::vector<char> unicode322utf8(char32_t c32)
-	{
-		std::vector<char> buffer;
-		uint32 byte_count = 0;
-
-		if (c32 <= 0x7f)
-			byte_count = 1;
-		else if (c32 <= 0x7ff)
-			byte_count = 2;
-		else if (c32 <= 0xffff)
-			byte_count = 3;
-		else if (c32 <= 0x1fffff)
-			byte_count = 4;
-		else if (c32 <= 0x3ffffff)
-			byte_count = 5;
-		else if (c32 <= 0x7fffffff)
-			byte_count = 6;
-
-		std::vector<char> bytes;
-		for (uint32 i = 0; i < byte_count - 1; i++)
-		{
-			bytes.push_back((c32 & 0x3f) | 0x80);
-			c32 >>= 6;
-		}
-
-		if (byte_count > 1)
-			bytes.push_back((char)(c32 | (0xffffff80 >> (byte_count - 1))));
-		else
-			bytes.push_back((char)(c32));
-
-		for (uint32 i = 0; i < byte_count; i++)
-			buffer.push_back(bytes[byte_count - 1 - i]);
-
-		return buffer;
-	}
-
-	uint32 utf82unicode32(const char* utf8, char32_t& c32)
-	{
-		uint32 byte_count = 0;
-
-		for (uint32 i = 0; i < 8; i++)
-		{
-			uint8 c = utf8[0];
-
-			if (((c << i) & 0x80) == 0)
-			{
-				byte_count = i == 0 ? 1 : i;
-				break;
-			}
-		}
-
-		if (byte_count >= 1 && byte_count <= 6)
-		{
-			char32_t code = 0;
-
-			for (uint32 i = 0; i < byte_count; i++)
-			{
-				uint32 c = utf8[i];
-				uint8 part = i == 0 ? (c << (byte_count + 24)) >> (byte_count + 24) : (c & 0x3f);
-				code = (code << 6) | part;
-			}
-
-			c32 = code;
-
-			return byte_count;
-		}
-		else
-		{
-			return 0;
-		}
 	}
 }
