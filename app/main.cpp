@@ -78,14 +78,14 @@ void App::TestUI()
 
 	auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
 
-	auto font = Resource::LoadFont("Assets/font/arial.ttf");
+	auto font = Resource::LoadFont("Assets/font/heiti.ttf");
 
 	auto fps = GameObject::Create("fps")->AddComponent<UILabel>();
 	fps->GetTransform()->SetParent(font_canvas->GetTransform());
 	fps->SetFont(font);
 	fps->SetFontSize(20);
 	fps->SetColor(Color(0, 1, 0, 1));
-	fps->SetText("A<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
+	fps->SetText("123abcÖĞsdfËÙ¶È\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
 	fps->SetRich(true);
 	fps->SetAlignment(TextAlignment::UpperLeft);
 

@@ -12,13 +12,13 @@
 
 #include "core/object.h"
 
-#define FONT_TEXTURE_SIZE_MAX 128
+#define FONT_TEXTURE_SIZE_MAX 2048
 
 namespace kge
 {
 	struct GlyphInfo
 	{
-		char32_t c;
+		wchar_t c;
 		int size;
 		unsigned int glyph_index;
 		int uv_pixel_x;
@@ -44,14 +44,14 @@ namespace kge
 		static Ref<Font> LoadFromFile(const std::string& file);
 		~Font();
 		void* GetFont() const { return _font; }
-		GlyphInfo GetGlyph(char32_t c, int size, bool bold, bool italic, bool mono);
+		GlyphInfo GetGlyph(wchar_t c, int size, bool bold, bool italic, bool mono);
 		const Ref<Texture2D>& GetTexture() const { return _texture; }
 
 	private:
 		Font();
 
 		void* _font;
-		std::map<char32_t, std::map<int, GlyphInfo>> _glyphs;
+		std::map<wchar_t, std::map<int, GlyphInfo>> _glyphs;
 		Ref<Texture2D> _texture;
 		int _texture_x;
 		int _texture_y;

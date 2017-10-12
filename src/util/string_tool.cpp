@@ -101,7 +101,7 @@ namespace kge
 			if (byte_count > 0)
 			{
 				ret.push_back(unicode32);
-				i += byte_count - 1;
+				//i += byte_count - 1;
 			}
 			else
 			{

@@ -16,6 +16,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <ftoutln.h>
+#include "util/encode.h"
 
 namespace kge
 {
@@ -133,7 +134,7 @@ namespace kge
 		}
 	}
 
-	static bool check_tag_begin(std::vector<char32_t>& str, int& char_index, const std::string& tag_str, int value_length, TagInfo& tag)
+	static bool check_tag_begin(std::wstring& str, int& char_index, const std::string& tag_str, int value_length, TagInfo& tag)
 	{
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
@@ -151,7 +152,7 @@ namespace kge
 		{
 			if (value_length > 0)
 			{
-				std::vector<char32_t> value;
+				std::vector<wchar_t> value;
 				for (int i = 0; i < value_length; i++)
 				{
 					value.push_back(str[char_index + tag_str.size() + i]);
@@ -197,7 +198,7 @@ namespace kge
 		return match;
 	}
 
-	static bool check_tag_end(std::vector<char32_t>& str, int& char_index, const std::string& tag_str, std::vector<TagInfo>& tag_find, std::vector<TagInfo>& tags)
+	static bool check_tag_end(std::wstring& str, int& char_index, const std::string& tag_str, std::vector<TagInfo>& tag_find, std::vector<TagInfo>& tags)
 	{
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
@@ -248,7 +249,7 @@ namespace kge
 	static const std::string TAG_ITALIC_BEGIN = "<italic>";
 	static const std::string TAG_ITALIC_END = "</italic>";
 
-	static std::vector<TagInfo> parse_rich_tags(std::vector<char32_t>& str)
+	static std::vector<TagInfo> parse_rich_tags(std::wstring& str)
 	{
 		std::vector<TagInfo> tags;
 		std::vector<TagInfo> tag_find;
@@ -342,8 +343,7 @@ namespace kge
 
 	std::vector<LabelLine> UILabel::ProcessText(int& actual_width, int& actual_height)
 	{
-		std::vector<char32_t> chars;
-		ToUnicode32(_text, chars);
+		std::wstring chars = charToWChar(_text, CP::None);
 
 		std::vector<TagInfo> tags;
 		if (_rich)
@@ -367,7 +367,7 @@ namespace kge
 
 		for (int i = 0; i < (int)chars.size(); i++)
 		{
-			char32_t c = chars[i];
+			auto c = chars[i];
 
 			int font_size = _font_size;
 			Color color = _color;
@@ -695,8 +695,6 @@ namespace kge
 				indices.push_back(line.indices[j] + index_begin);
 			}
 		}
-
-		_font->GetTexture()->EncodeToPNG("xxx.png");
 	}
 
 	void UILabel::FillMaterial(Ref<Material>& mat)

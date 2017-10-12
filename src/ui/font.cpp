@@ -79,7 +79,7 @@ namespace kge
 			FT_Done_Face((FT_Face)_font);
 	}
 
-	GlyphInfo Font::GetGlyph(char32_t c, int size, bool bold, bool italic, bool mono)
+	GlyphInfo Font::GetGlyph(wchar_t c, int size, bool bold, bool italic, bool mono)
 	{
 		int size_key = size | (bold ? (1 << 24) : 0) | (italic ? (1 << 16) : 0);
 
@@ -88,7 +88,7 @@ namespace kge
 		if (iter_glphy == _glyphs.end())
 		{
 			std::map<int, GlyphInfo> size_glyphs;
-			_glyphs.insert(std::pair<char32_t, std::map<int, GlyphInfo>>(c, size_glyphs));
+			_glyphs.insert(std::pair<wchar_t, std::map<int, GlyphInfo>>(c, size_glyphs));
 
 			p_size_glyphs = &_glyphs[c];
 		}
@@ -121,8 +121,14 @@ namespace kge
 		FT_Face face = (FT_Face)_font;
 		FT_Set_Pixel_Sizes(face, 0, size);
 
+		FT_Select_Charmap(face, FT_ENCODING_GB2312);
+
 		FT_GlyphSlot slot = face->glyph;
 		auto glyph_index = FT_Get_Char_Index(face, c);
+
+		//FT_UInt glyphIndex = FT_Get_Char_Index(face, c);
+		//if (FT_Load_Glyph(face, glyphIndex, FT_LOAD_RENDER) != 0)
+		//	return *p_glyph;
 
 		if (mono)
 		{
