@@ -57,7 +57,7 @@ void App::Start()
 
 	m_rotate_deg = 0.1f;
 
-	_gameObject = Resource::LoadGameObject("Assets/AppMesh/plane.prefab");
+	_gameObject = Resource::LoadGameObject("Assets/AppTestMesh/plane.prefab");
 
 }
 

@@ -4,6 +4,9 @@ build.ios
 build.mac
 build.win32
 build.android
+unity/Library
+unity/Temp
+export out
 
 *.pyc
 
@@ -18,3 +21,4 @@ xcuserdata
 *.suo
 *.user
 *.log
+*.meta

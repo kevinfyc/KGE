@@ -106,6 +106,11 @@ namespace kge
 			i->_matrix_dirty = true;
 
 			Renderer::SetCullingDirty(i);
+
+			if (i->IsOrthographic())
+			{
+				i->SetOrthographicSize(height * 0.5f);
+			}
 		}
 
 		Renderer::OnResize(width, height);
