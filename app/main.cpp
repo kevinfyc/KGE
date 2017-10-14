@@ -33,9 +33,11 @@ public:
 
 private:
 	WeakRef<Camera> _camera;
+	WeakRef<Camera> _ui_camera;
 	WeakRef<GameObject> _cube;
 	float m_rotate_deg;
 	WeakRef<GameObject> _gameObject;
+	WeakRef<GameObject> _gameObject_ui;
 	uint32 click_counter = 0;
 };
 
@@ -59,6 +61,21 @@ void App::Start()
 
 	_gameObject = Resource::LoadGameObject("Assets/AppTestMesh/plane.prefab");
 
+	auto ui_camera = GameObject::Create("camera")->AddComponent<Camera>();
+	ui_camera->SetOrthographic(true);
+	ui_camera->SetOrthographicSize(ui_camera->GetTargetHeight() / 2.0f);
+	ui_camera->SetClipNear(-1);
+	ui_camera->SetClipFar(1);
+	_ui_camera = camera;
+
+	auto scale_w = camera->GetTargetWidth() / 720.0f;
+	auto scale_h = camera->GetTargetHeight() / 772.0f;
+	auto scale_ui = min2(scale_w, scale_h);
+
+	auto ui = Resource::LoadGameObject("Assets/AppTestUI/ui.prefab");
+	ui->GetTransform()->SetWorldScale(Vector3::one() * scale_ui);
+	_gameObject_ui = ui;
+
 }
 
 void App::TestUI()
@@ -76,7 +93,7 @@ void App::TestUI()
 	font_canvas->GetTransform()->SetParent(camera->GetTransform());
 	font_canvas->SetSize(Vector2((float)camera->GetTargetWidth(), (float)camera->GetTargetHeight()));
 
-	auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
+	//auto sp = Resource::read_sprite_group("Assets/AppFlappyBird/atlas.png.atlas");
 
 	auto font = Resource::LoadFont("Assets/font/heiti.ttf");
 
@@ -85,7 +102,7 @@ void App::TestUI()
 	fps->SetFont(font);
 	fps->SetFontSize(20);
 	fps->SetColor(Color(0, 1, 0, 1));
-	fps->SetText("123abc中sdf速度\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
+	fps->SetText("测试中文&&<color=#ff0000ff>English</color>");// ("123abc中sdf速度\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
 	fps->SetRich(true);
 	fps->SetAlignment(TextAlignment::UpperLeft);
 
@@ -94,26 +111,7 @@ void App::TestUI()
 	int32 w = camera->GetTargetWidth();
 	fps->SetOffsets(Vector2(0, (float)-h), Vector2((float)w, 0));
 	fps->OnAnchor();
-
-	auto img_canvas = GameObject::Create("canvas")->AddComponent<UICanvasRenderer>();
-	img_canvas->GetTransform()->SetParent(camera->GetTransform());
-	auto img = GameObject::Create("img")->AddComponent<UIImage>();
-	img->GetTransform()->SetParent(img_canvas->GetTransform());
-	img->SetSpriteGroup(sp);
-	img->SetSpriteName("bg_day");
-	img->OnAnchor();
-	img_canvas->SetSize(img->GetSize());
-	img->SetDrag(true);
-
-	img->event_handler.enable = true;
-	img->event_handler.on_pointer_down = std::bind(&App::OnTouchDownBG, this, std::placeholders::_1, std::placeholders::_2);
-
-	img->event_handler.on_drag_begin = std::bind(&App::OnDragBeginBG, this, std::placeholders::_1, std::placeholders::_2);
-	img->event_handler.on_drag = std::bind(&App::OnDragBG, this, std::placeholders::_1, std::placeholders::_2);
-	img->event_handler.on_drag_end = std::bind(&App::OnDragEndBG, this, std::placeholders::_1, std::placeholders::_2);
-
 	font_canvas->GetGameObject()->SetLayerRecursively(1);
-	img_canvas->GetGameObject()->SetLayerRecursively(1);
 }
 
 void App::OnTouchDownBG(const WeakRef<Object>& obj, UIPointerEvent& e)

@@ -21,6 +21,7 @@
 #include "graphics/material.h"
 #include "ui/ui_image.h"
 #include "ui/ui_canvas_renderer.h"
+#include "ui/ui_label.h"
 
 namespace kge
 {
@@ -357,7 +358,14 @@ namespace kge
 		rect->OnAnchor();
 	}
 
-	Ref<SpriteGroup> Resource::read_sprite_group(const std::string& path)
+	static void read_canvas(MemoryStream& ms, Ref<UICanvasRenderer>& canvas)
+	{
+		auto sorting_order = ms.Read<int>();
+
+		canvas->SetSortingOrder(sorting_order);
+	}
+
+	static Ref<SpriteGroup> read_sprite_group(const std::string& path)
 	{
 		Ref<SpriteGroup> sg;
 
@@ -406,29 +414,109 @@ namespace kge
 
 	static void read_image(MemoryStream& ms, Ref<UIImage>& view)
 	{
-		//auto color = ms.Read<Color>();
-		//auto sprite_type = (SpriteType)ms.Read<int>();
-		//auto fill_method = (SpriteFillMethod)ms.Read<int>();
-		//auto fill_origin = ms.Read<int>();
-		//auto fill_amount = ms.Read<float>();
-		//auto fill_clock_wise = ms.Read<bool>();
-		//auto sprite_name = read_string(ms);
+		auto color = ms.Read<Color>();
+		auto sprite_type = (SpriteType)ms.Read<int>();
+		auto fill_method = (SpriteFillMethod)ms.Read<int>();
+		auto fill_origin = ms.Read<int>();
+		auto fill_amount = ms.Read<float>();
+		auto fill_clock_wise = ms.Read<bool>();
+		auto sprite_name = read_string(ms);
 
-		//if (!sprite_name.empty())
-		//{
-		//	auto atlas_path = read_string(ms);
-		//	auto atlas = read_sprite_group(atlas_path);
+		if (!sprite_name.empty())
+		{
+			auto atlas_path = read_string(ms);
+			auto atlas = read_sprite_group(atlas_path);
 
-		//	view->SetSpriteGroup(atlas);
-		//	view->SetSpriteName(sprite_name);
-		//}
+			view->SetSpriteGroup(atlas);
+			view->SetSpriteName(sprite_name);
+		}
 
-		//view->SetColor(color);
-		//view->SetSpriteType(sprite_type);
-		//view->SetFillMethod(fill_method);
-		//view->SetFillOrigin(fill_origin);
-		//view->SetFillAmount(fill_amount);
-		//view->SetFillClockWise(fill_clock_wise);
+		view->SetColor(color);
+		view->SetSpriteType(sprite_type);
+		view->SetFillMethod(fill_method);
+		view->SetFillOrigin(fill_origin);
+		view->SetFillAmount(fill_amount);
+		view->SetFillClockWise(fill_clock_wise);
+	}
+
+	static void read_label(MemoryStream& ms, Ref<UILabel>& view)
+	{
+		auto color = ms.Read<Color>();
+		auto text = read_string(ms);
+		auto font_name = read_string(ms);
+		auto font_style = read_string(ms);
+		auto font_size = ms.Read<int>();
+		auto line_space = ms.Read<float>();
+		auto rich = ms.Read<bool>();
+		auto alignment = read_string(ms);
+
+		if (!font_name.empty())
+		{
+			auto font = read_font("Assets/font/" + font_name + ".ttf");
+
+			view->SetFont(font);
+
+			if (font_style == "Normal")
+			{
+				view->SetFontStyle(FontStyle::Normal);
+			}
+			else if (font_style == "Bold")
+			{
+				view->SetFontStyle(FontStyle::Bold);
+			}
+			else if (font_style == "Italic")
+			{
+				view->SetFontStyle(FontStyle::Italic);
+			}
+			else if (font_style == "BoldAndItalic")
+			{
+				view->SetFontStyle(FontStyle::BoldAndItalic);
+			}
+
+			view->SetFontSize(font_size);
+		}
+
+		view->SetColor(color);
+		view->SetText(text);
+		view->SetLineSpace((int)line_space);
+		view->SetRich(rich);
+
+		if (alignment == "UpperLeft")
+		{
+			view->SetAlignment(TextAlignment::UpperLeft);
+		}
+		else if (alignment == "UpperCenter")
+		{
+			view->SetAlignment(TextAlignment::UpperCenter);
+		}
+		else if (alignment == "UpperRight")
+		{
+			view->SetAlignment(TextAlignment::UpperRight);
+		}
+		else if (alignment == "MiddleLeft")
+		{
+			view->SetAlignment(TextAlignment::MiddleLeft);
+		}
+		else if (alignment == "MiddleCenter")
+		{
+			view->SetAlignment(TextAlignment::MiddleCenter);
+		}
+		else if (alignment == "MiddleRight")
+		{
+			view->SetAlignment(TextAlignment::MiddleRight);
+		}
+		else if (alignment == "LowerLeft")
+		{
+			view->SetAlignment(TextAlignment::LowerLeft);
+		}
+		else if (alignment == "LowerCenter")
+		{
+			view->SetAlignment(TextAlignment::LowerCenter);
+		}
+		else if (alignment == "LowerRight")
+		{
+			view->SetAlignment(TextAlignment::LowerRight);
+		}
 	}
 
 	static Ref<Transform> read_transform(MemoryStream& ms, const Ref<Transform>& parent, std::list<Ref<GameObject>>& objs, std::map<uint32, Ref<Transform>>& transform_instances)
@@ -469,6 +557,14 @@ namespace kge
 
 				read_mesh_renderer(ms, com);
 			}
+			else if (component_name == "Canvas")
+			{
+				auto com = obj->AddComponent<UICanvasRenderer>();
+
+				auto rect = RefCast<UIRect>(com);
+				read_rect(ms, rect);
+				read_canvas(ms, com);
+			}
 			else if (component_name == "Image")
 			{
 				auto com = obj->AddComponent<UIImage>();
@@ -476,6 +572,21 @@ namespace kge
 				auto rect = RefCast<UIRect>(com);
 				read_rect(ms, rect);
 				read_image(ms, com);
+			}
+			else if (component_name == "Text")
+			{
+				auto com = obj->AddComponent<UILabel>();
+
+				auto rect = RefCast<UIRect>(com);
+				read_rect(ms, rect);
+				read_label(ms, com);
+			}
+			else if (component_name == "RectTransform")
+			{
+				auto com = obj->AddComponent<UIView>();
+
+				auto rect = RefCast<UIRect>(com);
+				read_rect(ms, rect);
 			}
 		}
 

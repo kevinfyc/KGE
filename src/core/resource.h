@@ -38,8 +38,6 @@ namespace kge
 		static void LoadGameObjectAsync(const std::string& path, bool static_batch = false, LoadFiniCallback callback = nullptr);
 		static void LoadTextureAsync(const std::string& path, LoadFiniCallback callback = nullptr);
 		static void LoadMeshAsync(const std::string& path, LoadFiniCallback callback = nullptr);
-
-		static Ref<SpriteGroup> read_sprite_group(const std::string& path);
 	private:
 		static Ref<ThreadPool> s_thread_res_load;
 	};

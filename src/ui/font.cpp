@@ -23,6 +23,11 @@ namespace kge
 {
 	static FT_Library g_ft_lib;
 
+	extern "C"
+	{
+		int z_verbose;
+		void z_error(char *m) { }
+	}
 
 	bool Font::Init()
 	{
