@@ -79,7 +79,7 @@ public class exporter_base : MonoBehaviour
 
     protected static void WriteString(string v)
     {
-        var bytes = Encoding.UTF8.GetBytes(v);
+        var bytes = Encoding.Default.GetBytes(v);
         m_writer.Write(bytes.Length);
         if (bytes.Length > 0)
         {

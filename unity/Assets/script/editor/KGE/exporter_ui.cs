@@ -7,7 +7,7 @@ using System.IO;
 public class exporter_ui : exporter_base
 {
 
-    [MenuItem("Viry3D/Export/UI")]
+    [MenuItem("KGE/Export/UI")]
     public static void ExportUI()
     {
         var obj = Selection.activeGameObject;
