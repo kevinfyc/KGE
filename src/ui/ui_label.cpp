@@ -134,7 +134,7 @@ namespace kge
 		}
 	}
 
-	static bool check_tag_begin(std::string& str, int& char_index, const std::string& tag_str, int value_length, TagInfo& tag)
+	static bool check_tag_begin(std::wstring& str, int& char_index, const std::string& tag_str, int value_length, TagInfo& tag)
 	{
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
@@ -152,7 +152,7 @@ namespace kge
 		{
 			if (value_length > 0)
 			{
-				std::string value;
+				std::wstring value;
 				for (int i = 0; i < value_length; i++)
 				{
 					value.push_back(str[char_index + tag_str.size() + i]);
@@ -161,7 +161,8 @@ namespace kge
 
 				tag.tag = tag_str.substr(1, tag_str.size() - 3);
 
-				tag.value = &value[0];
+				std::string v = wcharToChar(value, CP::None);
+				tag.value = &v[0];
 
 				str.erase(str.begin() + char_index, str.begin() + char_index + tag_str.size() + value_length + 1);
 			}
@@ -178,7 +179,7 @@ namespace kge
 		return match;
 	}
 
-	static bool check_tag_end(std::string& str, int& char_index, const std::string& tag_str, std::vector<TagInfo>& tag_find, std::vector<TagInfo>& tags)
+	static bool check_tag_end(std::wstring& str, int& char_index, const std::string& tag_str, std::vector<TagInfo>& tag_find, std::vector<TagInfo>& tags)
 	{
 		bool match = true;
 		auto tag_cstr = tag_str.c_str();
@@ -229,7 +230,7 @@ namespace kge
 	static const std::string TAG_ITALIC_BEGIN = "<italic>";
 	static const std::string TAG_ITALIC_END = "</italic>";
 
-	static std::vector<TagInfo> parse_rich_tags(std::string& str)
+	static std::vector<TagInfo> parse_rich_tags(std::wstring& str)
 	{
 		std::vector<TagInfo> tags;
 		std::vector<TagInfo> tag_find;
@@ -323,11 +324,11 @@ namespace kge
 
 	std::vector<LabelLine> UILabel::ProcessText(int& actual_width, int& actual_height)
 	{
+		std::wstring chars = charToWChar(_text, CP::None);
+
 		std::vector<TagInfo> tags;
 		if (_rich)
-			tags = parse_rich_tags(_text);
-
-		std::wstring chars = charToWChar(_text, CP::None);
+			tags = parse_rich_tags(chars);
 
 		auto face = (FT_Face)_font->GetFont();
 		auto label_size = GetSize();

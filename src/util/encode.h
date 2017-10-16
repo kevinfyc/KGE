@@ -71,15 +71,15 @@ namespace kge
 
 
 #ifdef _UNICODE
-#   define trimString				::Lazy::trimStringW
-#	define formatString				::Lazy::formatStringW
-#	define formatStringVS			::Lazy::formatStringVSW
-#	define debugMessage				::Lazy::debugMessageW
+#   define trimString				::kge::trimStringW
+#	define formatString				::kge::formatStringW
+#	define formatStringVS			::kge::formatStringVSW
+#	define debugMessage				::kge::debugMessageW
 #else
-#   define trimString				::Lazy::trimStringA
-#	define formatString				::Lazy::formatStringA
-#	define formatStringVS			::Lazy::formatStringVSA
-#	define debugMessage				::Lazy::debugMessageA
+#   define trimString				::kge::trimStringA
+#	define formatString				::kge::formatStringA
+#	define formatStringVS			::kge::formatStringVSA
+#	define debugMessage				::kge::debugMessageA
 #endif
 
 }// end namespace ora

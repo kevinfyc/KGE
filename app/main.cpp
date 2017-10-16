@@ -102,7 +102,7 @@ void App::TestUI()
 	fps->SetFont(font);
 	fps->SetFontSize(20);
 	fps->SetColor(Color(0, 1, 0, 1));
-	fps->SetText("测试中文&&<color=#ff0000ff>English</color>");// ("123abc中sdf速度\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
+	fps->SetText("测试中文1&&<color=#ff0000ff>啊English</color>");// ("123abc中sdf速度\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
 	fps->SetRich(true);
 	fps->SetAlignment(TextAlignment::UpperLeft);
 
