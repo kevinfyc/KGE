@@ -22,6 +22,8 @@
 #include "ui/ui_image.h"
 #include "ui/ui_canvas_renderer.h"
 #include "ui/ui_label.h"
+#include "graphics/skinned_mesh_renderer.h"
+#include "graphics/animation.h"
 
 namespace kge
 {
@@ -335,6 +337,182 @@ namespace kge
 		renderer->SetLightmapScaleOffset(lightmap_scale_offset);
 	}
 
+	static void read_skinned_mesh_renderer( MemoryStream& ms, Ref<SkinnedMeshRenderer>& renderer, std::map<uint32, Ref<Transform>>& transform_instances)
+	{
+		auto mesh_path = read_string(ms);
+		if (!mesh_path.empty())
+		{
+			auto mesh = read_mesh(mesh_path);
+			renderer->SetSharedMesh(mesh);
+		}
+
+		auto bounds_min = ms.Read<Vector3>();
+		auto bounds_max = ms.Read<Vector3>();
+		renderer->SetBounds(Bounds(bounds_min, bounds_max));
+
+		read_renderer_materials(ms, renderer.get());
+
+		auto mats = renderer->GetSharedMaterials();
+		if (mats.size() > 0)
+		{
+			auto mesh = renderer->GetSharedMesh();
+			if (mesh)
+				mesh->Tick();
+		}
+
+		int bone_count = ms.Read<int>();
+		if (bone_count > 0)
+		{
+			std::vector<WeakRef<Transform>> bones(bone_count);
+
+			for (int i = 0; i < bone_count; i++)
+			{
+				int bone_id = ms.Read<int>();
+
+				bones[i] = transform_instances[bone_id];
+			}
+
+			renderer->SetBones(bones);
+
+			if (bone_count > BONE_MAX)
+			{
+				renderer->Enable(false);
+				KGE_LOG_ERROR("bone count %d over than %d", bone_count, BONE_MAX);
+			}
+		}
+	}
+
+	static void read_animation_curve(MemoryStream& ms, AnimationCurve* curve)
+	{
+		ms.Read<int>();	//	pre_wrap_mode
+		ms.Read<int>();	//	post_wrap_mode
+		int frame_count = ms.Read<int>();
+
+		for (int j = 0; j < frame_count; j++)
+		{
+			auto time = ms.Read<float>();
+			auto value = ms.Read<float>();
+			auto in_tangent = ms.Read<float>();
+			auto out_tangent = ms.Read<float>();
+			ms.Read<int>();	//	tangent_mode
+
+			if (curve)
+				curve->keys.push_back(Keyframe(time, value, in_tangent, out_tangent));
+		}
+	}
+
+	static Ref<AnimationClip> read_animation_clip(const std::string& path)
+	{
+		Ref<AnimationClip> clip;
+
+		if (!FileSystemMgr::GetInstance()->getFileSystem()->isFileExist(path))
+		{
+			KGE_LOG_ERROR("Failed to create file '%s'", path.c_str());
+			return clip;
+		}
+
+		auto cache = Object::GetCache(path);
+		if (cache)
+		{
+			clip = RefCast<AnimationClip>(cache);
+		}
+		else
+		{
+			clip = RefMake<AnimationClip>();
+			Object::AddCache(path, clip);
+
+			auto ms = MemoryStream(ReadFile(path, true));
+
+			auto name = read_string(ms);
+			clip->SetName(name);
+			clip->frame_rate = ms.Read<float>();
+			clip->length = ms.Read<float>();
+			clip->wrap_mode = (AnimationWrapMode)ms.Read<int>();
+			int curve_count = ms.Read<int>();
+
+			for (int i = 0; i < curve_count; i++)
+			{
+				auto path = read_string(ms);
+				auto property = read_string(ms);
+
+				int property_index = -1;
+
+				const std::string property_names[] = {
+					"m_LocalPosition.x",
+					"m_LocalPosition.y",
+					"m_LocalPosition.z",
+					"m_LocalRotation.x",
+					"m_LocalRotation.y",
+					"m_LocalRotation.z",
+					"m_LocalRotation.w",
+					"m_LocalScale.x",
+					"m_LocalScale.y",
+					"m_LocalScale.z",
+				};
+				for (int j = 0; j < (int)CurveProperty::Count; j++)
+				{
+					if (property == property_names[j])
+					{
+						property_index = j;
+						break;
+					}
+				}
+
+				AnimationCurve* curve = nullptr;
+				if (property_index >= 0)
+				{
+					CurveBinding* p_binding = nullptr;
+					auto find = clip->curves.find(path);
+					if (find != clip->curves.end())
+					{
+						p_binding = &find->second;
+					}
+
+					if (!p_binding)
+					{
+						CurveBinding binding;
+						clip->curves.insert(std::pair<std::string, CurveBinding>(path, binding));
+						p_binding = &clip->curves[path];
+
+						p_binding->path = path;
+						p_binding->curves.resize((int)CurveProperty::Count);
+					}
+
+					curve = &p_binding->curves[property_index];
+				}
+
+				read_animation_curve(ms, curve);
+			}
+
+			ms.Close();
+		}
+
+		return clip;
+	}
+
+	static void read_animation(MemoryStream& ms, Ref<Animation>& animation)
+	{
+		auto defaul_clip = read_string(ms);
+		int clip_count = ms.Read<int>();
+
+		std::map<std::string, AnimationState> states;
+
+		for (int i = 0; i < clip_count; i++)
+		{
+			auto clip_path = read_string(ms);
+
+			if (!clip_path.empty())
+			{
+				auto clip = read_animation_clip(clip_path);
+
+				if (clip)
+					states.insert(std::pair<std::string, AnimationState>(clip->GetName(), AnimationState(clip)));
+			}
+		}
+
+		animation->SetAnimationStates(states);
+	}
+
 	static void read_rect(MemoryStream& ms, Ref<UIRect>& rect)
 	{
 		auto anchor_min = ms.Read<Vector2>();
@@ -545,6 +723,8 @@ namespace kge
 		transform->SetLocalRotation(local_rotation);
 		transform->SetLocalScale(local_scale);
 
+		KGE_LOG_DEBUG("MATRIX: instance_id %d, matrix: %s", instance_id, transform->GetLocal2WorldMatrix().ToString().c_str());
+
 		uint32 com_count = ms.Read<uint32>();
 
 		for (uint32 i = 0; i < com_count; i++)
@@ -556,6 +736,18 @@ namespace kge
 				auto com = obj->AddComponent<MeshRenderer>();
 
 				read_mesh_renderer(ms, com);
+			}
+			else if (component_name == "SkinnedMeshRenderer")
+			{
+				auto com = obj->AddComponent<SkinnedMeshRenderer>();
+
+				read_skinned_mesh_renderer(ms, com, transform_instances);
+			}
+			else if (component_name == "Animation")
+			{
+				auto com = obj->AddComponent<Animation>();
+
+				read_animation(ms, com);
 			}
 			else if (component_name == "Canvas")
 			{

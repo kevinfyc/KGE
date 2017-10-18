@@ -210,6 +210,35 @@ namespace kge
 			almostEqual(v.z, z) &&
 			almostEqual(v.w, w);
 	}
+	
+	Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis)
+	{
+		const float theta = angle * Deg2Rad* 0.5f;
+		const float sinTheta = sinf(theta);
+
+		// normalise x,y,z
+		Vector3 v = axis;
+		v.normalise();
+		v *= sinTheta;
+
+		Quaternion q;
+		// assign to me 
+		q.x = v.x;
+		q.y = v.y;
+		q.z = v.z;
+		q.w = cosf(theta);
+
+		return q;
+	}
+
+	Quaternion Quaternion::Euler(float x, float y, float z)
+	{
+		Quaternion around_x = AngleAxis(x, Vector3(1, 0, 0));
+		Quaternion around_y = AngleAxis(y, Vector3(0, 1, 0));
+		Quaternion around_z = AngleAxis(z, Vector3(0, 0, 1));
+
+		return around_y * around_x * around_z;
+	}
 
 }// end namespace kge
 

@@ -331,7 +331,7 @@ namespace kge
 	void GameObject::Delete()
 	{
 		if (!_deleted)
-			_deleted = false;
+			_deleted = true;
 
 		Ref<Transform> transform = GetTransform();
 		uint32 child_count = transform->GetChildCount();

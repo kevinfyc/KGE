@@ -35,6 +35,7 @@ namespace kge
 		, _height(720)
 		, _pre_taskloop(RefMake<TaskLoop>())
 		, _post_taskloop(RefMake<TaskLoop>())
+		, _thread_pool_tick(RefMake<ThreadPool>(4))
 	{
 		_instance = this;
 	}
@@ -83,7 +84,7 @@ namespace kge
 	{
 		Graphics::Fini();
 	}
-    
+
 	void IApplication::Tick()
 	{
 		while (!_exit)
@@ -93,17 +94,17 @@ namespace kge
 		}
 	}
 
-    int IApplication::Run()
-    {
+	int IApplication::Run()
+	{
 		assert(Init());
 
 		Tick();
 
 		Fini();
 
-        return 0;
-    }
-    
+		return 0;
+	}
+
 	void IApplication::OnUpdate()
 	{
 		Time::Tick();
@@ -114,6 +115,7 @@ namespace kge
 		World::Tick();
 
 		_post_taskloop->Tick();
+		_thread_pool_tick->Wait();
 
 		Input::Tick();
 	}
@@ -126,6 +128,11 @@ namespace kge
 	void IApplication::OnResize(uint32 width, uint32 height)
 	{
 		Graphics::OnResize(width, height);
+	}
+
+	void IApplication::AddAsyncTickTask(Thread::TaskNode task)
+	{
+		_thread_pool_tick->AddTask(task);
 	}
 
 	void IApplication::RunTaskInPreLoop(TaskLoop::TaskNode task)

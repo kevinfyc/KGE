@@ -12,13 +12,14 @@
 #include "transform.h"
 #include "graphics/camera.h"
 #include "graphics/mesh_renderer.h"
+#include "graphics/skinned_mesh_renderer.h"
+#include "graphics/animation.h"
+#include "graphics/light.h"
 
 #include "ui/ui_canvas_renderer.h"
 #include "ui/ui_view.h"
 #include "ui/ui_image.h"
 #include "ui/ui_label.h"
-
-#include "util/string_tool.h"
 
 namespace kge
 {
@@ -28,45 +29,24 @@ namespace kge
 	{
 		Transform::RegisterComponent();
 		Camera::RegisterComponent();
+
 		MeshRenderer::RegisterComponent();
+		SkinnedMeshRenderer::RegisterComponent();
+
+		Animation::RegisterComponent();
+
 		UICanvasRenderer::RegisterComponent();
 		UIView::RegisterComponent();
 		UIImage::RegisterComponent();
 		UILabel::RegisterComponent();
+		
+		Light::RegisterComponent();
 	}
 
 	/*static*/void Component::Destroy(Ref<Component> com)
 	{
 		if (com)
 			com->Delete();
-	}
-
-	Ref<Transform> Transform::Find(const std::string& path) const
-	{
-		Ref<Transform> find;
-
-		std::string p = path;
-		StringVector names;
-		if (!StringSplit(p, "/", names))
-			return find;
-
-		for (auto& c : _children)
-		{
-			auto child = c.lock();
-			auto name = names[0];
-
-			if (child->GetName() == name)
-			{
-				if (names.size() > 1)
-					find = child->Find(path.substr(name.size() + 1));
-				else
-					find = child;
-
-				break;
-			}
-		}
-
-		return find;
 	}
 
 	void Component::DeepCopy(const Ref<Object>& source)

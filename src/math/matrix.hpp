@@ -127,6 +127,8 @@ namespace kge
         float pitch() const;
         float roll() const;
 
+		std::string ToString() const;
+
         static const Matrix identity;
 
     private:

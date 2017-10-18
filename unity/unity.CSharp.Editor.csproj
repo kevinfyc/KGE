@@ -102,7 +102,22 @@
     <Compile Include="Assets\script\editor\KGE\exporter_ui.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\shader\Diffuse.shader.shader" />
+    <None Include="Assets\shader\Color.shader.shader" />
+    <None Include="Assets\shader\Cutout.shader" />
+    <None Include="Assets\shader\Diffuse.shader" />
+    <None Include="Assets\shader\DiffuseCullOff.shader" />
+    <None Include="Assets\shader\Dissolve.shader" />
+    <None Include="Assets\shader\Lightmap\BumpedSpecular.shader" />
+    <None Include="Assets\shader\Lightmap\BumpedSpecularCutout.shader" />
+    <None Include="Assets\shader\Lightmap\BumpedSpecularTerrain.shader" />
+    <None Include="Assets\shader\Lightmap\BumpedSpecularTree.shader" />
+    <None Include="Assets\shader\Lightmap\Cutout.shader" />
+    <None Include="Assets\shader\Lightmap\Diffuse.shader" />
+    <None Include="Assets\shader\Lightmap\Emissive.shader" />
+    <None Include="Assets\shader\PBR.shader" />
+    <None Include="Assets\shader\SkinnedMesh\Diffuse.shader" />
+    <None Include="Assets\shader\SkinnedMesh\DiffuseCullOff.shader" />
+    <None Include="Assets\shader\Water.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

@@ -2,9 +2,11 @@
 	<VertexShader name="vs">
 		<UniformBuffer name="buf_vs" binding="2">
 			<Uniform name ="_ViewProjection" size="64"/>
+			<Uniform name ="_Color" size="16"/>
 		</UniformBuffer>
 		<VertexAttribute name="Vertex" location="0"/>
 		<VertexAttribute name="Texcoord" location="1"/>
+		<VertexAttribute name="Color" location="2"/>
 		<Include name="Base.in"/>
 		<Include name="Texture.vs"/>
 	</VertexShader>

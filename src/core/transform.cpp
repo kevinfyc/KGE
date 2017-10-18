@@ -9,6 +9,7 @@
 #include "transform.h"
 #include "util/log.h"
 #include "game_object.h"
+#include "util/string_tool.h"
 
 namespace kge
 {
@@ -50,6 +51,54 @@ namespace kge
 
 			child->GetTransform()->SetParent(RefCast<Transform>(GetRef()));
 		}
+	}
+
+
+	Ref<Transform> Transform::Find(const std::string& path) const
+	{
+		Ref<Transform> find;
+
+		std::string p = path;
+		StringVector names;
+		if (!StringSplit(p, "/", names))
+			return find;
+
+		for (auto& c : _children)
+		{
+			auto child = c.lock();
+			auto name = names[0];
+
+			if (child->GetName() == name)
+			{
+				if (names.size() > 1)
+					find = child->Find(path.substr(name.size() + 1));
+				else
+					find = child;
+
+				break;
+			}
+		}
+
+		return find;
+	}
+
+	bool Transform::PathInParent(const Ref<Transform>& parent, std::string& path) const
+	{
+		path = GetName();
+
+		auto t = this->GetParent();
+		while (!t.expired() && t.lock() != parent)
+		{
+			path = t.lock()->GetName() + "/" + path;
+			t = t.lock()->GetParent();
+		}
+
+		if (t.expired())
+		{
+			path = "";
+		}
+
+		return !path.empty();
 	}
 
 	void Transform::AddChild(WeakRef<Transform>& child)
@@ -323,6 +372,9 @@ namespace kge
 
 	const Matrix& Transform::GetLocal2WorldMatrix()
 	{
+		if (GetID() == 10)
+			printf("");
+
 		ApplyDelta();
 
 		return _local_to_world_matrix;

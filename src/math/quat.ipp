@@ -164,6 +164,12 @@ namespace kge
 		return Vector3(p_.x, p_.y, p_.z);
 	}
 
+	INLINE
+	Quaternion Quaternion::operator *(float v) const
+	{
+		return Quaternion(x * v, y * v, z * v, w * v);
+	}
+
     ///**
     // *	This method returns whether or not two quaternions are equal. Two
     // *	quaternions are equal if all of their elements are equal.

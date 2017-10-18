@@ -14,6 +14,8 @@
 #include "ui/ui_canvas_renderer.h"
 #include "ui/ui_image.h"
 #include "ui/ui_label.h"
+#include "graphics/light.h"
+#include "graphics/animation.h"
 
 using namespace kge;
 
@@ -44,7 +46,7 @@ private:
 App::App()
 {
 	SetName("App Test");
-	SetInitSize(800, 600);
+	SetInitSize(512 * 10 / 16, 512);
 }
 
 void App::Start()
@@ -55,26 +57,48 @@ void App::Start()
 	camera->GetTransform()->SetWorldPosition(Vector3(0, 1, -4));
 	camera->SetCullingMask(1 << 0);
 
+	//auto camera = GameObject::Create("camera")->AddComponent<Camera>();
+	//camera->SetCullingMask(1 << 0);
+	//camera->GetTransform()->SetWorldPosition(Vector3(0, 1.2f, -2.0f));
+	//camera->GetTransform()->SetWorldRotation(Quaternion::Euler(10, 0, 0));
 	_camera = camera;
 
 	m_rotate_deg = 0.1f;
 
+	//auto light = GameObject::Create("light")->AddComponent<Light>();
+	//Quaternion rot = Quaternion();
+	//rot.fromAngleAxis(-90 * Deg2Rad, Vector3(1, 0, 0));
+	//light->GetTransform()->SetWorldPosition(Vector3(0, 10, 0));
+	//light->_color = Color(1, 0, 0, 1);
+	//Light::s_main = light;
+
+	//auto obj = Resource::LoadGameObject("Assets/AppAnim/unitychan.prefab");
+	//_gameObject = obj;
+	//obj->GetTransform()->SetWorldRotation(Quaternion::Euler(0, 180, 0));
+	//auto anim = obj->GetComponent<Animation>();
+	//auto state = anim->GetAnimationState("WAIT03");
+	//state.wrap_mode = AnimationWrapMode::Loop;
+	//anim->UpdateAnimationState("WAIT03", state);
+	//anim->Play("WAIT03");
+
+
+	//auto ui_camera = GameObject::Create("camera")->AddComponent<Camera>();
+	//ui_camera->SetOrthographic(true);
+	//ui_camera->SetOrthographicSize(ui_camera->GetTargetHeight() / 2.0f);
+	//ui_camera->SetClipNear(-1);
+	//ui_camera->SetClipFar(1);
+	//_ui_camera = camera;
+
+	//auto scale_w = camera->GetTargetWidth() / 720.0f;
+	//auto scale_h = camera->GetTargetHeight() / 772.0f;
+	//auto scale_ui = min2(scale_w, scale_h);
+
+	//auto ui = Resource::LoadGameObject("Assets/AppTestUI/ui.prefab");
+	//Ref<GameObject> ui = Resource::LoadGameObject("Assets/AppStack/ui_stack.prefab");
+	//ui->GetTransform()->SetWorldScale(Vector3::one() * scale_ui);
+	//_gameObject_ui = ui;
+
 	_gameObject = Resource::LoadGameObject("Assets/AppTestMesh/plane.prefab");
-
-	auto ui_camera = GameObject::Create("camera")->AddComponent<Camera>();
-	ui_camera->SetOrthographic(true);
-	ui_camera->SetOrthographicSize(ui_camera->GetTargetHeight() / 2.0f);
-	ui_camera->SetClipNear(-1);
-	ui_camera->SetClipFar(1);
-	_ui_camera = camera;
-
-	auto scale_w = camera->GetTargetWidth() / 720.0f;
-	auto scale_h = camera->GetTargetHeight() / 772.0f;
-	auto scale_ui = min2(scale_w, scale_h);
-
-	auto ui = Resource::LoadGameObject("Assets/AppTestUI/ui.prefab");
-	ui->GetTransform()->SetWorldScale(Vector3::one() * scale_ui);
-	_gameObject_ui = ui;
 
 }
 
@@ -102,7 +126,7 @@ void App::TestUI()
 	fps->SetFont(font);
 	fps->SetFontSize(20);
 	fps->SetColor(Color(0, 1, 0, 1));
-	fps->SetText("测试中文1&&<color=#ff0000ff>啊English</color>");// ("123abc中sdf速度\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
+	fps->SetText("测试中文&&<color=#ff0000ff>English</color>");// ("123abc中sdf速度\nA<color=#ff0000ff>bbb</color>c<shadow=#ff0000ff>def</shadow>cc<outline=#ff0000ff>def</outline>cc<underline>def</underline>cc<bold>def</bold>cc<italic>def</italic>");
 	fps->SetRich(true);
 	fps->SetAlignment(TextAlignment::UpperLeft);
 
@@ -136,8 +160,13 @@ void App::OnDragEndBG(const WeakRef<Object>& obj, UIPointerEvent& e)
 
 void App::Update()
 {
+	return;
 	Quaternion rot = Quaternion();
 	rot.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(0, 1, 0));
+	//Quaternion rot2 = Quaternion();
+	//rot2.fromAngleAxis(m_rotate_deg * Deg2Rad, Vector3(1, 0, 0));
+	//Light::s_main.lock()->GetTransform()->SetWorldRotation(rot2);
+
 	//_cube.lock()->GetTransform()->SetLocalRotation(rot);
 	_gameObject.lock()->GetTransform()->SetLocalRotation(rot);
 	m_rotate_deg += 30 * Time::GetDeltaTime();
@@ -160,4 +189,4 @@ void App::Update()
 	}
 }
 
-KGE_MAIN(App);
+//KGE_MAIN(App);

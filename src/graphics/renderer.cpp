@@ -23,6 +23,7 @@
 
 #include "math/math_def.h"
 #include "ui/ui_canvas_renderer.h"
+#include "light.h"
 
 namespace kge
 {
@@ -77,12 +78,12 @@ namespace kge
 		mat->SetVector("_WorldSpaceCameraPos", Camera::Current()->GetTransform()->GetWorldPosition());
 		mat->SetVector("_Time", Vector4(Time::GetTime()));
 
-		//if (!Light::main.expired())
-		//{
-		//	auto light = Light::main.lock();
-		//	mat->SetVector("_WorldSpaceLightPos", -light->GetTransform()->GetForward());
-		//	mat->SetColor("_LightColor", light->color * light->intensity);
-		//}
+		if (!Light::s_main.expired())
+		{
+			auto light = Light::s_main.lock();
+			mat->SetVector("_WorldSpaceLightPos", -light->GetTransform()->GetForward());
+			mat->SetColor("_LightColor", light->_color * light->_intensity);
+		}
 	}
 
 	void Renderer::PreRenderByRenderer(uint32 material_index)

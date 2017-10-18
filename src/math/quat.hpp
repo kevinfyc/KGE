@@ -38,6 +38,8 @@ namespace kge
         void			invert();
 		static Quaternion inverse(const Quaternion& q) { return Quaternion(-q.x, -q.y, -q.z, q.w); };
         void			minimise();
+		static Quaternion		AngleAxis(float angle, const Vector3& axis);
+		static			Quaternion Euler(float x, float y, float z);
 
         void			slerp( const Quaternion& qStart, const Quaternion &qEnd,
                                float t );
@@ -53,6 +55,7 @@ namespace kge
         operator float *()				{ return (float *)&x; }
         operator const float *() const	{ return (float *)&x; }
 		Vector3 operator *(const Vector3& p) const;
+		Quaternion operator *(float v) const;
 		bool operator !=(const Quaternion& v) const;
 		bool operator ==(const Quaternion& v) const;
 

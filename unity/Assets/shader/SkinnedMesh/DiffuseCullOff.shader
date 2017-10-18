@@ -1,18 +1,19 @@
-﻿Shader "Diffuse"
+﻿Shader "SkinnedMesh/DiffuseCullOff"
 {
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 	}
-
 	SubShader
 	{
+		Cull Off
+
 		Pass
 		{
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-
+			
 			#include "UnityCG.cginc"
 
 			struct appdata

@@ -13,6 +13,7 @@
 #include "world.h"
 #include "io/file_tool.h"
 #include "util/task_loop.h"
+#include "util/thread.h"
 
 namespace kge
 {
@@ -48,6 +49,8 @@ namespace kge
 		virtual void Update() {}
 		virtual void OnResize(uint32 width, uint32 height);
 
+		void AddAsyncTickTask(Thread::TaskNode task);
+
 	private:
 		static IApplication* _instance;
 		std::string _name;
@@ -60,6 +63,8 @@ namespace kge
 
 		Ref<TaskLoop> _pre_taskloop;
 		Ref<TaskLoop> _post_taskloop;
+
+		Ref<ThreadPool> _thread_pool_tick;
     };
 }
 

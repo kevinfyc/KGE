@@ -445,7 +445,6 @@ namespace kge
 		for (const auto& i : xml.vss)
 		{
 			auto source = combine_shader_src(i.includes, i.src);
-			KGE_LOG_ERROR("vs : %s", source.c_str());
 
 			auto shader = create_shader(GL_VERTEX_SHADER, source);
 

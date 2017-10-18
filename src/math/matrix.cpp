@@ -6,6 +6,7 @@
     #include "matrix.ipp"
 #endif
 #include <math.h>
+#include <sstream>
 
 namespace kge
 {
@@ -893,6 +894,16 @@ namespace kge
 #endif
 
 #endif // EXT_MATH
+
+	std::string Matrix::ToString() const
+	{
+		std::stringstream ss;
+		ss << m00 << ' ' << m01 << ' ' << m02 << ' ' << m03 << std::endl;
+		ss << m10 << ' ' << m11 << ' ' << m12 << ' ' << m13 << std::endl;
+		ss << m20 << ' ' << m21 << ' ' << m22 << ' ' << m23 << std::endl;
+		ss << m30 << ' ' << m31 << ' ' << m32 << ' ' << m33 << std::endl;
+		return ss.str();
+	}
 
 }// end namespace kge
 

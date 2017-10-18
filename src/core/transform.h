@@ -31,6 +31,7 @@ namespace kge
 		bool IsRoot()const { return _parent.expired(); }
 
 		Ref<Transform> Find(const std::string& path) const;
+		bool PathInParent(const Ref<Transform>& parent, std::string& ret)const;
 
 		uint32 GetChildCount() { return _children.size(); }
 		Ref<Transform> GetChild(uint32 index)const;
@@ -39,6 +40,10 @@ namespace kge
 		void SetLocalPosition(const Vector3& pos);
 		void SetLocalRotation(const Quaternion& rotation);
 		void SetLocalScale(const Vector3& scale);
+
+		void SetLocalPositionDirect(const Vector3& pos) { _local_position = pos; }
+		void SetLocalRotationDirect(const Quaternion& rot) { _local_rotation = rot; }
+		void SetLocalScaleDirect(const Vector3& sca) { _local_scale = sca; }
 
 		void SetWorldPosition(const Vector3& pos);
 		void SetWorldRotation(const Quaternion& rotation);
